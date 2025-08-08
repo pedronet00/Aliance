@@ -1,21 +1,12 @@
-using Aliance.Application.Interfaces;
-using Aliance.Application.Services;
-using Aliance.Domain.Interfaces;
 using Aliance.Infrastructure.Context;
-using Aliance.Infrastructure.Repositories;
-using Aliance.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Aliance.Crosscutting.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+builder.Services.AddInfrastructure();
 
 var mySqlConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
