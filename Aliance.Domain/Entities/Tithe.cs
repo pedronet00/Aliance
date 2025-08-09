@@ -8,4 +8,12 @@ namespace Aliance.Domain.Entities;
 
 public class Tithe
 {
+    public int Id { get; set; }
+
+    public decimal Amount { get; set; }
+
+    public DateTime Date { get; set; }
+
+    public int UserId { get; set; }
+    
 }
