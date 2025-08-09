@@ -1,4 +1,5 @@
 ﻿using Aliance.Domain.Constants;
+using Aliance.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace Aliance.Application.DTOs
@@ -13,5 +14,12 @@ namespace Aliance.Application.DTOs
 
         [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
         public string? Password { get; set; }
+
+        public string? Role { get; set; }
+        
+        public bool Status { get; set; }
+
+        public int ChurchId { get; set; }
+
     }
 }

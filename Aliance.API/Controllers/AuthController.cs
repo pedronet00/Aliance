@@ -80,7 +80,7 @@ public class AuthController : ControllerBase
     [Route("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
     {
-        var userExists = await _userManager.FindByNameAsync(registerDTO.UserName!);
+        var userExists = await _userManager.FindByEmailAsync(registerDTO.Email!);
 
         if (userExists is not null)
         {
@@ -91,17 +91,32 @@ public class AuthController : ControllerBase
         {
             UserName = registerDTO.UserName,
             Email = registerDTO.Email,
-            SecurityStamp = Guid.NewGuid().ToString()
+            SecurityStamp = Guid.NewGuid().ToString(),
+            ChurchId = registerDTO.ChurchId,
+            Status = registerDTO.Status,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
         };
+
+        var role = await _roleManager.RoleExistsAsync(registerDTO.Role!);
+
+        if (!role)
+            return BadRequest(new { message = "Role does not exist." });
 
         var result = await _userManager.CreateAsync(user, registerDTO.Password!);
 
-        if (!result.Succeeded)
+        if (result.Succeeded)
         {
-            return BadRequest(new { message = "User registration failed." });
+            await _userManager.AddToRoleAsync(user, registerDTO.Role!);
+        }
+        else
+        {
+            return BadRequest(new { message = "User registration failed.", 
+                                    errors = result.Errors.Select(e => e.Description) 
+            });
         }
 
-        return Ok(user);
+        return Ok(new {message = "User created successfully."});
     }
 
     [HttpPost]
