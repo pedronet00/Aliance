@@ -11,6 +11,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Department> Department { get; set; }
     public DbSet<Event> Event { get; set; }
     public DbSet<Location> Location { get; set; }
+    public DbSet<Church> Church{ get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
