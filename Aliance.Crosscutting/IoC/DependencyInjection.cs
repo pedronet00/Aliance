@@ -14,9 +14,11 @@ public static class DependencyInjection
 
         // Repositories
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+        services.AddScoped<IChurchRepository, ChurchRepository>();
 
         // Services
         services.AddScoped<IDepartmentService, DepartmentService>();
+        services.AddScoped<IChurchService, ChurchService>();
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();

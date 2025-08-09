@@ -16,5 +16,8 @@ public class DomainToDTOMappingProfile : Profile
     {
         CreateMap<Department, DepartmentDTO>().ReverseMap();
         CreateMap<Department, DepartmentViewModel>().ReverseMap();
+
+        CreateMap<Church, ChurchDTO>().ReverseMap();
+        CreateMap<Church, ChurchViewModel>().ReverseMap();
     }
 }

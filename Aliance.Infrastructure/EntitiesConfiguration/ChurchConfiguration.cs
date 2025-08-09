@@ -41,7 +41,8 @@ namespace Aliance.Infrastructure.EntitiesConfiguration
                 .HasMaxLength(50);
 
             builder.Property(c => c.Status)
-                .IsRequired();
+                .IsRequired()
+                .HasDefaultValue(true);
 
         }
     }

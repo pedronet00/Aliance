@@ -15,10 +15,15 @@ namespace Aliance.Application.DTOs
         [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
         public string? Password { get; set; }
 
+        [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
         public string? Role { get; set; }
-        
+
+        [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
+        public string? Phone { get; set; }
+
         public bool Status { get; set; }
 
+        [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
         public int ChurchId { get; set; }
 
     }
