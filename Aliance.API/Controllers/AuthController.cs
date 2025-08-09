@@ -34,7 +34,7 @@ public class AuthController : ControllerBase
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
     {
-        var user = await _userManager.FindByNameAsync(loginDto.UserName!);
+        var user = await _userManager.FindByEmailAsync(loginDto.Email!);
 
         if (user is not null && await _userManager.CheckPasswordAsync(user, loginDto.Password!))
         {
@@ -94,6 +94,7 @@ public class AuthController : ControllerBase
             SecurityStamp = Guid.NewGuid().ToString(),
             ChurchId = registerDTO.ChurchId,
             Status = registerDTO.Status,
+            PhoneNumber = registerDTO.Phone,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
         };
