@@ -26,6 +26,7 @@ public class Church
 
     public bool Status { get; set; }
 
+    // Collections
     public ICollection<Cell> Cells { get; set; } = new List<Cell>();
     public ICollection<Baptism> Baptisms { get; set; } = new List<Baptism>();
     public ICollection<Department> Departments { get; set; } = new List<Department>();
@@ -33,6 +34,5 @@ public class Church
     public ICollection<Location> Locations { get; set; } = new List<Location>();
     public ICollection<MissionCampaign> MissionCampaigns { get; set; } = new List<MissionCampaign>();
     public ICollection<CostCenter> CostCenter { get; set; } = new List<CostCenter>();
-
 
 }

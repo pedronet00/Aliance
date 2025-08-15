@@ -19,4 +19,7 @@ public class CostCenter
     public int ChurchId { get; set; }
 
     public Church Church { get; set; }
+
+    // Collections
+    public ICollection<AccountPayable> AccountPayable { get; set; }
 }
