@@ -16,4 +16,8 @@ public class Department
     public bool Status { get; set; }
 
     public int ChurchId { get; set; }
+
+    public Church Church { get; set; }
+
+    public ICollection<CostCenter> CostCenter { get; set; } = new List<CostCenter>();
 }

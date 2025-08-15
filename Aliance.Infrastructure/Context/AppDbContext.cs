@@ -9,11 +9,12 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     public DbSet<Baptism> Baptism{ get; set; }
+    public DbSet<Cell> Cell { get; set; }
     public DbSet<Church> Church{ get; set; }
+    public DbSet<CostCenter> CostCenter{ get; set; }
     public DbSet<Department> Department { get; set; }
     public DbSet<Event> Event { get; set; }
     public DbSet<Location> Location { get; set; }
-    public DbSet<Cell> Cell { get; set; }
     public DbSet<MissionCampaign> MissionCampaign { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)

@@ -18,13 +18,14 @@ public static class DependencyInjection
         services.AddScoped<IBaptismRepository, BaptismRepository>();
         services.AddScoped<ICellRepository, CellRepository>();
         services.AddScoped<IMissionCampaignRepository, MissionCampaignRepository>();
+        services.AddScoped<ICostCenterRepository, CostCenterRepository>();
 
         // Services
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IChurchService, ChurchService>();
         services.AddScoped<IBaptismService, BaptismService>();
         services.AddScoped<ICellService, CellService>();
-        services.AddScoped<IMissionCampaignService, MissionCampaignService>();
+        services.AddScoped<ICostCenterService, CostCenterService>();
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();

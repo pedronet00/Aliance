@@ -32,6 +32,7 @@ public class Church
     public ICollection<Event> Events { get; set; } = new List<Event>();
     public ICollection<Location> Locations { get; set; } = new List<Location>();
     public ICollection<MissionCampaign> MissionCampaigns { get; set; } = new List<MissionCampaign>();
+    public ICollection<CostCenter> CostCenter { get; set; } = new List<CostCenter>();
 
 
 }
