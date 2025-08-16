@@ -19,5 +19,5 @@ public class DepartmentDTO
     public bool? Status { get; set; }
 
     [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
-    public int? ClientId { get; set; }
+    public int? ChurchId { get; set; }
 }
