@@ -17,4 +17,7 @@ public class DataAnnotationMessages
 
     public const string STRLEN_MIN = "O campo {0} deve ter no mínimo {1} caracteres.";
 
+    public const string DECIMAL_RANGE = "O campo {0} deve ser um número decimal entre {1} e {2}.";
+
+
 }
