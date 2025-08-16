@@ -28,5 +28,11 @@ public class DomainToDTOMappingProfile : Profile
 
         CreateMap<MissionCampaign, MissionCampaignDTO>().ReverseMap();
         CreateMap<MissionCampaign, MissionCampaignViewModel>().ReverseMap();
+
+        CreateMap<CostCenter, CostCenterDTO>().ReverseMap();
+        CreateMap<CostCenter, CostCenterViewModel>().ReverseMap();
+
+        CreateMap<AccountPayable, AccountPayableDTO>().ReverseMap();
+        CreateMap<AccountPayable, AccountPayableViewModel>().ReverseMap();
     }
 }

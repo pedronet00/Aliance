@@ -11,6 +11,8 @@ public class AccountPayableViewModel
 {
     public int Id { get; set; }
 
+    public Guid Guid { get; set; }
+
     public string Description { get; set; }
 
     public decimal Amount { get; set; }

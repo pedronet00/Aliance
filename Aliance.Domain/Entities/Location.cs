@@ -1,19 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Aliance.Domain.Entities;
-
-public class Location
+namespace Aliance.Domain.Entities
 {
+    public class Location
+    {
+        public int Id { get; set; }
 
-    public int Id { get; set; }
+        public Guid Guid { get; private set; }
 
-    public string? Name { get; set; }
+        public string? Name { get; set; }
 
-    public bool Status { get; set; }
+        public bool Status { get; set; }
 
-    public int ChurchId { get; set; }
+        public int ChurchId { get; set; }
+
+        private Location() { }
+
+        public Location(string? name, int churchId, bool status = true)
+        {
+            Guid = Guid.NewGuid(); 
+            Name = name;
+            ChurchId = churchId;
+            Status = status;
+        }
+    }
 }

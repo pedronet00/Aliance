@@ -4,6 +4,7 @@ using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aliance.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250815224318_AddingGuidToAccountPayable")]
+    partial class AddingGuidToAccountPayable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,9 +163,6 @@ namespace Aliance.Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime");
 
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("char(36)");
-
                     b.Property<string>("PastorId")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
@@ -202,9 +202,6 @@ namespace Aliance.Infrastructure.Migrations
                         .HasColumnType("datetime");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime>("CreatedAt"));
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("char(36)");
 
                     b.Property<string>("LeaderId")
                         .IsRequired()
@@ -266,9 +263,6 @@ namespace Aliance.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("char(36)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(80)
@@ -308,9 +302,6 @@ namespace Aliance.Infrastructure.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("char(36)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -335,9 +326,6 @@ namespace Aliance.Infrastructure.Migrations
 
                     b.Property<int>("ChurchId")
                         .HasColumnType("int");
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -375,9 +363,6 @@ namespace Aliance.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
 
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("char(36)");
-
                     b.Property<int>("LocationId")
                         .HasColumnType("int");
 
@@ -405,9 +390,6 @@ namespace Aliance.Infrastructure.Migrations
 
                     b.Property<int>("ChurchId")
                         .HasColumnType("int");
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -482,9 +464,6 @@ namespace Aliance.Infrastructure.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("char(36)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -650,7 +629,7 @@ namespace Aliance.Infrastructure.Migrations
 
             modelBuilder.Entity("Aliance.Domain.Entities.Baptism", b =>
                 {
-                    b.HasOne("Aliance.Domain.Entities.Church", "Church")
+                    b.HasOne("Aliance.Domain.Entities.Church", null)
                         .WithMany("Baptisms")
                         .HasForeignKey("ChurchId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -667,8 +646,6 @@ namespace Aliance.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Church");
 
                     b.Navigation("Pastor");
 

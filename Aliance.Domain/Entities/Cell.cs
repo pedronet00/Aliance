@@ -1,35 +1,44 @@
 ﻿using Aliance.Domain.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Aliance.Domain.Entities;
-
-public class Cell
+namespace Aliance.Domain.Entities
 {
-    public int Id { get; set; }
+    public class Cell
+    {
+        public int Id { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public Guid Guid { get; private set; }
 
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public string Name { get; set; }
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-    public int LocationId { get; set; }
+        public string Name { get; set; }
 
-    public Location Location { get; set; }
+        public int LocationId { get; set; }
+        public Location Location { get; set; }
 
-    public string LeaderId { get; set; }
+        public string LeaderId { get; set; }
+        public ApplicationUser Leader { get; set; }
 
-    public ApplicationUser Leader { get; set; }
+        public Weekdays MeetingDay { get; set; }
 
-    public Weekdays MeetingDay { get; set; }
+        public string CellBanner { get; set; }
 
-    public string CellBanner { get; set; }
+        public int ChurchId { get; set; }
+        public Church Church { get; set; }
 
-    public int ChurchId { get; set; }
+        private Cell() { }
 
-    public Church Church { get; set; }
+        public Cell(string name, int locationId, string leaderId, Weekdays meetingDay, string cellBanner, int churchId)
+        {
+            Guid = Guid.NewGuid(); 
+            Name = name;
+            LocationId = locationId;
+            LeaderId = leaderId;
+            MeetingDay = meetingDay;
+            CellBanner = cellBanner;
+            ChurchId = churchId;
+        }
+    }
 }

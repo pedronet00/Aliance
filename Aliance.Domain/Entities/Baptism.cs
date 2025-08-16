@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aliance.Domain.Entities;
 
 public class Baptism
 {
     public int Id { get; set; }
+
+    public Guid Guid { get; private set; }
 
     public DateTime Date { get; set; }
 
@@ -19,4 +17,16 @@ public class Baptism
     public ApplicationUser User { get; set; } = null!;
 
     public int ChurchId { get; set; }
+    public Church Church { get; set; }
+
+    private Baptism() { }
+
+    public Baptism(DateTime date, string pastorId, string userId, int churchId)
+    {
+        Guid = Guid.NewGuid(); // garante que sempre terá um identificador único
+        Date = date;
+        PastorId = pastorId;
+        UserId = userId;
+        ChurchId = churchId;
+    }
 }

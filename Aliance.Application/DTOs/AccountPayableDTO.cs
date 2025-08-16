@@ -13,7 +13,7 @@ public class AccountPayableDTO
     public string? Description { get; set; }
 
     [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
-    [StringLength(10, MinimumLength = 1, ErrorMessage = DataAnnotationMessages.STRLEN)]
+    [Range(0.01, 999999.99, ErrorMessage = DataAnnotationMessages.DECIMAL_RANGE)]
     public decimal Amount { get; set; }
 
     [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]

@@ -11,6 +11,8 @@ public class AccountPayable
 {
     public int Id { get; set; }
 
+    public Guid Guid { get; set; } = Guid.NewGuid();    
+
     public string Description { get; set; }
 
     public decimal Amount { get; set; }
@@ -24,5 +26,18 @@ public class AccountPayable
     public int CostCenterId { get; set; }
 
     public CostCenter CostCenter { get; set; }
+
+    private AccountPayable() { }
+
+    // Construtor para criação manual
+    public AccountPayable(string description, decimal amount, DateTime dueDate, int costCenterId)
+    {
+        Guid = Guid.NewGuid();
+        Description = description;
+        Amount = amount;
+        DueDate = dueDate;
+        CostCenterId = costCenterId;
+        AccountStatus = AccountStatus.Pending;
+    }
 
 }

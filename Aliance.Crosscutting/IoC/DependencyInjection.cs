@@ -19,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<ICellRepository, CellRepository>();
         services.AddScoped<IMissionCampaignRepository, MissionCampaignRepository>();
         services.AddScoped<ICostCenterRepository, CostCenterRepository>();
+        services.AddScoped<IAccountPayableRepository, AccountPayableRepository>();
 
         // Services
         services.AddScoped<IDepartmentService, DepartmentService>();
@@ -26,6 +27,7 @@ public static class DependencyInjection
         services.AddScoped<IBaptismService, BaptismService>();
         services.AddScoped<ICellService, CellService>();
         services.AddScoped<ICostCenterService, CostCenterService>();
+        services.AddScoped<IAccountPayableService, AccountPayableService>();
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
