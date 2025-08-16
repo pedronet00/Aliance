@@ -1,12 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Aliance.Domain.Entities;
 
-namespace Aliance.Domain.Entities
+public class DepartmentMember
 {
-    internal class DepartmentMember
+    public int Id { get; set; }
+        public Guid Guid { get; set; } = Guid.NewGuid();
+    public int DepartmentId { get; set; }
+    public Department Department { get; set; }
+    public int UserId { get; set; }
+    public ApplicationUser User { get; set; }
+    public DateTime JoinedDate { get; set; } = DateTime.UtcNow;
+    public bool Status { get; set; } = true;
+    private DepartmentMember() { }
+    public DepartmentMember(int departmentId, int userId, bool status)
     {
+        DepartmentId = departmentId;
+        UserId = userId;
+        Status = status;
+        Guid = Guid.NewGuid();
     }
 }

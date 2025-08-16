@@ -11,6 +11,8 @@ public class MissionCampaign
 {
     public int Id { get; set; }
 
+    public Guid Guid { get; private set; }
+
     public string Name { get; set; }
 
     public Territorials Type { get; set; }
@@ -26,4 +28,20 @@ public class MissionCampaign
     public int ChurchId { get; set; }
 
     public Church Church { get; set; }
+
+    private MissionCampaign() { }
+
+    public MissionCampaign(int id, Guid guid, string name, Territorials type, DateTime startDate, DateTime endDate, decimal targetAmount, decimal collectedAmount, int churchId)
+    {
+        Id = id;
+        Guid = Guid.NewGuid();
+        Name = name;
+        Type = type;
+        StartDate = startDate;
+        EndDate = endDate;
+        TargetAmount = targetAmount;
+        CollectedAmount = collectedAmount;
+        ChurchId = churchId;
+    }
+
 }

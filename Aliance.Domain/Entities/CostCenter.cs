@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Aliance.Domain.Entities
+﻿namespace Aliance.Domain.Entities
 {
     public class CostCenter
     {

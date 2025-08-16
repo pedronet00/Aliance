@@ -26,13 +26,14 @@ namespace Aliance.Domain.Entities
         public bool Status { get; set; }
 
         // Collections
-        public ICollection<Cell> Cells { get; set; } = new List<Cell>();
         public ICollection<Baptism> Baptisms { get; set; } = new List<Baptism>();
+        public ICollection<Cell> Cells { get; set; } = new List<Cell>();
+        public ICollection<CostCenter> CostCenter { get; set; } = new List<CostCenter>();
         public ICollection<Department> Departments { get; set; } = new List<Department>();
         public ICollection<Event> Events { get; set; } = new List<Event>();
         public ICollection<Location> Locations { get; set; } = new List<Location>();
+        public ICollection<Mission> Missions { get; set; } = new List<Mission>();
         public ICollection<MissionCampaign> MissionCampaigns { get; set; } = new List<MissionCampaign>();
-        public ICollection<CostCenter> CostCenter { get; set; } = new List<CostCenter>();
 
         private Church() { }
 
