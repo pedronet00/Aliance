@@ -18,14 +18,14 @@ public class CellMeeting
     public int CellId { get; set; }
     public Cell Cell { get; set; }
 
-    public int LeaderId { get; set; }
+    public string LeaderId { get; set; }
     public ApplicationUser Leader { get; set; }
 
     public MeetingStatus Status { get; set; } = MeetingStatus.Scheduled;
 
     private CellMeeting() { }
 
-    public CellMeeting(string theme, DateTime date, int locationId, int cellId, int leaderId)
+    public CellMeeting(string theme, DateTime date, int locationId, int cellId, string leaderId)
     {
         Guid = Guid.NewGuid();
         Theme = theme;

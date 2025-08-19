@@ -12,7 +12,7 @@ public class WorshipTeamMember
 
     public Guid Guid { get; private set; }
 
-    public int UserId { get; set; }
+    public string UserId { get; set; }
     public ApplicationUser User { get; set; }
 
     public int WorshipTeamId { get; set; }
@@ -22,7 +22,7 @@ public class WorshipTeamMember
 
     private WorshipTeamMember() { }
 
-    public WorshipTeamMember(int userId, int worshipTeamId, bool status)
+    public WorshipTeamMember(string userId, int worshipTeamId, bool status)
     {
         UserId = userId;
         WorshipTeamId = worshipTeamId;

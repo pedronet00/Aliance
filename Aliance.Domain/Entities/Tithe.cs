@@ -12,13 +12,17 @@ public class Tithe
 
     public DateTime Date { get; set; }
 
-    public int UserId { get; set; }
+    public string UserId { get; set; }
+
+    public ApplicationUser User { get; set; }
 
     public int ChurchId { get; set; }
 
+    public Church Church { get; set; }
+
     private Tithe() { }
 
-    public Tithe(decimal amount, DateTime date, int userId, int churchId)
+    public Tithe(decimal amount, DateTime date, string userId, int churchId)
     {
         Guid = Guid.NewGuid(); 
         Amount = amount;

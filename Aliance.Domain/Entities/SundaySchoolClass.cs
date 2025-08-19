@@ -8,25 +8,29 @@ namespace Aliance.Domain.Entities;
 
 public class SundaySchoolClass
 {
+    
     public int Id { get; set; }
+
     public Guid Guid { get; private set; }
 
-    public string Name { get; set; }
+    public string Lesson { get; set; }
 
-    public bool Status { get; set; }
+    public string TeacherId { get; set; }
 
-    public int ChurchId { get; set; }
+    public ApplicationUser Teacher { get; set; }
 
-    public Church Church { get; set; }
+    public int SundaySchoolClassroomId { get; set; }
+
+    public SundaySchoolClassroom SundaySchoolClassroom { get; set; }
 
     private SundaySchoolClass() { }
 
-    public SundaySchoolClass(int id, Guid guid, string name, bool status, int churchId)
+    public SundaySchoolClass(string lesson, string teacherId, int sundaySchoolClassroomId)
     {
-        Id = id;
-        Guid = guid;
-        Name = name;
-        Status = status;
-        ChurchId = churchId;
+        Guid = Guid.NewGuid();
+        Lesson = lesson;
+        TeacherId = teacherId;
+        SundaySchoolClassroomId = sundaySchoolClassroomId;
     }
+
 }

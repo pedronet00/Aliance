@@ -15,7 +15,9 @@
         public Church Church { get; set; }
 
         // Collections
+        public ICollection<Budget>? Budget{ get; set; } = new List<Budget>();
         public ICollection<AccountPayable> AccountPayable { get; set; } = new List<AccountPayable>();
+        public ICollection<AccountReceivable> AccountReceivable{ get; set; } = new List<AccountReceivable>();
 
         private CostCenter() { }
 

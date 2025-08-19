@@ -28,7 +28,7 @@ namespace Aliance.Infrastructure.EntitiesConfiguration
                 .IsRequired();
 
             builder.HasOne(cc => cc.Department)
-                .WithMany(d => d.CostCenter)
+                .WithMany(d => d.CostCenters)
                 .HasForeignKey(cc => cc.DepartmentId)
                 .OnDelete(DeleteBehavior.Cascade);
 

@@ -6,12 +6,12 @@ public class DepartmentMember
         public Guid Guid { get; set; } = Guid.NewGuid();
     public int DepartmentId { get; set; }
     public Department Department { get; set; }
-    public int UserId { get; set; }
+    public string UserId { get; set; }
     public ApplicationUser User { get; set; }
     public DateTime JoinedDate { get; set; } = DateTime.UtcNow;
     public bool Status { get; set; } = true;
     private DepartmentMember() { }
-    public DepartmentMember(int departmentId, int userId, bool status)
+    public DepartmentMember(int departmentId, string userId, bool status)
     {
         DepartmentId = departmentId;
         UserId = userId;

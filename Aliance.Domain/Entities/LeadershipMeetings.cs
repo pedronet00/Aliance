@@ -1,4 +1,6 @@
-﻿namespace Aliance.Domain.Entities;
+﻿using Aliance.Domain.Enums;
+
+namespace Aliance.Domain.Entities;
 
 public class LeadershipMeetings
 {

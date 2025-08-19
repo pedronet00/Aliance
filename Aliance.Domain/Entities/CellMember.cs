@@ -6,12 +6,12 @@ public class CellMember
     public Guid Guid { get; set; } = Guid.NewGuid();
     public int CellId { get; set; }
     public Cell Cell { get; set; }
-    public int UserId { get; set; }
+    public string UserId { get; set; }
     public ApplicationUser User { get; set; }
     public DateTime JoinedDate { get; set; } = DateTime.UtcNow;
     public bool Status { get; set; } = true; 
     private CellMember() { }
-    public CellMember(int cellId, int userId, bool status)
+    public CellMember(int cellId, string userId, bool status)
     {
         CellId = cellId;
         UserId = userId;

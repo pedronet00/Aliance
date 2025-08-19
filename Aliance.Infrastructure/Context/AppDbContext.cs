@@ -30,7 +30,8 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<PastoralVisit> PastoralVisit { get; set; }
     public DbSet<Patrimony> Patrimony { get; set; }
     public DbSet<PatrimonyMaintenance> PatrimonyMaintenance { get; set; }
-    public DbSet<SundaySchool> SundaySchool { get; set; }
+    public DbSet<SundaySchoolClass> SundaySchool { get; set; }
+    public DbSet<SundaySchoolClassroom> SundaySchoolClassRoom { get; set; }
     public DbSet<SundaySchoolClass> SundaySchoolClass { get; set; }
     public DbSet<Tithe> Tithe { get; set; }
     public DbSet<WorshipTeam> WorshipTeam { get; set; }

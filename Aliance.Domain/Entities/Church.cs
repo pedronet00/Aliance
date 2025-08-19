@@ -34,6 +34,9 @@ namespace Aliance.Domain.Entities
         public ICollection<Location> Locations { get; set; } = new List<Location>();
         public ICollection<Mission> Missions { get; set; } = new List<Mission>();
         public ICollection<MissionCampaign> MissionCampaigns { get; set; } = new List<MissionCampaign>();
+        public ICollection<PastoralVisit> PastoralVisits { get; set; } = new List<PastoralVisit>();
+        public ICollection<Patrimony> Patrimonies { get; set; } = new List<Patrimony>();
+        public ICollection<SundaySchoolClassroom> SundaySchoolClassrooms { get; set; } = new List<SundaySchoolClassroom>();
 
         private Church() { }
 

@@ -13,7 +13,8 @@
         public int ChurchId { get; set; }
         public Church Church { get; set; }
 
-        public ICollection<CostCenter> CostCenter { get; set; } = new List<CostCenter>();
+        public ICollection<CostCenter> CostCenters { get; set; } = new List<CostCenter>();
+        public ICollection<DepartmentMember> Members { get; set; } = new List<DepartmentMember>();
 
         private Department() { }
 

@@ -28,6 +28,10 @@ namespace Aliance.Domain.Entities
         public int ChurchId { get; set; }
         public Church Church { get; set; }
 
+        // Collections
+        public ICollection<CellMember>? CellMembers { get; set; } = new List<CellMember>();
+        public ICollection<CellMeeting>? CellMeetings { get; set; } = new List<CellMeeting>();
+
         private Cell() { }
 
         public Cell(string name, int locationId, string leaderId, Weekdays meetingDay, string cellBanner, int churchId)

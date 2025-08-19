@@ -27,6 +27,9 @@ public class AccountPayable
 
     public CostCenter CostCenter { get; set; }
 
+    // Collections
+    public ICollection<Expense>? Expenses { get; set; } = new List<Expense>();
+
     private AccountPayable() { }
 
     // Construtor para criação manual

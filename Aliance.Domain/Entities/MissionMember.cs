@@ -6,7 +6,7 @@ public class MissionMember
 
     public Guid Guid { get; private set; }
 
-    public int MemberId { get; set; }
+    public string MemberId { get; set; }
     public ApplicationUser Member { get; set; }
 
     public int MissionId { get; set; }
@@ -17,7 +17,7 @@ public class MissionMember
 
     private MissionMember() { }
 
-    public MissionMember(int memberId, int missionId, bool status)
+    public MissionMember(string memberId, int missionId, bool status)
     {
         MemberId = memberId;
         MissionId = missionId;

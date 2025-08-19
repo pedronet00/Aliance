@@ -27,6 +27,9 @@ public class AccountReceivable
 
     public CostCenter CostCenter { get; set; }
 
+    // Collections
+    public ICollection<Income>? Incomes { get; set; } = new List<Income>();
+
     private AccountReceivable() { }
 
     // Construtor para criação manual
