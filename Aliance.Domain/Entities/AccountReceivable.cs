@@ -40,6 +40,6 @@ public class AccountReceivable
         Amount = amount;
         DueDate = dueDate;
         CostCenterId = costCenterId;
-        AccountStatus = AccountStatus.Pending;
+        AccountStatus = AccountStatus.Pendente;
     }
 }

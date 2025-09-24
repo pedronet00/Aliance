@@ -44,7 +44,10 @@ public class AccountPayableRepository : IAccountPayableRepository
 
     public async Task<IEnumerable<AccountPayable>> GetAllAsync()
     {
-        var accountPayables = await _context.AccountPayable.AsNoTracking().ToListAsync();
+        var accountPayables = await _context.AccountPayable
+            .Include(a => a.CostCenter)
+            .AsNoTracking()
+            .ToListAsync();
 
         return accountPayables;
     }

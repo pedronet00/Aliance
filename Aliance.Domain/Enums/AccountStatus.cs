@@ -8,10 +8,9 @@ namespace Aliance.Domain.Enums;
 
 public enum AccountStatus
 {
-    Unpaid = 1,
-    Paid = 2,
-    Overdue = 3,
-    PartiallyPaid = 4,
-    Cancelled = 5,
-    Pending = 6,
+    Pendente = 1,
+    Paga = 2,
+    Atrasada = 3,
+    Parcial = 4,
+    Cancelada = 5
 }

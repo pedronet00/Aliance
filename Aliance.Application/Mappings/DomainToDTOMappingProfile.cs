@@ -34,5 +34,14 @@ public class DomainToDTOMappingProfile : Profile
 
         CreateMap<AccountPayable, AccountPayableDTO>().ReverseMap();
         CreateMap<AccountPayable, AccountPayableViewModel>().ReverseMap();
+        CreateMap<AccountPayable, AccountPayableViewModel>()
+            .ForMember(dest => dest.CostCenterName, opt => opt.MapFrom(src => src.CostCenter.Name))
+            .ReverseMap();
+
+        CreateMap<Budget, BudgetDTO>().ReverseMap();
+        CreateMap<Budget, BudgetViewModel>().ReverseMap();
+        CreateMap<Budget, BudgetViewModel>()
+            .ForMember(dest => dest.CostCenterName, opt => opt.MapFrom(src => src.CostCenter.Name))
+            .ReverseMap();
     }
 }
