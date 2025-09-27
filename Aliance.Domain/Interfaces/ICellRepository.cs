@@ -9,14 +9,14 @@ namespace Aliance.Application.Interfaces
 {
     public interface ICellRepository
     {
-        Task<IEnumerable<Cell>> GetAllCells();
+        Task<IEnumerable<Cell>> GetAllCells(int churchId);
 
-        Task<Cell> GetCellById(int id);
+        Task<Cell> GetCellById(int churchId, int id);
 
         Task<Cell> AddCell(Cell cell);
 
-        void UpdateCell(Cell cell);
+        Task<Cell> UpdateCell(Cell cell);
 
-        Task<bool> DeleteCell(int id);
+        Task<bool> DeleteCell(int churchId,int id);
     }
 }

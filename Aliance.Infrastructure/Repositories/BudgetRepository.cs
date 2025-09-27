@@ -62,7 +62,9 @@ public class BudgetRepository : IBudgetRepository
 
     public async Task<IEnumerable<Budget>> GetAllBudgetsAsync(int churchId)
     {
-        return await _context.Budget.Where(c => c.CostCenter.ChurchId == churchId).ToListAsync();
+        return await _context.Budget.Where(c => c.CostCenter.ChurchId == churchId)
+            .Include(b => b.CostCenter)
+            .ToListAsync();
     }
 
     public async Task<Budget?> GetBudgetByGuidAsync(int churchId, Guid guid)

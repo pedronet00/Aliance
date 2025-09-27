@@ -1,5 +1,6 @@
 ﻿using Aliance.Application.DTOs;
 using Aliance.Application.ViewModel;
+using Aliance.Domain.Notifications;
 
 namespace Aliance.Application.Interfaces;
 
@@ -7,11 +8,11 @@ public interface ICellService
 {
     Task<IEnumerable<CellViewModel>> GetAllCells();
 
-    Task<CellViewModel> GetCellById(int id);
+    Task<DomainNotificationsResult<CellViewModel>> GetCellById(int id);
 
-    Task<CellViewModel> AddCell(CellDTO cell);
+    Task<DomainNotificationsResult<CellViewModel>> AddCell(CellDTO cell);
 
-    Task<bool> UpdateCell(CellDTO cell);
+    Task<DomainNotificationsResult<CellViewModel>> UpdateCell(CellDTO cell);
 
-    Task<bool> DeleteCell(int id);
+    Task<DomainNotificationsResult<bool>> DeleteCell(int id);
 }

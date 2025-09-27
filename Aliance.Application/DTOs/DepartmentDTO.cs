@@ -15,7 +15,6 @@ public class DepartmentDTO
     [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
     public string? Name { get; set; }
 
-    [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
     public bool? Status { get; set; }
 
     [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]

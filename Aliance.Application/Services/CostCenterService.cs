@@ -3,6 +3,7 @@ using Aliance.Application.Interfaces;
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Notifications;
 using AutoMapper;
 
 namespace Aliance.Application.Services
@@ -13,18 +14,49 @@ namespace Aliance.Application.Services
         private readonly ICostCenterRepository _repo;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserContextService _context;
 
-        public CostCenterService(ICostCenterRepository repo, IMapper mapper, IUnitOfWork unitOfWork)
+        public CostCenterService(ICostCenterRepository repo, IMapper mapper, IUnitOfWork unitOfWork, IUserContextService context)
         {
             _repo = repo;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _context = context;
         }
 
-        public async Task<CostCenterViewModel> Add(CostCenterDTO costCenterDTO)
+        public async Task<DomainNotificationsResult<CostCenterViewModel>> Activate(int id)
         {
+            var result = new DomainNotificationsResult<CostCenterViewModel>();
+            var churchId = _context.GetChurchId();
+
+            if (id <= 0)
+                result.Notifications.Add("Id inválido.");
+
+            if (result.Notifications.Any())
+                return result;
+
+            var costCenter = await _repo.GetById(churchId, id);
+
+            if (costCenter is null)
+                result.Notifications.Add("Centro de custo não encontrado.");
+
+            await _repo.Activate(churchId, id);
+
+            await _unitOfWork.Commit();
+
+            result.Result = _mapper.Map<CostCenterViewModel>(costCenter);
+
+            return result;
+        }
+        public async Task<DomainNotificationsResult<CostCenterViewModel>> Add(CostCenterDTO costCenterDTO)
+        {
+            var result = new DomainNotificationsResult<CostCenterViewModel>();
+
             if (costCenterDTO is null)
-                throw new ArgumentNullException(nameof(costCenterDTO), "CostCenterDTO cannot be null");
+                result.Notifications.Add("Centro de custo não localizado.");
+
+            if (result.Notifications.Any())
+                return result;
 
             var costCenter = _mapper.Map<CostCenter>(costCenterDTO);
 
@@ -32,62 +64,111 @@ namespace Aliance.Application.Services
 
             await _unitOfWork.Commit();
 
-            var costCenterViewModel = _mapper.Map<CostCenterViewModel>(costCenter);
+            result.Result = _mapper.Map<CostCenterViewModel>(costCenter);
 
-            return costCenterViewModel;
+            return result;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<DomainNotificationsResult<CostCenterViewModel>> Deactivate(int id)
         {
+            var result = new DomainNotificationsResult<CostCenterViewModel>();
+            var churchId = _context.GetChurchId();
+
             if (id <= 0)
-                throw new ArgumentOutOfRangeException(nameof(id), "Id must be greater than zero");
+                result.Notifications.Add("Id inválido.");
 
-            await _repo.Delete(id);
+            var costCenter = await _repo.GetById(churchId, id);
 
-            return true;
+            if (costCenter is null)
+                result.Notifications.Add("Centro de custo não encontrado.");
+
+            if (result.Notifications.Any())
+                return result;
+
+            await _repo.Deactivate(churchId, id);
+
+            await _unitOfWork.Commit();
+
+            result.Result = _mapper.Map<CostCenterViewModel>(costCenter);
+
+            return result;
+        }
+
+        public async Task<DomainNotificationsResult<bool>> Delete(int id)
+        {
+            var result = new DomainNotificationsResult<bool>();
+            var churchId = _context.GetChurchId();
+
+            if (id <= 0)
+                result.Notifications.Add("Id inválido.");
+
+            if(result.Notifications.Any())
+                return result;
+
+            await _repo.Delete(churchId, id);
+
+            await _unitOfWork.Commit();
+
+            result.Result = true;
+
+            return result;
         }
 
         public async Task<IEnumerable<CostCenterViewModel>> GetAllCenters()
         {
-            var centers = await _repo.GetAllCenters();
+            var churchId = _context.GetChurchId();
+
+            var centers = await _repo.GetAllCenters(churchId);
 
             var costCenterViewModels = _mapper.Map<IEnumerable<CostCenterViewModel>>(centers);
 
             return costCenterViewModels;
         }
 
-        public async Task<CostCenterViewModel> GetById(int id)
+        public async Task<DomainNotificationsResult<CostCenterViewModel>> GetById(int id)
         {
-            if (id <= 0)
-                throw new ArgumentOutOfRangeException(nameof(id), "Id must be greater than zero");
+            var result = new DomainNotificationsResult<CostCenterViewModel>();
+            var churchId = _context.GetChurchId();
 
-            var center = await _repo.GetById(id);
+            if (id <= 0)
+                result.Notifications.Add("Id inválido.");
+
+            var center = await _repo.GetById(churchId, id);
 
             if (center is null)
-                throw new KeyNotFoundException($"CostCenter with id {id} not found");
+                result.Notifications.Add("Centro de custo não encontrado.");
 
-            var costCenterViewModel = _mapper.Map<CostCenterViewModel>(center);
+            if (result.Notifications.Any())
+                return result;
 
-            return costCenterViewModel;
+            result.Result = _mapper.Map<CostCenterViewModel>(center);
+
+            return result;
         }
 
-        public async Task<CostCenterViewModel> Update(CostCenterDTO costCenterDTO)
+        public async Task<DomainNotificationsResult<CostCenterViewModel>> Update(CostCenterDTO costCenterDTO)
         {
+            var result = new DomainNotificationsResult<CostCenterViewModel>();
+            var churchId = _context.GetChurchId();
+
             if (costCenterDTO is null)
-                throw new ArgumentNullException(nameof(costCenterDTO), "CostCenterDTO cannot be null");
+                result.Notifications.Add("Centro de custo não localizado.");
 
             var costCenter = _mapper.Map<CostCenter>(costCenterDTO);
 
             if (costCenter.Id <= 0)
-                throw new ArgumentOutOfRangeException(nameof(costCenter.Id), "Id must be greater than zero");
+                result.Notifications.Add("Id inválido.");
 
-            await _repo.Update(costCenter);
+            if(result.Notifications.Any())
+                return result;
+
+            await _repo.Update(churchId, costCenter);
 
             await _unitOfWork.Commit();
 
-            var costCenterViewModel = _mapper.Map<CostCenterViewModel>(costCenter);
+            result.Result = _mapper.Map<CostCenterViewModel>(costCenter);
 
-            return costCenterViewModel;
+            return result;
 
         }
     }

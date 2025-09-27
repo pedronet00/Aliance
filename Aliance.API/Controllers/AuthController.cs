@@ -43,7 +43,7 @@ public class AuthController : ControllerBase
             {
                 new Claim(ClaimTypes.Name, user.UserName!),
                 new Claim(ClaimTypes.Email, user.Email!),
-                new Claim("ChurchId", user.ChurchId.ToString()),
+                new Claim("churchId", user.ChurchId.ToString(), ClaimValueTypes.Integer32),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

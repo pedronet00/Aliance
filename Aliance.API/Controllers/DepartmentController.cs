@@ -28,8 +28,6 @@ namespace Aliance.API.Controllers
         [HttpPost]
         public async Task<IActionResult> InsertDepartment([FromBody] DepartmentDTO department)
         {
-                       if (department == null)
-                return BadRequest();
             var createdDepartment = await _service.InsertDepartment(department);
             return Created("created", createdDepartment);
         }
@@ -44,10 +42,7 @@ namespace Aliance.API.Controllers
 
         [HttpPut]
         public async Task<IActionResult> UpdateDepartment([FromBody] DepartmentDTO department)
-        {
-            if (department == null)
-                return BadRequest();
-                
+        {       
             var updated = await _service.UpdateDepartment(department);
 
             return Ok(updated);
@@ -58,6 +53,20 @@ namespace Aliance.API.Controllers
         {
             var result = await _service.DeleteDepartment(id);
 
+            return Ok(result);
+        }
+
+        [HttpPatch("activate/{id}")]
+        public async Task<IActionResult> ActivateDepartment(int id)
+        {
+            var result = await _service.ActivateDepartment(id);
+            return Ok(result);
+        }
+
+        [HttpPatch("deactivate/{id}")]
+        public async Task<IActionResult> DeactivateDepartment(int id)
+        {
+            var result = await _service.DeactivateDepartment(id);
             return Ok(result);
         }
     }

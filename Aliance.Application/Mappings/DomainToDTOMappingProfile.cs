@@ -25,12 +25,21 @@ public class DomainToDTOMappingProfile : Profile
 
         CreateMap<Cell, CellDTO>().ReverseMap();
         CreateMap<Cell, CellViewModel>().ReverseMap();
+        CreateMap<Cell, CellViewModel>()
+            .ForMember(dest => dest.LocationName, opt => opt.MapFrom(src => src.Location.Name))
+            .ReverseMap();
+        CreateMap<Cell, CellViewModel>()
+            .ForMember(dest => dest.LeaderName, opt => opt.MapFrom(src => src.Leader.UserName))
+            .ReverseMap();
 
         CreateMap<MissionCampaign, MissionCampaignDTO>().ReverseMap();
         CreateMap<MissionCampaign, MissionCampaignViewModel>().ReverseMap();
 
         CreateMap<CostCenter, CostCenterDTO>().ReverseMap();
         CreateMap<CostCenter, CostCenterViewModel>().ReverseMap();
+        CreateMap<CostCenter, CostCenterViewModel>()
+            .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name))
+            .ReverseMap();
 
         CreateMap<AccountPayable, AccountPayableDTO>().ReverseMap();
         CreateMap<AccountPayable, AccountPayableViewModel>().ReverseMap();

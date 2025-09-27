@@ -8,5 +8,9 @@ public class CostCenterViewModel
 
     public int DepartmentId { get; set; }
 
+    public string DepartmentName { get; set; }
+
     public int ChurchId { get; set; }
+
+    public bool Status { get; set; }
 }

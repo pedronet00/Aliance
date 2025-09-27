@@ -20,59 +20,70 @@ public class CostCenterRepository : ICostCenterRepository
         _context = context;
     }
 
+    public async Task<CostCenter> Activate(int churchId, int id)
+    {
+        var existingCenter = await _context.CostCenter
+            .FirstOrDefaultAsync(c => c.Id == id && c.ChurchId == churchId);
+
+        existingCenter.Status = true;
+        _context.CostCenter.Update(existingCenter);
+
+        return existingCenter;
+    }
+
     public async Task<CostCenter> Add(CostCenter costCenter)
     {
-        if(costCenter is null)
-            throw new ArgumentNullException(nameof(costCenter), "CostCenter cannot be null");
 
         await _context.CostCenter.AddAsync(costCenter);
 
         return costCenter;
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<CostCenter> Deactivate(int churchId, int id)
     {
-        if (id <= 0)
-            throw new ArgumentOutOfRangeException(nameof(id), "Id must be greater than zero");
+        var existingCenter = await _context.CostCenter
+            .FirstOrDefaultAsync(c => c.Id == id && c.ChurchId == churchId);
 
-        var costCenter = await _context.CostCenter.FindAsync(id);
+        existingCenter.Status = false;
+        _context.CostCenter.Update(existingCenter);
 
-        if (costCenter is null)
-            throw new KeyNotFoundException($"CostCenter with id {id} not found");
+        return existingCenter;
+    }
+
+    public async Task<bool> Delete(int churchId, int id)
+    {
+        var costCenter = await _context.CostCenter.Where(c => c.ChurchId == churchId && c.Id == id).FirstOrDefaultAsync();
 
         var result = _context.CostCenter.Remove(costCenter);
 
         return true;
     }
 
-    public async Task<IEnumerable<CostCenter>> GetAllCenters()
+    public async Task<IEnumerable<CostCenter>> GetAllCenters(int churchId)
     {
-        var centers = await _context.CostCenter.AsNoTracking().ToListAsync();
+        var centers = await _context.CostCenter.Where(c => c.ChurchId == churchId)
+            .Include(c => c.Department)
+            .AsNoTracking()
+            .ToListAsync();
 
         return centers;
     }
 
-    public async Task<CostCenter> GetById(int id)
-    {
-        var center = await _context.CostCenter.FindAsync(id);
 
-        if (center is null)
-            throw new KeyNotFoundException($"CostCenter with id {id} not found");
+    public async Task<CostCenter> GetById(int churchId, int id)
+    {
+        var center = await _context.CostCenter
+            .Include(c => c.Department)
+            .Where(c => c.ChurchId == churchId && c.Id == id)
+            .FirstOrDefaultAsync();
 
         return center;
     }
 
-    public async Task<CostCenter> Update(CostCenter costCenter)
+
+    public async Task<CostCenter> Update(int churchId, CostCenter costCenter)
     {
-        if (costCenter is null)
-            throw new ArgumentNullException(nameof(costCenter), "CostCenter cannot be null");
-
-        var existingCenter = await _context.CostCenter.AsNoTracking().FirstOrDefaultAsync(c => c.Id == costCenter.Id);
-
-        if (existingCenter is null)
-            throw new KeyNotFoundException($"CostCenter with id {costCenter.Id} not found");
-
-         _context.CostCenter.Update(existingCenter);
+        _context.CostCenter.Update(costCenter);
 
         return costCenter;
     }

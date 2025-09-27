@@ -3,6 +3,7 @@ using Aliance.Application.Interfaces;
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Notifications;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -18,20 +19,28 @@ public class CellService : ICellService
     private readonly ICellRepository _cellRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IUserContextService _context;
 
-    public CellService(ICellRepository cellRepository, IUnitOfWork unitOfWork, IMapper mapper)
+    public CellService(ICellRepository cellRepository, IUnitOfWork unitOfWork, IMapper mapper, IUserContextService context)
     {
         _cellRepository = cellRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _context = context;
     }
 
-    public async Task<CellViewModel> AddCell(CellDTO cellDTO)
+    public async Task<DomainNotificationsResult<CellViewModel>> AddCell(CellDTO cellDTO)
     {
-        if(cellDTO is null)
-            throw new ArgumentNullException(nameof(cellDTO));
+        var result = new DomainNotificationsResult<CellViewModel>();
+        var churchId = _context.GetChurchId();
 
-        var cell = _mapper.Map<Cell>(cellDTO);
+        if (cellDTO is null)
+            result.Notifications.Add("Célula inválida.");
+
+        if (result.Notifications.Any())
+            return result;
+
+            var cell = _mapper.Map<Cell>(cellDTO);
 
         await _cellRepository.AddCell(cell);
 
@@ -39,60 +48,89 @@ public class CellService : ICellService
 
         var cellVM = _mapper.Map<CellViewModel>(cell);
 
-        return cellVM;
+        result.Result = cellVM;
+
+        return result;
     }
 
-    public async Task<bool> DeleteCell(int id)
+    public async Task<DomainNotificationsResult<bool>> DeleteCell(int id)
     {
-        if(id < 0)
-            throw new ArgumentOutOfRangeException(nameof(id));
+        var result = new DomainNotificationsResult<bool>();
+        var churchId = _context.GetChurchId();
 
-        await _cellRepository.DeleteCell(id);
+        if (id < 0)
+            result.Notifications.Add("Id inválido.");
+
+        if(result.Notifications.Any())
+            return result;
+
+        await _cellRepository.DeleteCell(churchId, id);
 
         await _unitOfWork.Commit();
 
-        return true;
+        result.Result = true;
+
+        return result;
     }
 
     public async Task<IEnumerable<CellViewModel>> GetAllCells()
     {
-        var cells = await _cellRepository.GetAllCells();
+        var churchId = _context.GetChurchId();
+
+        var cells = await _cellRepository.GetAllCells(churchId);
 
         var cellsVM = _mapper.Map<IEnumerable<CellViewModel>>(cells);
 
         return cellsVM;
     }
 
-    public async Task<CellViewModel> GetCellById(int id)
+    public async Task<DomainNotificationsResult<CellViewModel>> GetCellById(int id)
     {
-        if(id <= 0)
-            throw new ArgumentOutOfRangeException(nameof(id));
+        var result = new DomainNotificationsResult<CellViewModel>();
+        var churchId = _context.GetChurchId();
 
-        var cell = await _cellRepository.GetCellById(id);
+        if (id <= 0)
+            result.Notifications.Add("Id inválido.");
+
+        var cell = await _cellRepository.GetCellById(churchId, id);
 
         if(cell is null)
-            throw new KeyNotFoundException("Cell not found");
+            result.Notifications.Add("Célula não encontrada.");
+
+        if (result.Notifications.Any())
+            return result;
 
         var cellVM = _mapper.Map<CellViewModel>(cell);
 
-        return cellVM;
+        result.Result = cellVM;
+
+        return result;
     }
 
-    public async Task<bool> UpdateCell(CellDTO cellDTO)
+    public async Task<DomainNotificationsResult<CellViewModel>> UpdateCell(CellDTO cellDTO)
     {
-        if (cellDTO is null)
-            throw new ArgumentNullException(nameof(cellDTO));
+        var result = new DomainNotificationsResult<CellViewModel>();
+        var churchId = _context.GetChurchId();
 
-        var existingCell = await _cellRepository.GetCellById(cellDTO.Id);
+        if (cellDTO is null)
+            result.Notifications.Add("Célula inválida.");
+
+        var existingCell = await _cellRepository.GetCellById(churchId, cellDTO.Id);
 
         if (existingCell == null)
-            return false; 
+            result.Notifications.Add("Célula não encontrada.");
+
+        if (result.Notifications.Any())
+            return result;
 
         _mapper.Map(cellDTO, existingCell);
 
         _cellRepository.UpdateCell(existingCell);
         await _unitOfWork.Commit();
 
-        return true;
+        var cellVM = _mapper.Map<CellViewModel>(existingCell);
+        result.Result = cellVM;
+
+        return result;
     }
 }

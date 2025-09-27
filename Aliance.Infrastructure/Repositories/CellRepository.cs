@@ -22,61 +22,49 @@ namespace Aliance.Infrastructure.Repositories
 
         public async Task<Cell> AddCell(Cell cell)
         {
-            if(cell is null)
-                throw new ArgumentNullException(nameof(cell), "Cell cannot be null");
-
             await _context.Cell.AddAsync(cell);
 
             return cell;
             
         }
 
-        public async Task<bool> DeleteCell(int id)
+        public async Task<bool> DeleteCell(int churchId, int id)
         {
-            if(id <= 0)
-                throw new ArgumentException("Invalid cell ID", nameof(id));
-
-            var cell = await _context.Cell.FindAsync(id);
-
-            if (cell is null)
-                throw new KeyNotFoundException("Cell not found");
+            var cell = await this.GetCellById(churchId, id);
 
             _context.Cell.Remove(cell);
 
             return true;
         }
 
-        public async Task<IEnumerable<Cell>> GetAllCells()
+        public async Task<IEnumerable<Cell>> GetAllCells(int churchId)
         {
-            var cells = await _context.Cell.ToListAsync();
+            var cells = await _context.Cell
+                .Include(c => c.Location)
+                .Include(c => c.Leader)
+                .Include(c => c.Church)
+                .ToListAsync();
 
             return cells;
         }
 
-        public async Task<Cell> GetCellById(int id)
+        public async Task<Cell> GetCellById(int churchId, int id)
         {
             var cell = await _context.Cell
+                .Where(c => c.ChurchId == churchId)
                 .Include(c => c.Location)
                 .Include(c => c.Leader)
                 .Include(c => c.Church)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (cell is null)
-                throw new KeyNotFoundException("Cell not found");
-
             return cell;
         }
 
-        public void UpdateCell(Cell cell)
+        public async Task<Cell> UpdateCell(Cell cell)
         {
-            if (cell is null)
-                throw new ArgumentNullException(nameof(cell), "Cell cannot be null");
-
-            if (cell.Id <= 0)
-                throw new ArgumentException("Invalid cell ID", nameof(cell.Id));
-
             _context.Cell.Update(cell);
 
+            return cell;
         }
     }
 }

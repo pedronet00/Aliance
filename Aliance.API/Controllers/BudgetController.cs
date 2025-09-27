@@ -27,9 +27,8 @@ public class BudgetController : ControllerBase
     public async Task<IActionResult> GetBudgetByIdAsync(Guid guid)
     {
         var result = await _service.GetBudgetByIdAsync(guid);
-        if (result.Notifications.Any())
-            return BadRequest(result.Notifications);
-        return Ok(result.Result);
+
+        return Ok(result);
     }
 
     [HttpPost]
@@ -45,9 +44,11 @@ public class BudgetController : ControllerBase
     public async Task<IActionResult> UpdateBudgetAsync([FromBody] BudgetDTO budget)
     {
         var result = await _service.UpdateBudgetAsync(budget);
+
         if (result.Notifications.Any())
             return BadRequest(result.Notifications);
-        return Ok(result.Result);
+
+        return Ok(result);
     }
 
     [HttpDelete("{guid}")]

@@ -14,6 +14,8 @@
         public int ChurchId { get; set; }
         public Church Church { get; set; }
 
+        public bool Status { get; set; }
+
         // Collections
         public ICollection<Budget>? Budget{ get; set; } = new List<Budget>();
         public ICollection<AccountPayable> AccountPayable { get; set; } = new List<AccountPayable>();
@@ -27,6 +29,7 @@
             Name = name;
             DepartmentId = departmentId;
             ChurchId = churchId;
+            Status = true;
         }
     }
 }

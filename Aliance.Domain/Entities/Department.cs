@@ -18,12 +18,12 @@
 
         private Department() { }
 
-        public Department(string name, int churchId, bool status = true)
+        public Department(string name, int churchId)
         {
             Guid = Guid.NewGuid(); 
             Name = name;
             ChurchId = churchId;
-            Status = status;
+            Status = true;
         }
     }
 }

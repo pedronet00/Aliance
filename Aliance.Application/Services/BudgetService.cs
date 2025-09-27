@@ -129,10 +129,9 @@ public class BudgetService : IBudgetService
     {
         var churchId = _userContext.GetChurchId();
         var result = new DomainNotificationsResult<BudgetViewModel>();
+        var budgetEntity = await _repo.GetBudgetByGuidAsync(churchId, budget.Guid);
 
-        var existingBudget = await _repo.GetBudgetByGuidAsync(churchId, budget.Guid);
-
-        if (existingBudget == null)
+        if (budgetEntity is null)
             result.Notifications.Add("Orçamento não encontrado.");
 
         if (budget.TotalAmount <= 0)
@@ -141,7 +140,7 @@ public class BudgetService : IBudgetService
         if (result.Notifications.Any())
             return result;
 
-        var budgetEntity = _mapper.Map<Domain.Entities.Budget>(budget);
+        _mapper.Map(budget, budgetEntity);
 
         var updatedBudget = await _repo.UpdateBudgetAsync(churchId, budgetEntity);
 
@@ -151,6 +150,7 @@ public class BudgetService : IBudgetService
 
         return result;
     }
+
 
     public async Task<DomainNotificationsResult<BudgetViewModel>> RejectBudget(Guid guid)
     {

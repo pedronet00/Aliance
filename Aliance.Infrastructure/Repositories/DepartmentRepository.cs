@@ -14,63 +14,64 @@ public class DepartmentRepository : IDepartmentRepository
 {
 
     private readonly AppDbContext _context;
-    private readonly IUnitOfWork _unitOfWork;
 
-    public DepartmentRepository(AppDbContext context, IUnitOfWork unitOfWork)
+    public DepartmentRepository(AppDbContext context)
     {
         _context = context;
-        _unitOfWork = unitOfWork;
     }
 
-    public async Task<bool> DeleteDepartment(int id)
+    public async Task<Department> ActivateDepartment(int churchId, int id)
+    {
+        var department = await _context.Department.Where(d => d.Id == id && d.ChurchId == churchId).FirstOrDefaultAsync();
+
+        department.Status = true;
+        _context.Update(department);
+
+        return department;
+    }
+
+    public async Task<Department> DeactivateDepartment(int churchId, int id)
+    {
+        var department = await _context.Department.Where(d => d.Id == id && d.ChurchId == churchId).FirstOrDefaultAsync();
+
+        department.Status = false;
+        _context.Update(department);
+
+        return department;
+    }
+
+    public async Task<bool> DeleteDepartment(int churchId, int id)
     {
         var department = await _context.Department.FindAsync(id);
 
-        if(department is null)
-            return false;
-
         _context.Remove(department);
-        await _unitOfWork.Commit();
 
         return true;
     }
 
-    public async Task<IEnumerable<Department>> GetAllDepartments()
+    public async Task<IEnumerable<Department>> GetAllDepartments(int churchId)
     {
         return await _context.Department.AsNoTracking().ToListAsync();
     }
 
-    public async Task<Department> GetDepartmentById(int id)
+    public async Task<Department> GetDepartmentById(int churchId, int id)
     {
         var department =  await _context.Department
             .FirstOrDefaultAsync(x => x.Id == id);
-
-        if (department is null)
-            return null;
 
         return department;
     }
 
     public async Task<Department> InsertDepartment(Department department)
     {
-
-        if (department is null)
-            throw new ArgumentNullException(nameof(department));
-
         _context.Department.Add(department);
-        await _unitOfWork.Commit();
 
         return department;
     }
 
-    public async Task<bool> UpdateDepartment(Department department)
+    public async Task<bool> UpdateDepartment(int churchId, Department department)
     {
-   
-        if (department is null)
-            return false;
-
-        _context.Entry(department).State = EntityState.Modified;
-        await _unitOfWork.Commit();
+        _context.Department.Update(department);
 
         return true;
     }

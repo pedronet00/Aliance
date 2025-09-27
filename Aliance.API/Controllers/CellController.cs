@@ -45,7 +45,7 @@ public class CellController : ControllerBase
             return BadRequest("Cell data is required");
         
         var createdCell = await _service.AddCell(cell);
-        return CreatedAtAction(nameof(GetCellById), new { id = createdCell.Id }, createdCell);
+        return Ok(createdCell);
     }
 
     [HttpPut]
@@ -58,8 +58,6 @@ public class CellController : ControllerBase
 
         var updated = await _service.UpdateCell(cell);
 
-        if (!updated)
-            return NotFound();
 
         return NoContent();
     }
@@ -70,9 +68,9 @@ public class CellController : ControllerBase
     {
         if (id <= 0)
             return BadRequest("Invalid cell ID");
+
         var deleted = await _service.DeleteCell(id);
-        if (!deleted)
-            return NotFound();
+
         return NoContent();
     }
 

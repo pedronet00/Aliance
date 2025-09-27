@@ -9,13 +9,17 @@ namespace Aliance.Domain.Interfaces;
 
 public interface IDepartmentRepository
 {
-    Task<IEnumerable<Department>> GetAllDepartments();
+    Task<IEnumerable<Department>> GetAllDepartments(int churchId);
 
-    Task<Department> GetDepartmentById(int id);
+    Task<Department> GetDepartmentById(int churchId, int id);
 
     Task<Department> InsertDepartment(Department department);
 
-    Task<bool> UpdateDepartment(Department department);
+    Task<bool> UpdateDepartment(int churchId,Department department);
 
-    Task<bool> DeleteDepartment(int id);
+    Task<bool> DeleteDepartment(int churchId,int id);
+
+    Task<Department> ActivateDepartment(int churchId, int id);
+
+    Task<Department> DeactivateDepartment(int churchId, int id);
 }

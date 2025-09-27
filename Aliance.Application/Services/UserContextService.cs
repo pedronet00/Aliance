@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,12 +20,12 @@ public class UserContextService : IUserContextService
 
     public int GetChurchId()
     {
-        var empresaId = _httpContextAccessor.HttpContext?.User?.FindFirst("ChurchId")?.Value;
+        var churchId = _httpContextAccessor.HttpContext?.User?.FindFirst("churchId")?.Value;
 
-        if (string.IsNullOrEmpty(empresaId))
-            throw new UnauthorizedAccessException("ChurchId não localizada no token JWT.");
+        if (string.IsNullOrEmpty(churchId))
+            throw new AuthenticationException("churchId não localizada no token JWT.");
 
-        return int.Parse(empresaId);
+        return int.Parse(churchId);
     }
 
     public string GetUserName()

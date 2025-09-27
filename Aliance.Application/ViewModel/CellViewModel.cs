@@ -22,4 +22,8 @@ public class CellViewModel
     public string? CellBanner { get; set; }
 
     public int ChurchId { get; set; }
+
+    public string LocationName { get; set; }
+
+    public string LeaderName { get; set; }
 }
