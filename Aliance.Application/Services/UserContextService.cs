@@ -23,7 +23,7 @@ public class UserContextService : IUserContextService
         var churchId = _httpContextAccessor.HttpContext?.User?.FindFirst("churchId")?.Value;
 
         if (string.IsNullOrEmpty(churchId))
-            throw new AuthenticationException("churchId não localizada no token JWT.");
+            throw new UnauthorizedAccessException("churchId não localizada no token JWT.");
 
         return int.Parse(churchId);
     }

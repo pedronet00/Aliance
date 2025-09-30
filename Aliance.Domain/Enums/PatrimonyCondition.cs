@@ -8,9 +8,9 @@ namespace Aliance.Domain.Enums;
 
 public enum PatrimonyCondition
 {
-    New = 1,
-    Good = 2,
-    Fair = 3,
-    Poor = 4,
-    Damaged = 5
+    Novo = 1,
+    Bom = 2,
+    Usado = 3,
+    Ruim = 4,
+    Danificado = 5
 }

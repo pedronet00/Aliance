@@ -16,6 +16,8 @@ public class Patrimony
     public int ChurchId { get; set; }
     public Church Church { get; set; }
 
+    public ICollection<PatrimonyDocument> Documents { get; private set; } = new List<PatrimonyDocument>();
+
     // Collections
     public ICollection<PatrimonyMaintenance> Maintenances { get; set; } = new List<PatrimonyMaintenance>();
     private Patrimony() { }
@@ -31,5 +33,13 @@ public class Patrimony
         ChurchId = churchId;
         Quantity = quantity;
         TotalValue = unitValue * quantity;
+    }
+
+    public void AddDocument(PatrimonyDocument document)
+    {
+        if (document == null)
+            throw new ArgumentNullException(nameof(document));
+
+        Documents.Add(document);
     }
 }

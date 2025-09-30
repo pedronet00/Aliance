@@ -48,6 +48,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+
 var secretKey = builder.Configuration["JWT:SecretKey"];
 
 builder.Services.AddAuthentication(options =>

@@ -29,6 +29,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<MissionMember> MissionMember { get; set; }
     public DbSet<PastoralVisit> PastoralVisit { get; set; }
     public DbSet<Patrimony> Patrimony { get; set; }
+    public DbSet<PatrimonyDocument> PatrimonyDocuments { get; set; }
     public DbSet<PatrimonyMaintenance> PatrimonyMaintenance { get; set; }
     public DbSet<SundaySchoolClass> SundaySchool { get; set; }
     public DbSet<SundaySchoolClassroom> SundaySchoolClassRoom { get; set; }

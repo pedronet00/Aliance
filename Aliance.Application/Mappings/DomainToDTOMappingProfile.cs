@@ -23,6 +23,9 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Baptism, BaptismDTO>().ReverseMap();
         CreateMap<Baptism, BaptismViewModel>().ReverseMap();
 
+        CreateMap<Patrimony, PatrimonyDTO>().ReverseMap();
+        CreateMap<Patrimony, PatrimonyViewModel>().ReverseMap();
+
         CreateMap<Cell, CellDTO>().ReverseMap();
         CreateMap<Cell, CellViewModel>().ReverseMap();
         CreateMap<Cell, CellViewModel>()
