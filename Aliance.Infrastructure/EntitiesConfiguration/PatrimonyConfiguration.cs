@@ -18,7 +18,9 @@ public class PatrimonyConfiguration : IEntityTypeConfiguration<Patrimony>
         builder.HasKey(p => p.Id);
 
         builder.Property(p => p.Guid)
-            .IsRequired();
+        .IsRequired()
+        .HasDefaultValueSql("(UUID())") // gera automaticamente no MySQL
+        .ValueGeneratedOnAdd();
 
         builder.Property(p => p.Name)
             .IsRequired()

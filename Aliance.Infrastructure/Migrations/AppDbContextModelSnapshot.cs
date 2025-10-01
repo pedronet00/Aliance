@@ -910,7 +910,9 @@ namespace Aliance.Infrastructure.Migrations
                         .HasColumnType("varchar(200)");
 
                     b.Property<Guid>("Guid")
-                        .HasColumnType("char(36)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)")
+                        .HasDefaultValueSql("(UUID())");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -959,17 +961,13 @@ namespace Aliance.Infrastructure.Migrations
                         .HasColumnType("varchar(500)");
 
                     b.Property<Guid>("Guid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)")
-                        .HasDefaultValueSql("NEWID()");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("PatrimonyId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UploadedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -997,7 +995,7 @@ namespace Aliance.Infrastructure.Migrations
                     b.Property<Guid>("Guid")
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("MaintanceDate")
+                    b.Property<DateTime>("MaintenanceDate")
                         .HasColumnType("datetime");
 
                     b.Property<int>("PatrimonyId")
@@ -1008,6 +1006,42 @@ namespace Aliance.Infrastructure.Migrations
                     b.HasIndex("PatrimonyId");
 
                     b.ToTable("PatrimonyMaintenance", (string)null);
+                });
+
+            modelBuilder.Entity("Aliance.Domain.Entities.PatrimonyMaintenanceDocument", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("MaintenanceId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MaintenanceId");
+
+                    b.ToTable("PatrimonyMaintenanceDocument");
                 });
 
             modelBuilder.Entity("Aliance.Domain.Entities.SundaySchoolClass", b =>
@@ -1661,6 +1695,17 @@ namespace Aliance.Infrastructure.Migrations
                     b.Navigation("Patrimony");
                 });
 
+            modelBuilder.Entity("Aliance.Domain.Entities.PatrimonyMaintenanceDocument", b =>
+                {
+                    b.HasOne("Aliance.Domain.Entities.PatrimonyMaintenance", "Maintenance")
+                        .WithMany("Documents")
+                        .HasForeignKey("MaintenanceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Maintenance");
+                });
+
             modelBuilder.Entity("Aliance.Domain.Entities.SundaySchoolClass", b =>
                 {
                     b.HasOne("Aliance.Domain.Entities.SundaySchoolClassroom", "SundaySchoolClassroom")
@@ -1859,6 +1904,11 @@ namespace Aliance.Infrastructure.Migrations
                     b.Navigation("Documents");
 
                     b.Navigation("Maintenances");
+                });
+
+            modelBuilder.Entity("Aliance.Domain.Entities.PatrimonyMaintenance", b =>
+                {
+                    b.Navigation("Documents");
                 });
 
             modelBuilder.Entity("Aliance.Domain.Entities.SundaySchoolClassroom", b =>

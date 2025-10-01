@@ -954,7 +954,7 @@ namespace Aliance.Infrastructure.Migrations
                     b.Property<Guid>("Guid")
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("MaintanceDate")
+                    b.Property<DateTime>("MaintenanceDate")
                         .HasColumnType("datetime");
 
                     b.Property<int>("PatrimonyId")

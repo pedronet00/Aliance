@@ -50,6 +50,15 @@ public class DomainToDTOMappingProfile : Profile
             .ForMember(dest => dest.CostCenterName, opt => opt.MapFrom(src => src.CostCenter.Name))
             .ReverseMap();
 
+        CreateMap<PatrimonyMaintenance, PatrimonyMaintenanceDTO>().ReverseMap();
+
+        CreateMap<PatrimonyMaintenance, PatrimonyMaintenanceViewModel>()
+            .ForMember(dest => dest.PatrimonyName, opt => opt.MapFrom(src => src.Patrimony.Name))
+            .ReverseMap();
+
+        CreateMap<PatrimonyMaintenanceDTO, PatrimonyMaintenance>()
+            .ConstructUsing(dto => new PatrimonyMaintenance(dto.MaintenanceDate, dto.Description, dto.PatrimonyId));
+
         CreateMap<Budget, BudgetDTO>().ReverseMap();
         CreateMap<Budget, BudgetViewModel>().ReverseMap();
         CreateMap<Budget, BudgetViewModel>()

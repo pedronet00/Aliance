@@ -5,7 +5,7 @@ namespace Aliance.Domain.Entities;
 public class Patrimony
 {
     public int Id { get; set; }
-    public Guid Guid { get; private set; }
+    public Guid Guid { get; private set; } = Guid.NewGuid();
     public string Name { get; set; }
     public string Description { get; set; }
     public decimal UnitValue { get; set; }
@@ -21,7 +21,7 @@ public class Patrimony
     // Collections
     public ICollection<PatrimonyMaintenance> Maintenances { get; set; } = new List<PatrimonyMaintenance>();
     private Patrimony() { }
-    public Patrimony(int id, Guid guid, string name, string description, PatrimonyCondition patrimonyCondition, decimal unitValue, DateTime acquisitionDate, int churchId, decimal totalValue, int quantity)
+    public Patrimony(int id, string name, string description, PatrimonyCondition patrimonyCondition, decimal unitValue, DateTime acquisitionDate, int churchId, decimal totalValue, int quantity)
     {
         Id = id;
         Guid = Guid.NewGuid();

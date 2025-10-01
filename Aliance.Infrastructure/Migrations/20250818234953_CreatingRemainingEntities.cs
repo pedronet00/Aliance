@@ -462,7 +462,7 @@ namespace Aliance.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Guid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    MaintanceDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    MaintenanceDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     Description = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PatrimonyId = table.Column<int>(type: "int", nullable: false)

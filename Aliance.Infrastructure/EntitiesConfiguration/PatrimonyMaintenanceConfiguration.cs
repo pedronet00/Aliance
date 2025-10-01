@@ -20,7 +20,7 @@ public class PatrimonyMaintenanceConfiguration : IEntityTypeConfiguration<Patrim
         builder.Property(pm => pm.Guid)
             .IsRequired();
 
-        builder.Property(pm => pm.MaintanceDate)
+        builder.Property(pm => pm.MaintenanceDate)
             .IsRequired()
             .HasColumnType("datetime");
 

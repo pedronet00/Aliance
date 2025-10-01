@@ -25,6 +25,4 @@ public interface IPatrimonyService
     Task<DomainNotificationsResult<PatrimonyDocumentViewModel>> UploadDocumentAsync(Guid patrimonyGuid, IFormFile file);
     Task<IEnumerable<PatrimonyDocumentViewModel>> GetDocumentsByPatrimony(Guid patrimonyGuid);
 
-
-
 }
