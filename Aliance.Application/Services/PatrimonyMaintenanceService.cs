@@ -130,22 +130,22 @@ public class PatrimonyMaintenanceService : IPatrimonyMaintenanceService
 
         var maintenanceAlreadyExists = await _repo.MaintenanceAlreadyExists(maintenance.MaintenanceDate, maintenance.PatrimonyId);
 
-        if (maintenanceAlreadyExists && existingMaintenance.MaintenanceDate != maintenance.MaintenanceDate)
+        if (maintenanceAlreadyExists)
         {
             result.Notifications.Add("Já existe uma manutenção cadastrada para este patrimônio nesta data.");
             return result;
         }
 
-        var maintenanceEntity = _mapper.Map<Domain.Entities.PatrimonyMaintenance>(maintenance);
+        _mapper.Map(maintenance, existingMaintenance);
 
-        var updatedMaintenance = await _repo.UpdateMaintenance(churchId, maintenanceEntity);
-
+        await _repo.UpdateMaintenance(churchId, existingMaintenance);
         await _uow.Commit();
 
-        result.Result = _mapper.Map<PatrimonyMaintenanceViewModel>(updatedMaintenance);
+        result.Result = _mapper.Map<PatrimonyMaintenanceViewModel>(existingMaintenance);
 
         return result;
     }
+
 
     public async Task<DomainNotificationsResult<PatrimonyMaintenanceDocumentViewModel>> UploadDocumentAsync(Guid maintenanceGuid, IFormFile file)
     {

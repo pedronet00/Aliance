@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aliance.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ public class PatrimonyMaintenance
     public Guid Guid { get; private set; }
     public DateTime MaintenanceDate { get; set; }
     public string Description { get; set; }
+    public PatrimonyMaintenanceStatus Status { get; set; }
     public int PatrimonyId { get; set; }
     public Patrimony Patrimony { get; set; }
 
@@ -23,6 +25,7 @@ public class PatrimonyMaintenance
         MaintenanceDate = maintenanceDate;
         Description = description;
         PatrimonyId = patrimonyId;
+        Status = PatrimonyMaintenanceStatus.Agendado;
     }
 
     public void AddDocument(PatrimonyMaintenanceDocument document)

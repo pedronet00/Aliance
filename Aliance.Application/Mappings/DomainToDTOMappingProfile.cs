@@ -20,6 +20,9 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Church, ChurchDTO>().ReverseMap();
         CreateMap<Church, ChurchViewModel>().ReverseMap();
 
+        CreateMap<ApplicationUser, UserDTO>().ReverseMap();
+        CreateMap<ApplicationUser, UserViewModel>().ReverseMap();
+
         CreateMap<Baptism, BaptismDTO>().ReverseMap();
         CreateMap<Baptism, BaptismViewModel>().ReverseMap();
 

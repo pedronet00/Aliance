@@ -78,7 +78,7 @@ public class AuthController : ControllerBase
 
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
+    public async Task<IActionResult> Register([FromBody] UserDTO registerDTO)
     {
         var userExists = await _userManager.FindByEmailAsync(registerDTO.Email!);
 

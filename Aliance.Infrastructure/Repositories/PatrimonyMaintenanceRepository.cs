@@ -63,12 +63,15 @@ public class PatrimonyMaintenanceRepository : IPatrimonyMaintenanceRepository
 
     public async Task<bool> MaintenanceAlreadyExists(DateTime maintenanceDate, int patrimonyId)
     {
+        var dateOnly = maintenanceDate.Date;
+
         var maintenanceAlreadyExists = await _context.PatrimonyMaintenance
-            .Where(m => m.MaintenanceDate == maintenanceDate && m.PatrimonyId == patrimonyId)
+            .Where(m => m.MaintenanceDate.Date == dateOnly && m.PatrimonyId == patrimonyId)
             .AnyAsync();
 
         return maintenanceAlreadyExists;
     }
+
 
     public async Task<Domain.Entities.PatrimonyMaintenance> UpdateMaintenance(int churchId, Domain.Entities.PatrimonyMaintenance maintenance)
     {

@@ -35,6 +35,8 @@ public static class DependencyInjection
         services.AddScoped<IUserContextService, UserContextService>();
         services.AddScoped<IPatrimonyService, PatrimonyService>();
         services.AddScoped<IPatrimonyMaintenanceService, PatrimonyMaintenanceService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IRoleService, RoleService>();
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();

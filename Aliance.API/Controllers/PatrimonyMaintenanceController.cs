@@ -1,4 +1,6 @@
-﻿using Aliance.Application.Interfaces;
+﻿using Aliance.Application.DTOs;
+using Aliance.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +8,7 @@ namespace Aliance.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class PatrimonyMaintenanceController : ControllerBase
 {
     private readonly IPatrimonyMaintenanceService _service;
@@ -16,6 +19,7 @@ public class PatrimonyMaintenanceController : ControllerBase
     }
 
     [HttpGet]
+    
     public async Task<IActionResult> GetAllMaintenances()
     {
         var maintenances = await _service.GetAllMaintenances();
@@ -23,6 +27,7 @@ public class PatrimonyMaintenanceController : ControllerBase
     }
 
     [HttpGet("{guid}")]
+    
     public async Task<IActionResult> GetMaintenanceByGuid(Guid guid)
     {
         var result = await _service.GetMaintenanceByGuid(guid);
@@ -31,45 +36,56 @@ public class PatrimonyMaintenanceController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> InsertMaintenance([FromBody] Application.DTOs.PatrimonyMaintenanceDTO maintenance)
+    
+    public async Task<IActionResult> InsertMaintenance(PatrimonyMaintenanceDTO dto)
     {
-        var result = await _service.InsertMaintenance(maintenance);
+        var result = await _service.InsertMaintenance(dto);
 
-        return Ok(maintenance);
+        if (result.Notifications.Any())
+            return BadRequest(result.Notifications);
+
+
+        return Ok(result.Result);
     }
 
     [HttpPut]
+    
     public async Task<IActionResult> UpdateMaintenance([FromBody] Application.DTOs.PatrimonyMaintenanceDTO maintenance)
     {
         var result = await _service.UpdateMaintenance(maintenance);
 
-        return Ok(result.Result);
+        return Ok(result);
     }
 
     [HttpDelete("{guid}")]
+    
     public async Task<IActionResult> DeleteMaintenance(Guid guid)
     {
         var result = await _service.DeleteMaintenance(guid);
 
-        return Ok(result.Result);
+        return Ok(result);
     }
 
     [HttpGet("patrimony/{patrimonyGuid}")]
+    
     public async Task<IActionResult> GetMaintenancesByPatrimonyGuid(Guid patrimonyGuid)
     {
         var result = await _service.GetMaintenancesByPatrimonyGuid(patrimonyGuid);
-        return Ok(result.Result);
+        return Ok(result);
     }
 
     [HttpPost("{guid}/documents")]
-    public async Task<IActionResult> UploadDocument(Guid guid, [FromForm] IFormFile file)
+    
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadDocument(IFormFile file, Guid guid)
     {
         var result = await _service.UploadDocumentAsync(guid, file);
 
-        return Ok(result.Result);
+        return Ok(result);
     }
 
     [HttpGet("{guid}/documents")]
+    
     public async Task<IActionResult> GetDocuments(Guid guid)
     {
         var result = await _service.GetDocumentsByMaintenance(guid);

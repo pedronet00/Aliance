@@ -1001,6 +1001,9 @@ namespace Aliance.Infrastructure.Migrations
                     b.Property<int>("PatrimonyId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PatrimonyId");
@@ -1041,7 +1044,7 @@ namespace Aliance.Infrastructure.Migrations
 
                     b.HasIndex("MaintenanceId");
 
-                    b.ToTable("PatrimonyMaintenanceDocument");
+                    b.ToTable("patrimonymaintenancedocument");
                 });
 
             modelBuilder.Entity("Aliance.Domain.Entities.SundaySchoolClass", b =>

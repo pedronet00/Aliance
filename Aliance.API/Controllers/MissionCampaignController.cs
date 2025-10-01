@@ -1,5 +1,6 @@
 ﻿using Aliance.Application.DTOs;
 using Aliance.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace Aliance.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class MissionCampaignController : ControllerBase
 {
     private readonly IMissionCampaignService _service;
@@ -17,6 +19,7 @@ public class MissionCampaignController : ControllerBase
     }
 
     [HttpGet]
+    
     public async Task<IActionResult> GetAll()
     {
         var campaigns = await _service.GetAllAsync();
@@ -24,6 +27,7 @@ public class MissionCampaignController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    
     public async Task<IActionResult> GetById(int id)
         {
         var campaign = await _service.GetByIdAsync(id);
@@ -33,6 +37,7 @@ public class MissionCampaignController : ControllerBase
     }
 
     [HttpPost]
+    
     public async Task<IActionResult> Add([FromBody] MissionCampaignDTO missionCampaign)
     {
         if (missionCampaign is null)
@@ -43,6 +48,7 @@ public class MissionCampaignController : ControllerBase
 
 
     [HttpPut("{id:int}")]
+    
     public async Task<IActionResult> Update(int id, [FromBody] MissionCampaignDTO missionCampaign)
     {
         if (missionCampaign is null || missionCampaign.Id != id)
@@ -53,6 +59,7 @@ public class MissionCampaignController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _service.DeleteAsync(id);

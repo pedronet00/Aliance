@@ -1,5 +1,6 @@
 ﻿using Aliance.Application.DTOs;
 using Aliance.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace Aliance.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class BudgetController : ControllerBase
 {
     private readonly IBudgetService _service;
@@ -17,6 +19,7 @@ public class BudgetController : ControllerBase
     }
 
     [HttpGet]
+    
     public async Task<IActionResult> GetAllBudgetsAsync()
     {
         var budgets = await _service.GetAllBudgetsAsync();
@@ -24,6 +27,7 @@ public class BudgetController : ControllerBase
     }
 
     [HttpGet("{guid}")]
+    
     public async Task<IActionResult> GetBudgetByIdAsync(Guid guid)
     {
         var result = await _service.GetBudgetByIdAsync(guid);
@@ -32,6 +36,7 @@ public class BudgetController : ControllerBase
     }
 
     [HttpPost]
+    
     public async Task<IActionResult> AddBudgetAsync([FromBody] BudgetDTO budget)
     {
         var result = await _service.AddBudgetAsync(budget);
@@ -41,6 +46,7 @@ public class BudgetController : ControllerBase
     }
 
     [HttpPut]
+    
     public async Task<IActionResult> UpdateBudgetAsync([FromBody] BudgetDTO budget)
     {
         var result = await _service.UpdateBudgetAsync(budget);
@@ -52,6 +58,7 @@ public class BudgetController : ControllerBase
     }
 
     [HttpDelete("{guid}")]
+    
     public async Task<IActionResult> DeleteBudgetAsync(Guid guid)
     {
         var result = await _service.DeleteBudgetAsync(guid);
@@ -61,6 +68,7 @@ public class BudgetController : ControllerBase
     }
 
     [HttpPatch("{guid}/approve")]
+    
     public async Task<IActionResult> ApproveBudget(Guid guid)
     {
         var result = await _service.ApproveBudget(guid);
@@ -70,6 +78,7 @@ public class BudgetController : ControllerBase
     }
 
     [HttpPatch("{guid}/reject")]
+    
     public async Task<IActionResult> RejectBudget(Guid guid)
     {
         var result = await _service.RejectBudget(guid);
@@ -79,6 +88,7 @@ public class BudgetController : ControllerBase
     }
 
     [HttpPatch("{guid}/contest")]
+    
     public async Task<IActionResult> ContestBudget(Guid guid)
     {
         var result = await _service.ContestBudget(guid);
@@ -88,6 +98,7 @@ public class BudgetController : ControllerBase
     }
 
     [HttpPatch("{guid}/end")]
+    
     public async Task<IActionResult> EndBudget(Guid guid)
     {
         var result = await _service.EndBudget(guid);

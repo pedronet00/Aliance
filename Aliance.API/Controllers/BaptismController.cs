@@ -1,6 +1,7 @@
 ﻿using Aliance.API.Filters;
 using Aliance.Application.DTOs;
 using Aliance.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace Aliance.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class BaptismController : ControllerBase
 {
 
@@ -19,6 +21,7 @@ public class BaptismController : ControllerBase
     }
 
     [HttpGet]
+    
     public async Task<IActionResult> GetAllBaptisms()
     {
         var baptisms = await _service.GetAllBaptisms();
@@ -30,6 +33,7 @@ public class BaptismController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    
     public async Task<IActionResult> GetBaptismById(int id)
     {
         var baptism = await _service.GetBaptismById(id);
@@ -42,6 +46,7 @@ public class BaptismController : ControllerBase
 
     [HttpPost]
     [ValidateActiveUsers("PastorId", "UserId")]
+    
     public async Task<IActionResult> InsertBaptism([FromBody] BaptismDTO baptismDTO)
     {
 
@@ -55,6 +60,7 @@ public class BaptismController : ControllerBase
 
     [HttpPut]
     [ValidateActiveUsers("PastorId", "UserId")]
+    
     public async Task<IActionResult> UpdateBaptism([FromBody] BaptismDTO baptismDTO)
     {
         if (baptismDTO is null)
@@ -69,6 +75,7 @@ public class BaptismController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    
     public async Task<IActionResult> DeleteBaptism(int id)
     {
         var result = await _service.DeleteBaptism(id);

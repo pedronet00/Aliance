@@ -12,7 +12,7 @@ namespace Aliance.Application.DTOs;
 public class PatrimonyMaintenanceDTO
 {
     public int Id { get; set; }
-    public Guid Guid { get; private set; }
+    public Guid Guid { get; set; }
     public DateTime MaintenanceDate { get; set; }
 
     [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]

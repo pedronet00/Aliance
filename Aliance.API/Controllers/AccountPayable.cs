@@ -8,6 +8,7 @@ namespace Aliance.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class AccountPayable : ControllerBase
 {
     private readonly IAccountPayableService _service;
@@ -18,6 +19,7 @@ public class AccountPayable : ControllerBase
     }
 
     [HttpGet]
+    
     public async Task<IActionResult> GetAll()
     {
         var accountPayables = await _service.GetAllAsync();
@@ -27,6 +29,7 @@ public class AccountPayable : ControllerBase
     
     [HttpGet]
     [Route("{id:int}")]
+    
     public async Task<IActionResult> GetById(int id)
     {
         var accountPayable = await _service.GetByIdAsync(id);
@@ -38,6 +41,7 @@ public class AccountPayable : ControllerBase
     }
 
     [HttpPost]
+    
     public async Task<IActionResult> Add([FromBody] AccountPayableDTO accountPayable)
     {
         if (accountPayable == null)
@@ -50,6 +54,7 @@ public class AccountPayable : ControllerBase
 
     [HttpPut]
     [Route("{id:int}")]
+    
     public async Task<IActionResult> Update(int id, [FromBody] AccountPayableDTO accountPayable)
     {
         if (accountPayable == null)
@@ -68,6 +73,7 @@ public class AccountPayable : ControllerBase
 
     [HttpDelete]
     [Route("{id:int}")]
+    
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _service.DeleteAsync(id);
