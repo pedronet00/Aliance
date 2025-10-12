@@ -17,6 +17,9 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
 
         builder.HasKey(e => e.Id);
 
+        builder.Property(lm => lm.Guid)
+            .HasDefaultValueSql("(UUID())");
+
         builder.Property(e => e.Name)
             .IsRequired()
             .HasMaxLength(150);

@@ -79,6 +79,12 @@ public class DomainToDTOMappingProfile : Profile
             .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name))
             .ReverseMap();
 
+        CreateMap<Event, EventDTO>().ReverseMap();
+        CreateMap<Event, EventViewModel>().ReverseMap();
+        CreateMap<Event, EventViewModel>()
+            .ForMember(dest => dest.LocationName, opt => opt.MapFrom(src => src.Location.Name))
+            .ReverseMap();
+
         CreateMap<AccountPayable, AccountPayableDTO>().ReverseMap();
         CreateMap<AccountPayable, AccountPayableViewModel>().ReverseMap();
         CreateMap<AccountPayable, AccountPayableViewModel>()

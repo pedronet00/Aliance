@@ -1,5 +1,6 @@
 ﻿using Aliance.Application.Interfaces;
 using Aliance.Application.Services;
+using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
 using Aliance.Infrastructure.Repositories;
 using Aliance.Infrastructure.UnitOfWork;
@@ -30,6 +31,7 @@ public static class DependencyInjection
         services.AddScoped<ICellMeetingRepository, CellMeetingRepository>();
         services.AddScoped<ILocationRepository, LocationRepository>();
         services.AddScoped<ICellMemberRepository, CellMemberRepository>();
+        services.AddScoped<IEventRepository, EventRepository>();
 
         // Services
         services.AddScoped<IDepartmentService, DepartmentService>();
@@ -52,6 +54,7 @@ public static class DependencyInjection
         services.AddScoped<ICellMeetingService, CellMeetingService>();
         services.AddScoped<ILocationService, LocationService>();
         services.AddScoped<ICellMemberService, CellMemberService>();
+        services.AddScoped<IEventService, EventService>();
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
