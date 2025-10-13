@@ -1,4 +1,5 @@
 ﻿using Aliance.Domain.Entities;
+using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
@@ -70,6 +71,36 @@ public class EventRepository : IEventRepository
 
         return nextEvent;
     }
+
+    public async Task<Event> ToggleStatus(int churchId, Guid guid, MeetingStatus status)
+    {
+        var ev = await _context.Event
+            .FirstOrDefaultAsync(e => e.ChurchId == churchId && e.Guid == guid);
+
+        if (ev == null)
+            throw new InvalidOperationException("Evento não encontrado.");
+
+        switch (status)
+        {
+            case MeetingStatus.Adiado:
+                ev.Status = MeetingStatus.Adiado;
+                break;
+            case MeetingStatus.Completado:
+                ev.Status = MeetingStatus.Completado;
+                break;
+            case MeetingStatus.Cancelado:
+                ev.Status = MeetingStatus.Cancelado;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(status), "Invalid meeting status.");
+        }
+
+        _context.Update(ev);
+        await _context.SaveChangesAsync();
+
+        return ev;
+    }
+
 
     public async Task<Event> UpdateEvent(Event eventUpdated)
     {

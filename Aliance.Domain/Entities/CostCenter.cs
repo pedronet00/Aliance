@@ -21,6 +21,8 @@
         public ICollection<AccountPayable> AccountPayable { get; set; } = new List<AccountPayable>();
         public ICollection<AccountReceivable> AccountReceivable{ get; set; } = new List<AccountReceivable>();
 
+        public ICollection<Event> Event { get; set; } = new List<Event>();
+
         private CostCenter() { }
 
         public CostCenter(string name, int departmentId, int churchId)

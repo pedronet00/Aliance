@@ -4,6 +4,7 @@ using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aliance.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251012195148_UpdateGUIDOnEvent")]
+    partial class UpdateGUIDOnEvent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -579,9 +582,6 @@ namespace Aliance.Infrastructure.Migrations
                     b.Property<decimal>("Cost")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("CostCenterId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
@@ -609,8 +609,6 @@ namespace Aliance.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ChurchId");
-
-                    b.HasIndex("CostCenterId");
 
                     b.HasIndex("LocationId");
 
@@ -1604,19 +1602,11 @@ namespace Aliance.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Aliance.Domain.Entities.CostCenter", "CostCenter")
-                        .WithMany("Event")
-                        .HasForeignKey("CostCenterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Aliance.Domain.Entities.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("CostCenter");
 
                     b.Navigation("Location");
                 });
@@ -1957,8 +1947,6 @@ namespace Aliance.Infrastructure.Migrations
                     b.Navigation("AccountReceivable");
 
                     b.Navigation("Budget");
-
-                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("Aliance.Domain.Entities.Department", b =>

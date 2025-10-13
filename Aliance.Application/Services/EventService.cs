@@ -1,6 +1,8 @@
 ﻿using Aliance.Application.DTOs;
 using Aliance.Application.Interfaces;
 using Aliance.Application.ViewModel;
+using Aliance.Domain.Entities;
+using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
 using AutoMapper;
@@ -13,13 +15,15 @@ public class EventService : IEventService
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _uow;
     private readonly IUserContextService _userContext;
+    private readonly IAccountPayableService _accountPayableService;
 
-    public EventService(IEventRepository repo, IMapper mapper, IUnitOfWork uow, IUserContextService userContext)
+    public EventService(IEventRepository repo, IMapper mapper, IUnitOfWork uow, IUserContextService userContext, IAccountPayableService accountPayableService)
     {
         _repo = repo;
         _mapper = mapper;
         _uow = uow;
         _userContext = userContext;
+        _accountPayableService = accountPayableService;
     }
 
     public async Task<DomainNotificationsResult<EventViewModel>> AddEvent(EventDTO newEvent)
@@ -118,6 +122,53 @@ public class EventService : IEventService
         }
 
         result.Result = _mapper.Map<EventViewModel>(nextEvent);
+        return result;
+    }
+
+    public async Task<DomainNotificationsResult<EventViewModel>> ToggleStatus(Guid guid, MeetingStatus status)
+    {
+        var result = new DomainNotificationsResult<EventViewModel>();
+        var churchId = _userContext.GetChurchId();
+
+        var ev = await _repo.GetEventByGuid(churchId, guid);
+
+        if(ev == null)
+        {
+            result.Notifications.Add("Evento não encontrado.");
+            return result;
+        }
+
+        switch (status)
+        {
+            case MeetingStatus.Adiado: 
+                await _repo.ToggleStatus(churchId, guid, MeetingStatus.Adiado);
+                break;
+            case MeetingStatus.Cancelado:
+                await _repo.ToggleStatus(churchId, guid, MeetingStatus.Cancelado);
+                break;
+            case MeetingStatus.Completado:
+                await _repo.ToggleStatus(churchId, guid, MeetingStatus.Completado);
+
+                var accountPayable = new AccountPayableDTO
+                {
+                    Description = $"Conta a pagar gerada automaticamente pelo sistema para o evento: {ev.Name}",
+                    Amount = ev.Cost,
+                    DueDate = DateTime.Now,
+                    CostCenterId = ev.CostCenterId,
+                    AccountStatus = AccountStatus.Pendente
+                };
+
+                await _accountPayableService.AddAsync(accountPayable);
+                break;
+            default:
+                result.Notifications.Add("Status inválido.");
+                return result;
+        }
+
+        await _uow.Commit();
+
+        result.Result = _mapper.Map<EventViewModel>(ev);
+
         return result;
     }
 

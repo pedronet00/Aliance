@@ -22,6 +22,10 @@ public class Event
 
     public MeetingStatus Status { get; set; }
 
+    public int CostCenterId { get; set; }
+
+    public CostCenter? CostCenter { get; set; }
+
     public int ChurchId { get; set; }
 
     private Event() { }

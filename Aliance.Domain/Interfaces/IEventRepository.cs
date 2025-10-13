@@ -1,4 +1,5 @@
 ﻿using Aliance.Domain.Entities;
+using Aliance.Domain.Enums;
 
 namespace Aliance.Domain.Interfaces;
 
@@ -17,4 +18,6 @@ public interface IEventRepository
     Task<IEnumerable<Event>> GetEventsByDateRange(int churchId, DateTime startDate, DateTime endDate);
 
     Task<Event> GetNextEvent(int churchId);
+
+    Task<Event> ToggleStatus(int churchId, Guid guid, MeetingStatus status);
 }

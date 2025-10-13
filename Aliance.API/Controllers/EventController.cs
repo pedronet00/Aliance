@@ -1,4 +1,5 @@
 ﻿using Aliance.Application.Interfaces;
+using Aliance.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -79,4 +80,16 @@ public class EventController : ControllerBase
             return BadRequest(result.Notifications);
         return Ok(result.Result);
     }
+
+    [HttpPatch("{guid:guid}/status/{status}")]
+    public async Task<IActionResult> ToggleStatus(Guid guid, string status)
+    {
+        if (!Enum.TryParse(status, true, out MeetingStatus meetingStatus))
+            return BadRequest("Status inválido");
+
+        var result = await _service.ToggleStatus(guid, meetingStatus);
+
+        return Ok(result);
+    }
+
 }
