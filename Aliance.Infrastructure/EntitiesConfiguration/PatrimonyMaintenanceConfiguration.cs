@@ -15,6 +15,9 @@ public class PatrimonyMaintenanceConfiguration : IEntityTypeConfiguration<Patrim
     {
         builder.ToTable("PatrimonyMaintenance");
 
+        builder.Property(lm => lm.Guid)
+            .HasDefaultValueSql("(UUID())");
+
         builder.HasKey(pm => pm.Id);
 
         builder.Property(pm => pm.Guid)
@@ -23,6 +26,10 @@ public class PatrimonyMaintenanceConfiguration : IEntityTypeConfiguration<Patrim
         builder.Property(pm => pm.MaintenanceDate)
             .IsRequired()
             .HasColumnType("datetime");
+
+        builder.Property(i => i.MaintenanceCost)
+            .IsRequired()
+            .HasColumnType("decimal(18,2)");
 
         builder.Property(pm => pm.Description)
             .IsRequired()

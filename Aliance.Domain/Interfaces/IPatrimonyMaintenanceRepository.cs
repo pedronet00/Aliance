@@ -1,4 +1,5 @@
 ﻿using Aliance.Domain.Entities;
+using Aliance.Domain.Enums;
 
 namespace Aliance.Domain.Interfaces;
 
@@ -20,5 +21,5 @@ public interface IPatrimonyMaintenanceRepository
 
     Task<PatrimonyMaintenance> GetByGuidWithDocumentsAsync(int churchId, Guid guid);
 
-
+    Task<PatrimonyMaintenance> ToggleStatus(int churchId, Guid guid, PatrimonyMaintenanceStatus status);
 }

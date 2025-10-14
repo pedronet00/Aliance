@@ -13,9 +13,13 @@ public class PatrimonyMaintenance
     public Guid Guid { get; private set; }
     public DateTime MaintenanceDate { get; set; }
     public string Description { get; set; }
+
+    public decimal MaintenanceCost { get; set; }
     public PatrimonyMaintenanceStatus Status { get; set; }
     public int PatrimonyId { get; set; }
     public Patrimony Patrimony { get; set; }
+    public int CostCenterId { get; set; }
+    public CostCenter? CostCenter { get; set; }
 
     public ICollection<PatrimonyMaintenanceDocument> Documents { get; private set; } = new List<PatrimonyMaintenanceDocument>();
     private PatrimonyMaintenance() { }

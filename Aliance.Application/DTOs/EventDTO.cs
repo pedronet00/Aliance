@@ -21,6 +21,7 @@ public class EventDTO
     public decimal Cost { get; set; }
 
     public int LocationId { get; set; }
+    public int CostCenterId { get; set; }
 
     public int ChurchId { get; set; }
 }

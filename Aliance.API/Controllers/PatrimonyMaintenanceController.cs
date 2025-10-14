@@ -1,5 +1,6 @@
 ﻿using Aliance.Application.DTOs;
 using Aliance.Application.Interfaces;
+using Aliance.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -91,4 +92,17 @@ public class PatrimonyMaintenanceController : ControllerBase
         var result = await _service.GetDocumentsByMaintenance(guid);
         return Ok(result);
     }
+
+
+    [HttpPatch("{guid:guid}/status/{status}")]
+    public async Task<IActionResult> ToggleStatus(Guid guid, string status)
+    {
+        if (!Enum.TryParse(status, true, out PatrimonyMaintenanceStatus maintenanceStatus))
+            return BadRequest("Status inválido");
+
+        var result = await _service.ToggleStatus(guid, maintenanceStatus);
+
+        return Ok(result);
+    }
+
 }

@@ -17,6 +17,8 @@ public class PatrimonyMaintenanceDTO
 
     [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
     public string Description { get; set; }
+    public decimal MaintenanceCost { get; set; }
+    public int CostCenterId { get; set; }
     public int PatrimonyId { get; set; }
     public string? PatrimonyName { get; set; }
 }

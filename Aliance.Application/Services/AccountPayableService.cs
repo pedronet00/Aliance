@@ -84,40 +84,43 @@ public class AccountPayableService : IAccountPayableService
         var churchId = _userContext.GetChurchId();
         var account = await _repo.GetByGuidAsync(churchId, guid);
 
+        if (account == null)
+            throw new Exception("Conta não encontrada.");
+
         switch (status)
         {
             case AccountStatus.Atrasada:
-                await _repo.ToggleStatus(churchId, guid, status);
+            case AccountStatus.Cancelada:
+            case AccountStatus.Parcial:
+                account.AccountStatus = status;
                 break;
 
             case AccountStatus.Paga:
-                await _repo.ToggleStatus(churchId, guid, status);
+                account.AccountStatus = AccountStatus.Paga;
+
+                if (account.PaymentDate is null)
+                    account.PaymentDate = DateTime.Now;
+
                 var expense = new Expense(
                     $"Pagamento da conta: {account.Description}",
-                    account.Amount, 
+                    account.Amount,
                     account.Id
-                );
-
-                expense.Category = FinancialExpenseCategory.ContaPagar; 
-                expense.ChurchId = churchId;
+                )
+                {
+                    Category = FinancialExpenseCategory.ContaPagar,
+                    ChurchId = churchId
+                };
 
                 await _expenseRepository.InsertExpense(expense);
-                
-                break;
-
-            case AccountStatus.Cancelada:
-                await _repo.ToggleStatus(churchId, guid, status);
-                break;
-
-            case AccountStatus.Parcial:
-                await _repo.ToggleStatus(churchId, guid, status);
                 break;
         }
 
+        await _repo.UpdateAsync(churchId, account);
         await _unitOfWork.Commit();
 
         return _mapper.Map<AccountPayableViewModel>(account);
     }
+
 
     public async Task<AccountPayableViewModel> UpdateAsync(AccountPayableDTO accountPayable)
     {

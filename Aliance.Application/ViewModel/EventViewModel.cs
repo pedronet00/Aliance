@@ -22,6 +22,7 @@ public class EventViewModel
     public decimal Cost { get; set; }
 
     public int LocationId { get; set; }
+    public int CostCenterId { get; set; }
     public string LocationName { get; set; }
 
     public MeetingStatus Status { get; set; }

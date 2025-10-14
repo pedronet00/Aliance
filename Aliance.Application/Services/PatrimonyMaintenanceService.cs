@@ -2,6 +2,7 @@
 using Aliance.Application.Interfaces;
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
+using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
 using AutoMapper;
@@ -20,13 +21,15 @@ public class PatrimonyMaintenanceService : IPatrimonyMaintenanceService
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _uow;
     private IUserContextService _context;
+    private readonly IAccountPayableRepository _accountPayableRepository;
 
-    public PatrimonyMaintenanceService(IPatrimonyMaintenanceRepository repo, IMapper mapper, IUnitOfWork uow, IUserContextService context)
+    public PatrimonyMaintenanceService(IPatrimonyMaintenanceRepository repo, IMapper mapper, IUnitOfWork uow, IUserContextService context, IAccountPayableRepository accountPayableRepository)
     {
         _repo = repo;
         _mapper = mapper;
         _uow = uow;
         _context = context;
+        _accountPayableRepository = accountPayableRepository;
     }
 
     public async Task<DomainNotificationsResult<PatrimonyMaintenanceViewModel>> DeleteMaintenance(Guid guid)
@@ -219,5 +222,56 @@ public class PatrimonyMaintenanceService : IPatrimonyMaintenanceService
             FileUrl = d.FilePath,
             UploadedAt = d.UploadedAt
         });
+    }
+
+    public async Task<DomainNotificationsResult<PatrimonyMaintenanceViewModel>> ToggleStatus(Guid maintenanceGuid, PatrimonyMaintenanceStatus status)
+    {
+        var result = new DomainNotificationsResult<PatrimonyMaintenanceViewModel>();
+        var churchId = _context.GetChurchId();
+
+        var maintenance = await _repo.GetMaintenanceByGuid(churchId, maintenanceGuid);
+
+        if(maintenance is null)
+        {
+            result.Notifications.Add("Manutenção não encontrada.");
+            return result;
+        }
+
+        switch (status)
+        {
+            case PatrimonyMaintenanceStatus.Cancelado:
+                if (maintenance.Status == PatrimonyMaintenanceStatus.Concluido)
+                {
+                    result.Notifications.Add("Não é possível cancelar uma manutenção que já foi concluída.");
+                    return result;
+                }
+                await _repo.ToggleStatus(churchId, maintenanceGuid, status);
+                break;
+            case PatrimonyMaintenanceStatus.Concluido:
+                if (maintenance.Status == PatrimonyMaintenanceStatus.Cancelado)
+                {
+                    result.Notifications.Add("Não é possível concluir uma manutenção que foi cancelada.");
+                    return result;
+                }
+
+                var accountPayable = new AccountPayable
+                (
+                    $"Conta a pagar gerada automaticamente pelo sistema para a manutenção do patrimônio: {maintenance.PatrimonyId}",
+                    maintenance.MaintenanceCost,
+                    DateTime.Now,
+                    maintenance.CostCenterId
+                );
+
+                await _accountPayableRepository.AddAsync(accountPayable);
+
+                await _repo.ToggleStatus(churchId, maintenanceGuid, status);
+                break;
+        }
+
+        await _uow.Commit();
+
+        result.Result = _mapper.Map<PatrimonyMaintenanceViewModel>(maintenance);
+
+        return result;
     }
 }

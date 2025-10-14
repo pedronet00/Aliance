@@ -1,4 +1,5 @@
 ﻿using Aliance.Domain.Entities;
+using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
@@ -87,5 +88,18 @@ public class PatrimonyMaintenanceRepository : IPatrimonyMaintenanceRepository
             .FirstOrDefaultAsync(p => p.Guid == guid && p.Patrimony.ChurchId == churchId);
 
         return documents!;
+    }
+
+    public async Task<PatrimonyMaintenance> ToggleStatus(int churchId, Guid guid, PatrimonyMaintenanceStatus status)
+    {
+        var maintenance = await _context.PatrimonyMaintenance
+            .Where(pm => pm.Patrimony.ChurchId == churchId && pm.Guid == guid)
+            .FirstOrDefaultAsync();
+
+        maintenance.Status = status;
+
+        _context.PatrimonyMaintenance.Update(maintenance);
+
+        return maintenance;
     }
 }

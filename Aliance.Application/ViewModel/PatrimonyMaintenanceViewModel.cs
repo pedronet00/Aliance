@@ -14,6 +14,8 @@ public class PatrimonyMaintenanceViewModel
     public DateTime MaintenanceDate { get; set; }
     public PatrimonyMaintenanceStatus Status { get; set; }
     public string? Description { get; set; }
+    public decimal MaintenanceCost { get; set; }
+    public int CostCenterId { get; set; }
     public int PatrimonyId { get; set; }
     public string? PatrimonyName { get; set; }
 }

@@ -20,6 +20,7 @@
         public ICollection<Budget>? Budget{ get; set; } = new List<Budget>();
         public ICollection<AccountPayable> AccountPayable { get; set; } = new List<AccountPayable>();
         public ICollection<AccountReceivable> AccountReceivable{ get; set; } = new List<AccountReceivable>();
+        public ICollection<PatrimonyMaintenance>? PatrimonyMaintenance { get; set; } = new List<PatrimonyMaintenance>();
 
         public ICollection<Event> Event { get; set; } = new List<Event>();
 
