@@ -10,7 +10,7 @@ namespace Aliance.Domain.Entities;
 public class PatrimonyMaintenance
 {
     public int Id { get; set; }
-    public Guid Guid { get; private set; }
+    public Guid Guid { get; private set; } = Guid.NewGuid();
     public DateTime MaintenanceDate { get; set; }
     public string Description { get; set; }
 

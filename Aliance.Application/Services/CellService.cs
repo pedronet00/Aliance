@@ -20,13 +20,15 @@ public class CellService : ICellService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IUserContextService _context;
+    private readonly ICellMemberRepository _cellMemberRepository;
 
-    public CellService(ICellRepository cellRepository, IUnitOfWork unitOfWork, IMapper mapper, IUserContextService context)
+    public CellService(ICellRepository cellRepository, IUnitOfWork unitOfWork, IMapper mapper, IUserContextService context, ICellMemberRepository cellMemberRepository)
     {
         _cellRepository = cellRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _context = context;
+        _cellMemberRepository = cellMemberRepository;
     }
 
     public async Task<DomainNotificationsResult<CellViewModel>> AddCell(CellDTO cellDTO)
@@ -43,8 +45,11 @@ public class CellService : ICellService
             var cell = _mapper.Map<Cell>(cellDTO);
 
         await _cellRepository.AddCell(cell);
-
         await _unitOfWork.Commit();
+
+        await _cellMemberRepository.InsertCellMember(cell.Guid, cellDTO.LeaderId);
+        await _unitOfWork.Commit();
+
 
         var cellVM = _mapper.Map<CellViewModel>(cell);
 

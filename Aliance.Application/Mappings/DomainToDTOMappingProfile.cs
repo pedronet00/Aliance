@@ -36,8 +36,13 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Expense, ExpenseDTO>().ReverseMap();
         CreateMap<Expense, ExpenseViewModel>().ReverseMap();
         CreateMap<CellMember, CellMemberViewModel>()
-    .ForMember(dest => dest.CellGuId, opt => opt.MapFrom(src => src.Cell.Guid));
+            .ForMember(dest => dest.CellGuId, opt => opt.MapFrom(src => src.Cell.Guid))
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
 
+        CreateMap<Tithe, TitheDTO>().ReverseMap();
+        CreateMap<Tithe, TitheViewModel>().ReverseMap();
+        CreateMap<Tithe, TitheViewModel>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
 
 
         CreateMap<Location, LocationViewModel>().ReverseMap();
@@ -104,6 +109,7 @@ public class DomainToDTOMappingProfile : Profile
             .ReverseMap();
 
         CreateMap<PatrimonyMaintenanceDTO, PatrimonyMaintenance>()
+            .ForMember(dest => dest.Guid, opt => opt.Ignore())
             .ConstructUsing(dto => new PatrimonyMaintenance(dto.MaintenanceDate, dto.Description, dto.PatrimonyId));
 
         CreateMap<Budget, BudgetDTO>().ReverseMap();

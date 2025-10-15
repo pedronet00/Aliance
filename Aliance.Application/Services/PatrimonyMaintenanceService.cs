@@ -256,7 +256,7 @@ public class PatrimonyMaintenanceService : IPatrimonyMaintenanceService
 
                 var accountPayable = new AccountPayable
                 (
-                    $"Conta a pagar gerada automaticamente pelo sistema para a manutenção do patrimônio: {maintenance.PatrimonyId}",
+                    $"Conta a pagar gerada automaticamente pelo sistema para a manutenção do patrimônio: {maintenance.Patrimony.Name}",
                     maintenance.MaintenanceCost,
                     DateTime.Now,
                     maintenance.CostCenterId
