@@ -15,6 +15,8 @@ public interface IEventRepository
 
     Task<bool> DeleteEvent(int churchId, Guid guid);
 
+    Task<int> CountEvents(int churchId);
+
     Task<IEnumerable<Event>> GetEventsByDateRange(int churchId, DateTime startDate, DateTime endDate);
 
     Task<Event> GetNextEvent(int churchId);

@@ -12,13 +12,17 @@ public class DashboardService : IDashboardService
     private readonly IExpenseService _expenseService;
     private readonly IUserService _userService;
     private readonly IPatrimonyService _patrimonyService;
+    private readonly IEventService _eventService;
+    private readonly IBudgetService _budgetService;
 
-    public DashboardService(IIncomeService incomeService, IExpenseService expenseService, IUserService userService = null, IPatrimonyService patrimonyService = null)
+    public DashboardService(IIncomeService incomeService, IExpenseService expenseService, IUserService userService = null, IPatrimonyService patrimonyService = null, IEventService eventService = null, IBudgetService budgetService = null)
     {
         _incomeService = incomeService;
         _expenseService = expenseService;
         _userService = userService;
         _patrimonyService = patrimonyService;
+        _eventService = eventService;
+        _budgetService = budgetService;
     }
 
     public async Task<DomainNotificationsResult<DashboardViewModel>> GetDashboardData(int year)
@@ -29,6 +33,8 @@ public class DashboardService : IDashboardService
         var expenseResult = await _expenseService.GetMonthlyTotals(year);
         var totalUsers = await _userService.CountUsers();
         var totalPatrimonies = await _patrimonyService.PatrimoniesCount();
+        var totalEvents = await _eventService.CountEvents();
+        var totalBudgets = await _budgetService.CountBudgets();
 
         if (incomeResult.Notifications.Any())
             result.Notifications.AddRange(incomeResult.Notifications);
@@ -41,7 +47,9 @@ public class DashboardService : IDashboardService
             IncomeTotals = incomeResult.Result ?? new List<IncomeMonthlyTotalViewModel>(),
             ExpenseTotals = expenseResult.Result ?? new List<ExpenseMonthlyTotalViewModel>(),
             TotalUsers = totalUsers.Result,
-            TotalPatrimonies = totalPatrimonies.Result
+            TotalPatrimonies = totalPatrimonies.Result,
+            TotalEvents = totalEvents.Result,
+            TotalBudgets = totalBudgets.Result
         };
 
         return result;

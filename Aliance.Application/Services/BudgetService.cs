@@ -229,4 +229,16 @@ public class BudgetService : IBudgetService
 
         return result;
     }
+
+    public async Task<DomainNotificationsResult<int>> CountBudgets()
+    {
+        var result = new DomainNotificationsResult<int>();
+        var churchId = _userContext.GetChurchId();
+
+        var totalBudgets = await _repo.CountBudgets(churchId);
+
+        result.Result = totalBudgets;
+
+        return result;
+    }
 }

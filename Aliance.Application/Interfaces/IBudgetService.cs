@@ -28,4 +28,6 @@ public interface IBudgetService
     Task<DomainNotificationsResult<BudgetViewModel>> ContestBudget(Guid guid);
 
     Task<DomainNotificationsResult<BudgetViewModel>> EndBudget(Guid guid);
+
+    Task<DomainNotificationsResult<int>> CountBudgets();
 }

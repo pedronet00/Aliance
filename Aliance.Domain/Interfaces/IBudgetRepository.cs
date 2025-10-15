@@ -21,4 +21,6 @@ public interface IBudgetRepository
     Task<bool> ContestBudget(int churchId, Guid guid);
 
     Task<bool> EndBudget(int churchId, Guid guid);
+
+    Task<int> CountBudgets(int churchId);
 }

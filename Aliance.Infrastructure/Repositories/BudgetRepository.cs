@@ -41,6 +41,15 @@ public class BudgetRepository : IBudgetRepository
         return true;
     }
 
+    public async Task<int> CountBudgets(int churchId)
+    {
+        var totalBudgets = await _context.Budget
+            .Where(b => b.CostCenter.ChurchId == churchId)
+            .CountAsync();
+
+        return totalBudgets;
+    }
+
     public async Task<bool> DeleteBudgetAsync(int churchId, Guid guid)
     {
         var budget = await this.GetBudgetByGuidAsync(churchId, guid);

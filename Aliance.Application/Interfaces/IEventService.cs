@@ -22,6 +22,8 @@ public interface IEventService
 
     Task<DomainNotificationsResult<bool>> DeleteEvent(Guid guid);
 
+    Task<DomainNotificationsResult<int>> CountEvents();
+
     Task<DomainNotificationsResult<IEnumerable<EventViewModel>>> GetEventsByDateRange(DateTime startDate, DateTime endDate);
 
     Task<DomainNotificationsResult<EventViewModel>> GetNextEvent();

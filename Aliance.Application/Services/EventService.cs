@@ -47,6 +47,18 @@ public class EventService : IEventService
         return result;
     }
 
+    public async Task<DomainNotificationsResult<int>> CountEvents()
+    {
+        var result = new DomainNotificationsResult<int>();
+        var churchId = _userContext.GetChurchId();
+
+        var totalEvents = await _repo.CountEvents(churchId);
+
+        result.Result = totalEvents;
+
+        return result;
+    }
+
     public async Task<DomainNotificationsResult<bool>> DeleteEvent(Guid guid)
     {
         var result = new DomainNotificationsResult<bool>();

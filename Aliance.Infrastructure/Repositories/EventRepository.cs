@@ -22,6 +22,15 @@ public class EventRepository : IEventRepository
         return newEvent;
     }
 
+    public async Task<int> CountEvents(int churchId)
+    {
+        var totalEvents = await _context.Event
+            .Where(ev => ev.ChurchId == churchId)
+            .CountAsync();
+
+        return totalEvents;
+    }
+
     public async Task<bool> DeleteEvent(int churchId, Guid guid)
     {
         var ev = await _context.Event.Where(e => e.ChurchId == churchId && e.Guid == guid).FirstOrDefaultAsync();
