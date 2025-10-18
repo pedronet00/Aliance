@@ -44,4 +44,8 @@
     <ProjectReference Include="..\Aliance.Crosscutting\Aliance.Crosscutting.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Auth\" />
+  </ItemGroup>
+
 </Project>

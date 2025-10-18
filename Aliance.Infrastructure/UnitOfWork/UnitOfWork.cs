@@ -1,6 +1,7 @@
 ﻿using Aliance.Domain.Interfaces;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,11 @@ namespace Aliance.Infrastructure.UnitOfWork
             {
                 throw new ApplicationException("Erro inesperado durante a confirmação da transação", ex);
             }
+        }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _context.Database.BeginTransactionAsync();
         }
 
         public async Task Rollback()

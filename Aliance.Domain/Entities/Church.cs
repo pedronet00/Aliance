@@ -15,6 +15,8 @@ namespace Aliance.Domain.Entities
 
         public string Phone { get; set; }
 
+        public string CNPJ { get; set; }
+
         public string Address { get; set; }
 
         public string City { get; set; }
@@ -40,9 +42,9 @@ namespace Aliance.Domain.Entities
 
         private Church() { }
 
-        public Church(string name, string email, string phone, string address, string city, string state, string country, bool status = true)
+        public Church(string name, string email, string phone, string address, string city, string state, string country, string cnpj, bool status = true)
         {
-            Guid = Guid.NewGuid(); 
+            Guid = Guid.NewGuid();
             Name = name;
             Email = email;
             Phone = phone;
@@ -51,6 +53,7 @@ namespace Aliance.Domain.Entities
             State = state;
             Country = country;
             Status = status;
+            CNPJ = cnpj;
         }
     }
 }

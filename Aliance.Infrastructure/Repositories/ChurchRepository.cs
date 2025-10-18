@@ -20,6 +20,18 @@ namespace Aliance.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<bool> ChurchAlreadyExists(string cnpj)
+        {
+            var church = await _context.Church
+                .Where(c => c.CNPJ == cnpj)
+                .FirstAsync();
+
+            if(church is null)
+                return false;
+
+            return true;
+        }
+
         public async Task<Church> DeleteChurch(int id)
         {
             var church = await _context.Church.FindAsync(id);

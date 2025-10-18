@@ -1,5 +1,8 @@
-﻿using Aliance.Application.Interfaces;
+﻿using Aliance.Application.Integration.Asaas;
+using Aliance.Application.Interfaces;
+using Aliance.Application.Interfaces.Auth;
 using Aliance.Application.Services;
+using Aliance.Application.Services.Auth;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
 using Aliance.Infrastructure.Repositories;
@@ -57,6 +60,7 @@ public static class DependencyInjection
         services.AddScoped<ICellMemberService, CellMemberService>();
         services.AddScoped<IEventService, EventService>();
         services.AddScoped<ITitheService, TitheService>();
+        services.AddScoped<IRegisterService, RegisterService>();
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -1,3 +1,5 @@
+using Aliance.Application.Integration.Asaas;
+using Aliance.Application.Interfaces.Auth;
 using Aliance.Crosscutting.IoC;
 using Aliance.Domain.Entities;
 using Aliance.Infrastructure.Context;
@@ -50,6 +52,9 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 
 var secretKey = builder.Configuration["JWT:SecretKey"];
+
+builder.Services.AddHttpClient<IAsaasService, AsaasService>();
+
 
 builder.Services.AddAuthentication(options =>
 {

@@ -19,6 +19,6 @@ namespace Aliance.Domain.Interfaces
 
         Task<Church> GetChurchById(int id);
 
-
+        Task<bool> ChurchAlreadyExists(string cnpj);
     }
 }

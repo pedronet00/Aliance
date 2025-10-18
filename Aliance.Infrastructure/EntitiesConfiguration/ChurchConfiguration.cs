@@ -20,6 +20,10 @@ namespace Aliance.Infrastructure.EntitiesConfiguration
                 .IsRequired()
                 .HasMaxLength(50);
 
+            builder.Property(c => c.CNPJ)
+                .IsRequired()
+                .HasMaxLength(18);
+
             builder.Property(c => c.Phone)
                 .IsRequired()
                 .HasMaxLength(20);
