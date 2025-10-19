@@ -6,6 +6,7 @@ using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
 using Microsoft.AspNetCore.Identity;
+using Aliance.Domain.Enums;
 
 namespace Aliance.Application.Services.Auth;
 
@@ -61,8 +62,19 @@ public class RegisterService : IRegisterService
                 newClientDTO.ChurchCity,
                 newClientDTO.ChurchState,
                 newClientDTO.ChurchCountry,
-                newClientDTO.ChurchCNPJ
+                newClientDTO.ChurchCNPJ,
+                PaymentStatus.Pending,
+                null, // AsaasCustomerId
+                null, // SubscriptionId
+                null, // NextDueDate
+                null, // LastPaymentDate
+                newClientDTO.PaymentMethod,
+                59.90m,
+                null, // DateActivated
+                null, // DateCanceled
+                true  // Status
             );
+
             await _churchRepository.InsertChurch(church);
             await _unitOfWork.Commit(); // ChurchId disponível
 
@@ -80,7 +92,7 @@ public class RegisterService : IRegisterService
             // 2️ | Criar usuário
             var user = new ApplicationUser
             {
-                UserName = newClientDTO.UserEmail,
+                UserName = newClientDTO.UserName,
                 Email = newClientDTO.UserEmail,
                 PhoneNumber = newClientDTO.UserPhone,
                 ChurchId = church.Id,
@@ -111,6 +123,11 @@ public class RegisterService : IRegisterService
                 result.Notifications.Add($"Falha ao criar cliente no Asaas: {ex.Message}");
                 return result;
             }
+
+            church.AsaasCustomerId = asaasCustomerId;
+            _churchRepository.UpdateChurch(church);
+
+            await _unitOfWork.Commit();
 
             // 4️ | Criar checkout no Asaas (gerar o link de pagamento)
             string checkoutUrl;

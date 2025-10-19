@@ -33,6 +33,37 @@ public class ChurchService : IChurchService
         return true;
     }
 
+    public async Task AtualizarPagamentoRecebidoAsync(string customerId, DateTime dataRecebimento, DateTime? proximaCobranca, decimal valorPago)
+    {
+        var church = await _churchRepository.GetChurchByAsaasCustomerId(customerId);
+        if (church == null)
+            throw new InvalidOperationException($"Igreja não encontrada para o customerId: {customerId}");
+
+        church.PaymentStatus = Domain.Enums.PaymentStatus.Active;
+        church.LastPaymentDate = dataRecebimento;
+        church.NextDueDate = proximaCobranca;
+        church.Status = true;
+
+        _churchRepository.UpdateChurch(church);
+
+        await _unitOfWork.Commit();
+    }
+
+    public async Task AtualizarPagamentoAtrasadoAsync(string customerId, DateTime dataVencimento)
+    {
+        var church = await _churchRepository.GetChurchByAsaasCustomerId(customerId);
+        if (church == null)
+            throw new InvalidOperationException($"Igreja não encontrada para o customerId: {customerId}");
+
+        church.PaymentStatus = Domain.Enums.PaymentStatus.Expired;
+        church.NextDueDate = dataVencimento;
+        church.Status = false;
+
+        _churchRepository.UpdateChurch(church);
+
+        await _unitOfWork.Commit();
+    }
+
     public async Task<IEnumerable<ChurchViewModel>> GetAllChurches()
     {
         var churches = await _churchRepository.GetChurches();
@@ -40,6 +71,18 @@ public class ChurchService : IChurchService
         var churchesViewModel = _mapper.Map<IEnumerable<ChurchViewModel>>(churches);
 
         return churchesViewModel;
+    }
+
+    public async Task<ChurchViewModel> GetChurchByAsaasCustomerId(string asaasCustomerId)
+    {
+        var church = await _churchRepository.GetChurchByAsaasCustomerId(asaasCustomerId);
+
+        if (church is null)
+            throw new ArgumentNullException(nameof(church), "Igreja não encontrada.");
+
+        var churchViewModel = _mapper.Map<ChurchViewModel>(church);
+
+        return churchViewModel;
     }
 
     public async Task<ChurchViewModel> GetChurchById(int id)

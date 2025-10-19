@@ -73,13 +73,11 @@ namespace Aliance.Application.Integration.Asaas
                 }
             };
 
-            Console.WriteLine($"Customer ID: {customerId}");
-
             var payload = new
             {
                 billingTypes = new[] { paymentMethod.ToUpper() },
                 chargeTypes = new[] { "RECURRENT" },
-                minutesToExpire = 5,
+                minutesToExpire = 15,
                 callback = new
                 {
                     cancelUrl = "https://google.com/cancel",
@@ -103,24 +101,13 @@ namespace Aliance.Application.Integration.Asaas
             if (!response.IsSuccessStatusCode)
             {
                 // Adicione log para capturar erro detalhado
-                Console.WriteLine($"Erro ao criar checkout no Asaas: {body}");
                 throw new Exception($"Erro ao criar checkout no Asaas: {(int)response.StatusCode} - {body}");
             }
-            else
-            {
-                Console.WriteLine("Checkout criado com sucesso.");
-            }
-
-            Console.WriteLine("Resposta do Asaas: " + body); 
-
 
             var json = JsonDocument.Parse(body);
 
             return json.RootElement.GetProperty("link").GetString()!;
         }
-
-
-
 
         public async Task<(string subscriptionId, decimal value)> CreateSubscriptionAsync(string customerId, string plan, string paymentMethod)
         {

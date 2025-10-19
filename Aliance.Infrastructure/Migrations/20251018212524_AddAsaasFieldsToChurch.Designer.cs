@@ -4,6 +4,7 @@ using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aliance.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251018212524_AddAsaasFieldsToChurch")]
+    partial class AddAsaasFieldsToChurch
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -423,9 +426,11 @@ namespace Aliance.Infrastructure.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.Property<string>("AsaasCustomerId")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("BillingType")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CNPJ")
@@ -443,10 +448,10 @@ namespace Aliance.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<DateTime?>("DateActivated")
+                    b.Property<DateTime>("DateActivated")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime?>("DateCanceled")
+                    b.Property<DateTime>("DateCanceled")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -457,7 +462,7 @@ namespace Aliance.Infrastructure.Migrations
                     b.Property<Guid>("Guid")
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime?>("LastPaymentDate")
+                    b.Property<DateTime>("LastPaymentDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
@@ -465,7 +470,7 @@ namespace Aliance.Infrastructure.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("varchar(80)");
 
-                    b.Property<DateTime?>("NextDueDate")
+                    b.Property<DateTime>("NextDueDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("PaymentStatus")
@@ -476,7 +481,7 @@ namespace Aliance.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
-                    b.Property<decimal?>("PlanValue")
+                    b.Property<decimal>("PlanValue")
                         .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("State")
@@ -490,6 +495,7 @@ namespace Aliance.Infrastructure.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<string>("SubscriptionId")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");

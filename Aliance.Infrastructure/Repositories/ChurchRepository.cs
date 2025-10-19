@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,12 +25,9 @@ namespace Aliance.Infrastructure.Repositories
         {
             var church = await _context.Church
                 .Where(c => c.CNPJ == cnpj)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
-            if(church is null)
-                return false;
-
-            return true;
+            return church != null;
         }
 
         public async Task<Church> DeleteChurch(int id)
@@ -40,6 +38,15 @@ namespace Aliance.Infrastructure.Repositories
                 return null;
 
             _context.Church.Remove(church);
+
+            return church;
+        }
+
+        public async Task<Church> GetChurchByAsaasCustomerId(string asaasCustomerId)
+        {
+            var church = await _context.Church
+                .Where(c => c.AsaasCustomerId == asaasCustomerId)
+                .FirstOrDefaultAsync();
 
             return church;
         }
