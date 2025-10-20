@@ -90,6 +90,12 @@ public class DomainToDTOMappingProfile : Profile
             .ForMember(dest => dest.LocationName, opt => opt.MapFrom(src => src.Location.Name))
             .ReverseMap();
 
+        CreateMap<Service, ServiceDTO>().ReverseMap();
+        CreateMap<Service, ServiceViewModel>().ReverseMap();
+        CreateMap<Service, ServiceViewModel>()
+            .ForMember(dest => dest.LocationName, opt => opt.MapFrom(src => src.Location.Name))
+            .ReverseMap();
+
         CreateMap<AccountPayable, AccountPayableDTO>().ReverseMap();
         CreateMap<AccountPayable, AccountPayableViewModel>().ReverseMap();
         CreateMap<AccountPayable, AccountPayableViewModel>()

@@ -32,6 +32,8 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<PatrimonyDocument> PatrimonyDocuments { get; set; }
     public DbSet<PatrimonyMaintenanceDocument> PatrimonyMaintenanceDocuments { get; set; }
     public DbSet<PatrimonyMaintenance> PatrimonyMaintenance { get; set; }
+    public DbSet<Service> Service { get; set; }
+    public DbSet<ServicePresence> ServicePresence { get; set; }
     public DbSet<SundaySchoolClass> SundaySchool { get; set; }
     public DbSet<SundaySchoolClassroom> SundaySchoolClassRoom { get; set; }
     public DbSet<SundaySchoolClass> SundaySchoolClass { get; set; }

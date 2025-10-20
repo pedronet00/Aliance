@@ -14,6 +14,8 @@ namespace Aliance.Domain.Entities
 
         public int ChurchId { get; set; }
 
+        public ICollection<Service>? Services { get; set; } = new List<Service>();
+
         private Location() { }
 
         public Location(string? name, int churchId, bool status = true)

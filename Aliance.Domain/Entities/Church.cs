@@ -57,6 +57,7 @@ public class Church
     public ICollection<PastoralVisit> PastoralVisits { get; set; } = new List<PastoralVisit>();
     public ICollection<Patrimony> Patrimonies { get; set; } = new List<Patrimony>();
     public ICollection<SundaySchoolClassroom> SundaySchoolClassrooms { get; set; } = new List<SundaySchoolClassroom>();
+    public ICollection<Service> Services { get; set; } = new List<Service>();
 
     private Church() { }
 
