@@ -4,6 +4,7 @@ using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using AutoMapper;
 
 namespace Aliance.Application.Services;
@@ -91,15 +92,19 @@ public class DepartmentService : IDepartmentService
         return result;
     }
 
-    public async Task<IEnumerable<DepartmentViewModel>> GetAllDepartments()
+    public async Task<PagedResult<DepartmentViewModel>> GetDepartmentsPaged(int pageNumber, int pageSize)
     {
         var churchId = _context.GetChurchId();
+        var pagedDepartments = await _repo.GetAllDepartments(churchId, pageNumber, pageSize);
 
-        var departments = await _repo.GetAllDepartments(churchId);
+        var departmentVMs = _mapper.Map<IEnumerable<DepartmentViewModel>>(pagedDepartments.Items);
 
-        var departmentVMs = _mapper.Map<IEnumerable<DepartmentViewModel>>(departments);
-
-        return departmentVMs;
+        return new PagedResult<DepartmentViewModel>(
+            departmentVMs,
+            pagedDepartments.TotalCount,
+            pagedDepartments.CurrentPage,
+            pagedDepartments.PageSize
+        );
     }
 
     public async Task<DomainNotificationsResult<DepartmentViewModel>> GetDepartmentById(int id)

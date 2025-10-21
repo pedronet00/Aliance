@@ -1,4 +1,5 @@
 ﻿using Aliance.Domain.Entities;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Aliance.Domain.Interfaces;
 
 public interface IDepartmentRepository
 {
-    Task<IEnumerable<Department>> GetAllDepartments(int churchId);
+    Task<PagedResult<Department>> GetAllDepartments(int churchId, int pageNumber, int pageSize);
 
     Task<Department> GetDepartmentById(int churchId, int id);
 

@@ -19,11 +19,11 @@ namespace Aliance.API.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        
-        public async Task<IActionResult> GetAllDepartments()
+        [HttpGet("paged")]
+
+        public async Task<IActionResult> GetAllDepartments([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
         {
-            var departments = await _service.GetAllDepartments();
+            var departments = await _service.GetDepartmentsPaged(pageNumber, pageSize);
 
             return Ok(departments);
         }
