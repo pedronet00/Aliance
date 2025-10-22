@@ -1,6 +1,7 @@
 ﻿using Aliance.Application.DTOs;
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Enums;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Aliance.Application.Interfaces;
 
 public interface IAccountReceivableService
 {
-    Task<IEnumerable<AccountReceivableViewModel>> GetAllAsync();
+    Task<PagedResult<AccountReceivableViewModel>> GetAllAsync(int pageNumber, int pageSize);
 
     Task<AccountReceivableViewModel?> GetByGuidAsync(Guid guid);
 

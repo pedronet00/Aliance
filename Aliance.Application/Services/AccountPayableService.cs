@@ -4,6 +4,7 @@ using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -60,12 +61,19 @@ public class AccountPayableService : IAccountPayableService
         return result;
     }
 
-    public async Task<IEnumerable<AccountPayableViewModel>> GetAllAsync()
+    public async Task<PagedResult<AccountPayableViewModel>> GetAllAsync(int pageNumber, int pageSize)
     {
         var churchId = _userContext.GetChurchId();
-        var accountPayables = await _repo.GetAllAsync(churchId);
+        var accountPayables = await _repo.GetAllAsync(churchId, pageNumber, pageSize);
         
-        return _mapper.Map<IEnumerable<AccountPayable>, IEnumerable<AccountPayableViewModel>>(accountPayables);
+        var accountPayablesViewModel = _mapper.Map<IEnumerable<AccountPayable>, IEnumerable<AccountPayableViewModel>>(accountPayables.Items);
+
+        return new PagedResult<AccountPayableViewModel>(
+            accountPayablesViewModel,
+            accountPayables.TotalCount,
+            accountPayables.CurrentPage,
+            accountPayables.PageSize
+        );
     }
 
     public async Task<AccountPayableViewModel?> GetByGuidAsync(Guid guid)

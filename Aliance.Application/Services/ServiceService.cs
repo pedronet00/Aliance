@@ -4,6 +4,7 @@ using Aliance.Application.ViewModel;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using AutoMapper;
 
 namespace Aliance.Application.Services;
@@ -74,13 +75,15 @@ public class ServiceService : IServiceService
         return result;
     }
 
-    public async Task<DomainNotificationsResult<IEnumerable<ServiceViewModel>>> GetServices()
+    public async Task<DomainNotificationsResult<PagedResult<ServiceViewModel>>> GetServices(int pageNumber, int pageSize)
     {
-        var result = new DomainNotificationsResult<IEnumerable<ServiceViewModel>>();
+        var result = new DomainNotificationsResult<PagedResult<ServiceViewModel>>();
         var churchId = _userContext.GetChurchId();
 
-        var serviceEntities = await _serviceRepository.GetServices(churchId);
-        result.Result = _mapper.Map<IEnumerable<ServiceViewModel>>(serviceEntities);
+        var serviceEntities = await _serviceRepository.GetServices(churchId, pageNumber, pageSize);
+        var serviceVMs = _mapper.Map<IEnumerable<ServiceViewModel>>(serviceEntities.Items);
+
+        result.Result = new PagedResult<ServiceViewModel>(serviceVMs, serviceEntities.TotalCount, pageNumber, pageSize);
 
         return result;
     }

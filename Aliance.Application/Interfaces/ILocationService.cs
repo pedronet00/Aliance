@@ -1,5 +1,7 @@
-﻿using Aliance.Application.ViewModel;
+﻿using Aliance.Application.DTOs;
+using Aliance.Application.ViewModel;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +12,7 @@ namespace Aliance.Application.Interfaces;
 
 public interface ILocationService
 {
-    Task<DomainNotificationsResult<IEnumerable<LocationViewModel>>> GetLocations();
+    Task<DomainNotificationsResult<PagedResult<LocationViewModel>>> GetLocations(int pageNumber, int pageSize);
+
+    Task<DomainNotificationsResult<LocationViewModel>> Insert(LocationDTO locationDTO);
 }

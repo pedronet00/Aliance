@@ -15,6 +15,9 @@ public class LocationConfiguration : IEntityTypeConfiguration<Aliance.Domain.Ent
     {
         builder.ToTable("Location");
 
+        builder.Property(l => l.Guid)
+            .HasDefaultValueSql("(UUID())");
+
         builder.HasKey(l => l.Id);
 
         builder.Property(l => l.Name)

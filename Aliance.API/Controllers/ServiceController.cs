@@ -18,10 +18,10 @@ public class ServiceController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetServices()
+    [HttpGet("paged")]
+    public async Task<IActionResult> GetServices([FromQuery] int pageNumber = 1, int pageSize = 5)
     {
-        var result = await _service.GetServices();
+        var result = await _service.GetServices(pageNumber, pageSize);
         return Ok(result);
     }
 

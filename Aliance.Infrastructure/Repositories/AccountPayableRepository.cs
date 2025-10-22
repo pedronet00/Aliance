@@ -1,6 +1,7 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -43,13 +44,22 @@ public class AccountPayableRepository : IAccountPayableRepository
         return true;
     }
 
-    public async Task<IEnumerable<AccountPayable>> GetAllAsync(int churchId)
+    public async Task<PagedResult<AccountPayable>> GetAllAsync(int churchId, int pageNumber, int pageSize)
     {
-        var accountPayables = await _context.AccountPayable
+        var query = _context.AccountPayable
             .Where(ap => ap.CostCenter.ChurchId == churchId)
+            .OrderByDescending(ap => ap.DueDate)
             .Include(a => a.CostCenter)
-            .AsNoTracking()
-            .ToListAsync();
+            .AsNoTracking();
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();     
+
+        var accountPayables = new PagedResult<AccountPayable>(items, totalCount, pageNumber, pageSize);
 
         return accountPayables;
     }

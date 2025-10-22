@@ -17,11 +17,11 @@ public class AccountReceivableController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
+    [HttpGet("paged")]
 
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, int pageSize = 5)
     {
-        var accountReceivables = await _service.GetAllAsync();
+        var accountReceivables = await _service.GetAllAsync(pageNumber, pageSize);
 
         return Ok(accountReceivables);
     }

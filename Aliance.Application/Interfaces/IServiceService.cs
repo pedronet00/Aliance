@@ -2,6 +2,7 @@
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Aliance.Application.Interfaces;
 
 public interface IServiceService
 {
-    Task<DomainNotificationsResult<IEnumerable<ServiceViewModel>>> GetServices();
+    Task<DomainNotificationsResult<PagedResult<ServiceViewModel>>> GetServices(int pageNumber, int pageSize);
 
     Task<DomainNotificationsResult<ServiceViewModel>> GetServiceByGuid(Guid serviceGuid);
 

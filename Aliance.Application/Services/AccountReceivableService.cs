@@ -4,6 +4,7 @@ using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -60,12 +61,19 @@ public class AccountReceivableService : IAccountReceivableService
         return result;
     }
 
-    public async Task<IEnumerable<AccountReceivableViewModel>> GetAllAsync()
+    public async Task<PagedResult<AccountReceivableViewModel>> GetAllAsync(int pageNumber, int pageSize)
     {
         var churchId = _userContext.GetChurchId();
-        var accountReceivables = await _repo.GetAllAsync(churchId);
+        var accountReceivables = await _repo.GetAllAsync(churchId, pageNumber, pageSize);
 
-        return _mapper.Map<IEnumerable<AccountReceivable>, IEnumerable<AccountReceivableViewModel>>(accountReceivables);
+        var accountsVMs = _mapper.Map<IEnumerable<AccountReceivable>, IEnumerable<AccountReceivableViewModel>>(accountReceivables.Items);
+        
+        return new PagedResult<AccountReceivableViewModel>(
+            accountsVMs,
+            accountReceivables.TotalCount,
+            accountReceivables.CurrentPage,
+            accountReceivables.PageSize
+        );
     }
 
     public async Task<AccountReceivableViewModel?> GetByGuidAsync(Guid guid)

@@ -51,6 +51,7 @@ public class DomainToDTOMappingProfile : Profile
 
 
         CreateMap<Location, LocationViewModel>().ReverseMap();
+        CreateMap<Location, LocationDTO>().ReverseMap();
 
         CreateMap<CellMeeting, CellMeetingDTO>().ReverseMap();
         CreateMap<CellMeetingDTO, CellMeeting>()

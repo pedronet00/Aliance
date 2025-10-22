@@ -1,6 +1,7 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,14 +51,22 @@ public class ServiceRepository : IServiceRepository
         return service!;
     }
 
-    public async Task<IEnumerable<Service>> GetServices(int churchId)
+    public async Task<PagedResult<Service>> GetServices(int churchId, int pageNumber, int pageSize)
     {
-        var services = await _context.Service
+        var query = _context.Service
             .Include(s => s.Location)
-            .Where(s => s.ChurchId == churchId)
+            .Where(s => s.ChurchId == churchId);
+
+        var totalCount = await query.CountAsync();
+
+        var services = await query
+            .OrderByDescending(s => s.Date)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return services;
+        var pagedServices = new PagedResult<Service>(services, totalCount, pageNumber, pageSize);
+        return pagedServices;
     }
 
     public async Task<bool> ServiceExists(int locationId, DateTime date, int churchId)

@@ -1,5 +1,6 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -27,12 +28,28 @@ public class LocationRepository : ILocationRepository
         return location;
     }
 
-    public async Task<IEnumerable<Location>> GetLocations(int churchId)
+    public async Task<PagedResult<Location>> GetLocations(int churchId, int pageNumber, int pageSize)
     {
-        var locations = await _context.Location
+        var query = _context.Location
             .Where(l => l.ChurchId == churchId)
+            .OrderBy(l => l.Name)
+            .AsNoTracking(); 
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return locations;
+        return new PagedResult<Location>(items, totalCount, pageNumber, pageSize);
+
+    }
+
+    public async Task<Location> InsertLocation(Location location)
+    {
+        await _context.Location.AddAsync(location);
+
+        return location;
     }
 }

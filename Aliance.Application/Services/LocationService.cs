@@ -1,13 +1,11 @@
-﻿using Aliance.Application.Interfaces;
+﻿using Aliance.Application.DTOs;
+using Aliance.Application.Interfaces;
 using Aliance.Application.ViewModel;
+using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aliance.Application.Services;
 
@@ -27,14 +25,37 @@ public class LocationService : ILocationService
         _userContext = userContext;
     }
 
-    public async Task<DomainNotificationsResult<IEnumerable<LocationViewModel>>> GetLocations()
+    public async Task<DomainNotificationsResult<PagedResult<LocationViewModel>>> GetLocations(int pageNumber, int pageSize)
     {
-        var result = new DomainNotificationsResult<IEnumerable<LocationViewModel>>();
+        var result = new DomainNotificationsResult<PagedResult<LocationViewModel>>();
         var churchId = _userContext.GetChurchId();
 
-        var locations = await _repo.GetLocations(churchId);
+        var locations = await _repo.GetLocations(churchId, pageNumber, pageSize);
 
-        result.Result = _mapper.Map<IEnumerable<LocationViewModel>>(locations);
+        var locationsVMs = _mapper.Map<IEnumerable<LocationViewModel>>(locations.Items);
+
+        result.Result = new PagedResult<LocationViewModel>(
+                locationsVMs,
+                locations.TotalCount,
+                locations.CurrentPage,
+                locations.PageSize
+            );
+
+        return result;
+    }
+
+    public async Task<DomainNotificationsResult<LocationViewModel>> Insert(LocationDTO locationDTO)
+    {
+        var result = new DomainNotificationsResult<LocationViewModel>();
+        var churchId = _userContext.GetChurchId();
+
+        var location = _mapper.Map<Location>(locationDTO);
+
+        await _repo.InsertLocation(location);
+
+        await _unitOfWork.Commit();
+
+        result.Result = _mapper.Map<LocationViewModel>(location);
 
         return result;
     }

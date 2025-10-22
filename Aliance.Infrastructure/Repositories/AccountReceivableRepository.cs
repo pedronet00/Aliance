@@ -1,6 +1,7 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,15 +39,27 @@ public class AccountReceivableRepository : IAccountReceivableRepository
         return true;
     }
 
-    public async Task<IEnumerable<AccountReceivable>> GetAllAsync(int churchId)
+    public async Task<PagedResult<AccountReceivable>> GetAllAsync(int churchId, int pageNumber, int pageSize)
     {
-        var accountReceivables = await _context.AccountReceivable
+        var query = _context.AccountReceivable
             .Where(ap => ap.CostCenter.ChurchId == churchId)
             .Include(a => a.CostCenter)
-            .AsNoTracking()
+            .OrderByDescending(ap => ap.DueDate)
+            .AsNoTracking();
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return accountReceivables;
+        return new PagedResult<AccountReceivable>(
+            items,
+            totalCount,
+            pageNumber,
+            pageSize
+        );
     }
 
     public async Task<AccountReceivable?> GetByGuidAsync(int churchId, Guid guid)

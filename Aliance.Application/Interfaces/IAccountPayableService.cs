@@ -2,6 +2,7 @@
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Aliance.Application.Interfaces;
 
 public interface IAccountPayableService
 {
-    Task<IEnumerable<AccountPayableViewModel>> GetAllAsync();
+    Task<PagedResult<AccountPayableViewModel>> GetAllAsync(int pageNumber, int pageSize);
 
     Task<AccountPayableViewModel?> GetByGuidAsync(Guid guid);
 

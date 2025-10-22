@@ -19,11 +19,11 @@ public class AccountPayableController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
+    [HttpGet("paged")]
     
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, int pageSize = 5)
     {
-        var accountPayables = await _service.GetAllAsync();
+        var accountPayables = await _service.GetAllAsync(pageNumber, pageSize);
         
         return Ok(accountPayables);
     }
