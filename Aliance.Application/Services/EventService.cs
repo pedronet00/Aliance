@@ -5,6 +5,7 @@ using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using AutoMapper;
 
 namespace Aliance.Application.Services;
@@ -96,14 +97,21 @@ public class EventService : IEventService
         return result;
     }
 
-    public async Task<DomainNotificationsResult<IEnumerable<EventViewModel>>> GetEvents()
+    public async Task<DomainNotificationsResult<PagedResult<EventViewModel>>> GetEvents(int pageNumber, int pageSize)
     {
-        var result = new DomainNotificationsResult<IEnumerable<EventViewModel>>();
+        var result = new DomainNotificationsResult<PagedResult<EventViewModel>>();
         var churchId = _userContext.GetChurchId();
 
-        var events = await _repo.GetEvents(churchId);
+        var events = await _repo.GetEvents(churchId, pageNumber, pageSize);
 
-        result.Result = _mapper.Map<IEnumerable<EventViewModel>>(events);
+        var eventsVMs = _mapper.Map<IEnumerable<EventViewModel>>(events.Items);
+
+        result.Result = new PagedResult<EventViewModel>(
+                eventsVMs,
+                events.TotalCount,
+                events.CurrentPage,
+                events.PageSize
+            );
 
         return result;
     }

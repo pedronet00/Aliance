@@ -2,6 +2,7 @@
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Aliance.Application.Interfaces;
 
 public interface ICostCenterService 
 {
-    Task<IEnumerable<CostCenterViewModel>> GetAllCenters();
+    Task<PagedResult<CostCenterViewModel>> GetAllCenters(int pageNumber, int pageSize);
 
     Task<DomainNotificationsResult<CostCenterViewModel>> GetByGuid(Guid guid);
 

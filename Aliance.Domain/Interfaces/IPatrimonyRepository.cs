@@ -1,4 +1,5 @@
 ﻿using Aliance.Domain.Entities;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Aliance.Domain.Interfaces;
 
 public interface IPatrimonyRepository
 {
-    Task<IEnumerable<Patrimony>> GetAllPatrimonies(int churchId);
+    Task<PagedResult<Patrimony>> GetAllPatrimonies(int churchId, int pageNumber, int pageSize);
 
     Task<Patrimony> GetPatrimonyByGuid(int churchId, Guid guid);
 

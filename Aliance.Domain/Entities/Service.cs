@@ -23,6 +23,8 @@ public class Service
     public int ChurchId { get; set; }
     public Church Church { get; set; }
 
+    public ICollection<ServiceRole> ServiceRoles { get; set; } = new List<ServiceRole>();
+
     private Service() { }
 
     public Service(DateTime date, ServiceStatus status, int locationId, int churchId)

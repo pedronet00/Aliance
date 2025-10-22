@@ -2,6 +2,7 @@
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Aliance.Application.Interfaces;
 
 public interface IEventService
 {
-    Task<DomainNotificationsResult<IEnumerable<EventViewModel>>> GetEvents();
+    Task<DomainNotificationsResult<PagedResult<EventViewModel>>> GetEvents(int pageNumber, int pageSize);
 
     Task<DomainNotificationsResult<EventViewModel>> GetEventByGuid(Guid guid);
 

@@ -1,5 +1,6 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Aliance.Infrastructure.Repositories;
 
@@ -59,14 +61,22 @@ public class CostCenterRepository : ICostCenterRepository
         return true;
     }
 
-    public async Task<IEnumerable<CostCenter>> GetAllCenters(int churchId)
+    public async Task<PagedResult<CostCenter>> GetAllCenters(int churchId, int pageNumber, int pageSize)
     {
-        var centers = await _context.CostCenter.Where(c => c.ChurchId == churchId)
+        var query = _context.CostCenter
+            .Where(c => c.ChurchId == churchId)
             .Include(c => c.Department)
-            .AsNoTracking()
+            .OrderBy(c => c.Name)
+            .AsNoTracking();
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return centers;
+        return new PagedResult<CostCenter>(items, totalCount, pageNumber, pageSize);
     }
 
 

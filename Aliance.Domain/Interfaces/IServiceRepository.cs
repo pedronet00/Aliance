@@ -23,4 +23,6 @@ public interface IServiceRepository
     Task<Service> ToggleStatus(Guid serviceGuid, int churchId, ServiceStatus status);
 
     Task<bool> ServiceExists(int locationId, DateTime date, int churchId);
+
+    Task<Service> GetServiceById(int churchId, int serviceId);
 }

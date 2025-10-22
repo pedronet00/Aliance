@@ -19,11 +19,11 @@ public class PatrimonyMaintenanceController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
+    [HttpGet("paged")]
     
-    public async Task<IActionResult> GetAllMaintenances()
+    public async Task<IActionResult> GetAllMaintenances([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
     {
-        var maintenances = await _service.GetAllMaintenances();
+        var maintenances = await _service.GetAllMaintenances(pageNumber, pageSize);
         return Ok(maintenances);
     }
 
@@ -67,11 +67,11 @@ public class PatrimonyMaintenanceController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("patrimony/{patrimonyGuid}")]
+    [HttpGet("paged/patrimony/{patrimonyGuid}")]
     
-    public async Task<IActionResult> GetMaintenancesByPatrimonyGuid(Guid patrimonyGuid)
+    public async Task<IActionResult> GetMaintenancesByPatrimonyGuid(Guid patrimonyGuid, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
     {
-        var result = await _service.GetMaintenancesByPatrimonyGuid(patrimonyGuid);
+        var result = await _service.GetMaintenancesByPatrimonyGuid(patrimonyGuid, pageNumber, pageSize);
         return Ok(result);
     }
 

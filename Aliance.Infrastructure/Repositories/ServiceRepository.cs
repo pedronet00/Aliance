@@ -41,6 +41,15 @@ public class ServiceRepository : IServiceRepository
         return service!;
     }
 
+    public async Task<Service> GetServiceById(int churchId, int serviceId)
+    {
+        var service = await _context.Service
+            .Where(s => s.ChurchId == churchId && s.Id == serviceId)
+            .FirstOrDefaultAsync();
+
+        return service!;
+    }
+
     public async Task<IEnumerable<Service>> GetServices(int churchId)
     {
         var services = await _context.Service

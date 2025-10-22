@@ -5,11 +5,13 @@ using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -54,13 +56,20 @@ public class PatrimonyMaintenanceService : IPatrimonyMaintenanceService
         return result;
     }
 
-    public async Task<IEnumerable<PatrimonyMaintenanceViewModel>> GetAllMaintenances()
+    public async Task<PagedResult<PatrimonyMaintenanceViewModel>> GetAllMaintenances(int pageNumber, int pageSize)
     {
         var churchId = _context.GetChurchId();
 
-        var maintenances = await _repo.GetAllMaintenances(churchId);
+        var maintenances = await _repo.GetAllMaintenances(churchId, pageNumber, pageSize);
 
-        return _mapper.Map<IEnumerable<PatrimonyMaintenanceViewModel>>(maintenances);
+        var maintenancesVMs =  _mapper.Map<IEnumerable<PatrimonyMaintenanceViewModel>>(maintenances.Items);
+
+        return new PagedResult<PatrimonyMaintenanceViewModel>(
+                maintenancesVMs,
+                maintenances.TotalCount,
+                maintenances.CurrentPage,
+                maintenances.PageSize
+            );
     }
 
     public async Task<DomainNotificationsResult<PatrimonyMaintenanceViewModel>> GetMaintenanceByGuid(Guid guid)
@@ -81,14 +90,21 @@ public class PatrimonyMaintenanceService : IPatrimonyMaintenanceService
         return result;
     }
 
-    public async Task<DomainNotificationsResult<IEnumerable<PatrimonyMaintenanceViewModel>>> GetMaintenancesByPatrimonyGuid(Guid patrimonyGuid)
+    public async Task<DomainNotificationsResult<PagedResult<PatrimonyMaintenanceViewModel>>> GetMaintenancesByPatrimonyGuid(Guid patrimonyGuid, int pageNumber, int pageSize)
     {
         var churchId = _context.GetChurchId();
-        var result = new DomainNotificationsResult<IEnumerable<PatrimonyMaintenanceViewModel>>();
+        var result = new DomainNotificationsResult<PagedResult<PatrimonyMaintenanceViewModel>>();
 
-        var maintenances = await _repo.GetMaintenancesByPatrimonyGuid(churchId, patrimonyGuid);
+        var maintenances = await _repo.GetMaintenancesByPatrimonyGuid(churchId, patrimonyGuid, pageNumber, pageSize);
 
-        result.Result = _mapper.Map<IEnumerable<PatrimonyMaintenanceViewModel>>(maintenances);
+        var maintenancesVMs = _mapper.Map<IEnumerable<PatrimonyMaintenanceViewModel>>(maintenances.Items);
+
+        result.Result =  new PagedResult<PatrimonyMaintenanceViewModel>(
+                maintenancesVMs,
+                maintenances.TotalCount,
+                maintenances.CurrentPage,
+                maintenances.PageSize
+            );
 
         return result;
     }

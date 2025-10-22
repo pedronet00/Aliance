@@ -1,8 +1,10 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Aliance.Infrastructure.Repositories;
 
@@ -26,14 +28,20 @@ public class PatrimonyMaintenanceRepository : IPatrimonyMaintenanceRepository
         return maintenance;
     }
 
-    public async Task<IEnumerable<Domain.Entities.PatrimonyMaintenance>> GetAllMaintenances(int churchId)
+    public async Task<PagedResult<PatrimonyMaintenance>> GetAllMaintenances(int churchId, int pageNumber, int pageSize)
     {
-        var maintenances = await _context.PatrimonyMaintenance
+        var query = _context.PatrimonyMaintenance
             .Include(m => m.Patrimony)
-            .Where(m => m.Patrimony.ChurchId == churchId)
+            .Where(m => m.Patrimony.ChurchId == churchId);
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return maintenances;
+        return new PagedResult<PatrimonyMaintenance>(items, totalCount, pageNumber, pageSize);
     }
 
     public async Task<Domain.Entities.PatrimonyMaintenance> GetMaintenanceByGuid(int churchId, Guid guid)
@@ -45,14 +53,20 @@ public class PatrimonyMaintenanceRepository : IPatrimonyMaintenanceRepository
         return maintenance;
     }
 
-    public async Task<IEnumerable<Domain.Entities.PatrimonyMaintenance>> GetMaintenancesByPatrimonyGuid(int churchId, Guid patrimonyGuid)
+    public async Task<PagedResult<PatrimonyMaintenance>> GetMaintenancesByPatrimonyGuid(int churchId, Guid patrimonyGuid, int pageNumber, int pageSize)
     {
-        var maintenances = await _context.PatrimonyMaintenance
+        var query = _context.PatrimonyMaintenance
             .Include(m => m.Patrimony)
-            .Where(m => m.Patrimony.Guid == patrimonyGuid && m.Patrimony.ChurchId == churchId)
+            .Where(m => m.Patrimony.Guid == patrimonyGuid && m.Patrimony.ChurchId == churchId);
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return maintenances;
+        return new PagedResult<PatrimonyMaintenance>(items, totalCount, pageNumber, pageSize);
     }
 
     public async Task<Domain.Entities.PatrimonyMaintenance> InsertMaintenance(Domain.Entities.PatrimonyMaintenance maintenance)

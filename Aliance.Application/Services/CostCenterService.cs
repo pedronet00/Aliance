@@ -4,6 +4,7 @@ using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using AutoMapper;
 
 namespace Aliance.Application.Services
@@ -105,15 +106,20 @@ namespace Aliance.Application.Services
             return result;
         }
 
-        public async Task<IEnumerable<CostCenterViewModel>> GetAllCenters()
+        public async Task<PagedResult<CostCenterViewModel>> GetAllCenters(int pageNumber, int pageSize)
         {
             var churchId = _context.GetChurchId();
 
-            var centers = await _repo.GetAllCenters(churchId);
+            var pagedCostCenters = await _repo.GetAllCenters(churchId, pageNumber, pageSize);
 
-            var costCenterViewModels = _mapper.Map<IEnumerable<CostCenterViewModel>>(centers);
+            var centersVMs = _mapper.Map<IEnumerable<CostCenterViewModel>>(pagedCostCenters.Items);
 
-            return costCenterViewModels;
+            return new PagedResult<CostCenterViewModel>(
+                centersVMs,
+                pagedCostCenters.TotalCount,
+                pagedCostCenters.CurrentPage,
+                pagedCostCenters.PageSize
+            );
         }
 
         public async Task<DomainNotificationsResult<CostCenterViewModel>> GetByGuid(Guid guid)

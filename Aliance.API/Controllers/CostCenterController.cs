@@ -19,11 +19,11 @@ public class CostCenterController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
+    [HttpGet("paged")]
     
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
     {
-        var centers = await _service.GetAllCenters();
+        var centers = await _service.GetAllCenters(pageNumber, pageSize);
         return Ok(centers);
     }
 

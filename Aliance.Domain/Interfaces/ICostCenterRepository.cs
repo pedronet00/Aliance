@@ -1,4 +1,5 @@
 ﻿using Aliance.Domain.Entities;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Aliance.Domain.Interfaces;
 
 public interface ICostCenterRepository
 {
-    Task<IEnumerable<CostCenter>> GetAllCenters(int churchId);
+    Task<PagedResult<CostCenter>> GetAllCenters(int churchId, int pageNumber, int pageSize);
 
     Task<CostCenter> GetByGuid(int churchId, Guid guid);
 

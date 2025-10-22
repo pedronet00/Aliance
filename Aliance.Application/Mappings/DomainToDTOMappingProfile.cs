@@ -33,6 +33,11 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Income, IncomeDTO>().ReverseMap();
         CreateMap<Income, IncomeViewModel>().ReverseMap();
 
+        CreateMap<ServiceRole, ServiceRoleDTO>().ReverseMap();
+        CreateMap<ServiceRole, ServiceRoleViewModel>().ReverseMap();
+        CreateMap<ServiceRole, ServiceRoleViewModel>()
+            .ForMember(dest => dest.MemberName, opt => opt.MapFrom(src => src.Member.UserName));
+
         CreateMap<Expense, ExpenseDTO>().ReverseMap();
         CreateMap<Expense, ExpenseViewModel>().ReverseMap();
         CreateMap<CellMember, CellMemberViewModel>()

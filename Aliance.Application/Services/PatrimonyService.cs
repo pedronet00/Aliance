@@ -4,6 +4,7 @@ using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -51,13 +52,20 @@ public class PatrimonyService : IPatrimonyService
         return result;
     }
 
-    public async Task<IEnumerable<PatrimonyViewModel>> GetAllPatrimonies()
+    public async Task<PagedResult<PatrimonyViewModel>> GetAllPatrimonies(int pageNumber, int pageSize)
     {
         var churchId = _userContext.GetChurchId();
 
-        var patrimonies = await _repo.GetAllPatrimonies(churchId);
+        var patrimonies = await _repo.GetAllPatrimonies(churchId, pageNumber, pageSize);
 
-        return _mapper.Map<IEnumerable<PatrimonyViewModel>>(patrimonies);
+        var patrimoniesVMs =  _mapper.Map<IEnumerable<PatrimonyViewModel>>(patrimonies.Items);
+
+        return new PagedResult<PatrimonyViewModel>(
+            patrimoniesVMs,
+            patrimonies.TotalCount,
+            patrimonies.CurrentPage,
+            patrimonies.PageSize
+            );
     }
 
     public async Task<DomainNotificationsResult<PatrimonyViewModel>> GetPatrimonyByGuid(Guid guid)

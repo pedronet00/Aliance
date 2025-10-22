@@ -37,6 +37,7 @@ public static class DependencyInjection
         services.AddScoped<IEventRepository, EventRepository>();
         services.AddScoped<ITitheRepository, TitheRepository>();
         services.AddScoped<IServiceRepository, ServiceRepository>();
+        services.AddScoped<IServiceRoleRepository, ServiceRoleRepository>();
 
         // Services
         services.AddScoped<IDepartmentService, DepartmentService>();
@@ -63,6 +64,7 @@ public static class DependencyInjection
         services.AddScoped<ITitheService, TitheService>();
         services.AddScoped<IRegisterService, RegisterService>();
         services.AddScoped<IServiceService, ServiceService>();
+        services.AddScoped<IServiceRoleService, ServiceRoleService>();
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();

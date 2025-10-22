@@ -1,5 +1,6 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Aliance.Infrastructure.Repositories;
 
@@ -28,11 +30,19 @@ public class PatrimonyRepository : IPatrimonyRepository
         return patrimony;
     }
 
-    public async Task<IEnumerable<Patrimony>> GetAllPatrimonies(int churchId)
+    public async Task<PagedResult<Patrimony>> GetAllPatrimonies(int churchId, int pageNumber, int pageSize)
     {
-        var patrimonies = await _context.Patrimony.AsNoTracking().Where(p => p.ChurchId == churchId).ToListAsync();
+        var query = _context.Patrimony.AsNoTracking().Where(p => p.ChurchId == churchId);
 
-        return patrimonies;
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<Patrimony>(items, totalCount, pageNumber, pageSize);
+
     }
 
     public async Task<Patrimony?> GetPatrimonyByGuid(int churchId, Guid guid)

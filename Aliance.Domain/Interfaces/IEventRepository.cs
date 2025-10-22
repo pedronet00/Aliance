@@ -1,12 +1,13 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
+using Aliance.Domain.Pagination;
 
 namespace Aliance.Domain.Interfaces;
 
 public interface IEventRepository
 {
-    Task<IEnumerable<Event>> GetEvents(int churchId);
-    
+    Task<PagedResult<Event>> GetEvents(int churchId, int pageNumber, int pageSize);
+
     Task<Event> GetEventByGuid(int churchId, Guid guid);
 
     Task<Event> AddEvent(Event newEvent);

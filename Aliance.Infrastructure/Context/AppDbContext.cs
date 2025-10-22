@@ -33,6 +33,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<PatrimonyMaintenanceDocument> PatrimonyMaintenanceDocuments { get; set; }
     public DbSet<PatrimonyMaintenance> PatrimonyMaintenance { get; set; }
     public DbSet<Service> Service { get; set; }
+    public DbSet<ServiceRole> ServiceRole { get; set; }
     public DbSet<ServicePresence> ServicePresence { get; set; }
     public DbSet<SundaySchoolClass> SundaySchool { get; set; }
     public DbSet<SundaySchoolClassroom> SundaySchoolClassRoom { get; set; }

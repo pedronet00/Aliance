@@ -1,6 +1,7 @@
 ﻿using Aliance.Application.DTOs;
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Aliance.Application.Interfaces;
 
 public interface IPatrimonyService
 {
-    Task<IEnumerable<PatrimonyViewModel>> GetAllPatrimonies();
+    Task<PagedResult<PatrimonyViewModel>> GetAllPatrimonies(int pageNumber, int pageSize);
 
     Task<DomainNotificationsResult<PatrimonyViewModel>> GetPatrimonyByGuid(Guid guid);
 

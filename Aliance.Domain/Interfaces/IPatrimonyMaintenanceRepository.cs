@@ -1,11 +1,12 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
+using Aliance.Domain.Pagination;
 
 namespace Aliance.Domain.Interfaces;
 
 public interface IPatrimonyMaintenanceRepository
 {
-    Task<IEnumerable<PatrimonyMaintenance>> GetAllMaintenances(int churchId);
+    Task<PagedResult<PatrimonyMaintenance>> GetAllMaintenances(int churchId, int pageNumber, int pageSize);
 
     Task<PatrimonyMaintenance> GetMaintenanceByGuid(int churchId, Guid guid);
 
@@ -15,7 +16,7 @@ public interface IPatrimonyMaintenanceRepository
 
     Task<PatrimonyMaintenance> DeleteMaintenance(int churchId, Guid guid);
 
-    Task<IEnumerable<PatrimonyMaintenance>> GetMaintenancesByPatrimonyGuid(int churchId, Guid patrimonyGuid);
+    Task<PagedResult<PatrimonyMaintenance>> GetMaintenancesByPatrimonyGuid(int churchId, Guid patrimonyGuid, int pageNumber, int pageSize);
 
     Task<bool> MaintenanceAlreadyExists(DateTime maintenanceDate, int patrimonyId);
 

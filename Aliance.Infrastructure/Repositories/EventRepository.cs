@@ -1,6 +1,7 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,14 +51,21 @@ public class EventRepository : IEventRepository
         return ev;
     }
 
-    public async Task<IEnumerable<Event>> GetEvents(int churchId)
+    public async Task<PagedResult<Event>> GetEvents(int churchId, int pageNumber, int pageSize)
     {
-        var events = await _context.Event
+        var query = _context.Event
             .Where(e => e.ChurchId == churchId)
-            .Include(e => e.Location)
+            .OrderBy(e => e.Date)
+            .Include(e => e.Location);
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return events;
+        return new PagedResult<Event>(items, totalCount, pageNumber, pageSize);
     }
 
     public async Task<IEnumerable<Event>> GetEventsByDateRange(int churchId, DateTime startDate, DateTime endDate)

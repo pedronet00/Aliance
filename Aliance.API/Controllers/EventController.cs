@@ -16,10 +16,10 @@ public class EventController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetEvents()
+    [HttpGet("paged")]
+    public async Task<IActionResult> GetEvents([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
     {
-        var result = await _service.GetEvents();
+        var result = await _service.GetEvents(pageNumber, pageSize);
         if (result.Notifications.Any())
             return BadRequest(result.Notifications);
         return Ok(result.Result);

@@ -18,11 +18,11 @@ public class PatrimonyController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
+    [HttpGet("paged")]
     
-    public async Task<IActionResult> GetAllPatrimonies()
+    public async Task<IActionResult> GetAllPatrimonies([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
     {
-        var patrimonies = await _service.GetAllPatrimonies();
+        var patrimonies = await _service.GetAllPatrimonies(pageNumber, pageSize);
         return Ok(patrimonies);
     }
 
