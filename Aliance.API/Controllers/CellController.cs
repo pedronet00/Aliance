@@ -20,11 +20,11 @@ public class CellController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
+    [HttpGet("paged")]
     
-    public async Task<IActionResult> GetAllCells()
+    public async Task<IActionResult> GetAllCells([FromQuery] int pageNumber = 1, int pageSize = 5)
     {
-        var cells = await _service.GetAllCells();
+        var cells = await _service.GetAllCells(pageNumber, pageSize);
         return Ok(cells);
     }
 
@@ -56,7 +56,6 @@ public class CellController : ControllerBase
     [ValidateActiveUsers("LeaderID")]
     public async Task<IActionResult> UpdateCell(Guid guid, [FromBody] CellDTO cell)
     {
-        // ✅ Garante que o DTO saiba qual célula está sendo atualizada
         cell.Guid = guid;
 
         var result = await _service.UpdateCell(cell);

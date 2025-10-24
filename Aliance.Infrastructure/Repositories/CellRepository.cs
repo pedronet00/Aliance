@@ -1,5 +1,6 @@
 ﻿using Aliance.Application.Interfaces;
 using Aliance.Domain.Entities;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -37,16 +38,23 @@ namespace Aliance.Infrastructure.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<Cell>> GetAllCells(int churchId)
+        public async Task<PagedResult<Cell>> GetAllCells(int churchId, int pageNumber, int pageSize)
         {
-            var cells = await _context.Cell
+            var query = _context.Cell
                 .Where(c => c.ChurchId == churchId)
                 .Include(c => c.Location)
                 .Include(c => c.Leader)
-                .Include(c => c.Church)
-                .ToListAsync();
+                .Include(c => c.Church);
 
-            return cells;
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+            return new PagedResult<Cell>(items, totalCount, pageNumber, pageSize);
+
         }
 
         public async Task<Cell> GetCellByGuid(int churchId, Guid guid)

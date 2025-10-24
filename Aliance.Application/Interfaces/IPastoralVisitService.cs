@@ -3,6 +3,7 @@ using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Aliance.Application.Interfaces;
 
 public interface IPastoralVisitService
 {
-    Task<DomainNotificationsResult<IEnumerable<PastoralVisitViewModel>>> GetAllVisits();
+    Task<DomainNotificationsResult<PagedResult<PastoralVisitViewModel>>> GetAllVisits(int pageNumber, int pageSize);
 
     Task<DomainNotificationsResult<PastoralVisitViewModel>> GetPastoralVisitByGuid(Guid guid);
 

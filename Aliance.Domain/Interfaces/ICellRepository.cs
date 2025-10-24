@@ -1,4 +1,5 @@
 ﻿using Aliance.Domain.Entities;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Aliance.Application.Interfaces
 {
     public interface ICellRepository
     {
-        Task<IEnumerable<Cell>> GetAllCells(int churchId);
+        Task<PagedResult<Cell>> GetAllCells(int churchId, int pageNumber, int pageSize);
 
         Task<Cell> GetCellByGuid(int churchId, Guid guid);
 

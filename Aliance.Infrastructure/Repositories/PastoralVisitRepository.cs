@@ -1,6 +1,7 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -30,15 +31,21 @@ public class PastoralVisitRepository : IPastoralVisitRepository
         return visit;
     }
 
-    public async Task<IEnumerable<PastoralVisit>> GetAllVisits(int churchId)
+    public async Task<PagedResult<PastoralVisit>> GetAllVisits(int churchId, int pageNumber, int pageSize)
     {
-        var visits = await _context.PastoralVisit
+        var query = _context.PastoralVisit
             .Where(v => v.ChurchId == churchId)
             .Include(v => v.VisitedMember)
-            .Include(v => v.Pastor)
+            .Include(v => v.Pastor);
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return visits;
+        return new PagedResult<PastoralVisit>(items, totalCount, pageNumber, pageSize);
     }
 
     public async Task<PastoralVisit> GetPastoralVisitByGuid(int churchId, Guid guid)

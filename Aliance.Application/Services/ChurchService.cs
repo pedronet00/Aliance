@@ -81,8 +81,8 @@ public class ChurchService : IChurchService
     {
         var church = await _churchRepository.GetChurchByAsaasCustomerId(asaasCustomerId);
 
-        if (church is null)
-            throw new ArgumentNullException(nameof(church), "Igreja não encontrada.");
+       //if (church is null)
+       //     throw new ArgumentNullException(nameof(church), "Igreja não encontrada.");
 
         var churchViewModel = _mapper.Map<ChurchViewModel>(church);
 

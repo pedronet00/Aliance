@@ -1,5 +1,6 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Aliance.Domain.Interfaces;
 
 public interface IPastoralVisitRepository
 {
-    Task<IEnumerable<PastoralVisit>> GetAllVisits(int churchId);
+    Task<PagedResult<PastoralVisit>> GetAllVisits(int churchId, int pageNumber, int pageSize);
 
     Task<PastoralVisit> GetPastoralVisitByGuid(int churchId, Guid guid);
 

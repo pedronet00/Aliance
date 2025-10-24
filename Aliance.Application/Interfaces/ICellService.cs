@@ -1,12 +1,13 @@
 ﻿using Aliance.Application.DTOs;
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 
 namespace Aliance.Application.Interfaces;
 
 public interface ICellService
 {
-    Task<IEnumerable<CellViewModel>> GetAllCells();
+    Task<PagedResult<CellViewModel>> GetAllCells(int pageNumber, int pageSize);
 
     Task<DomainNotificationsResult<CellViewModel>> GetCellById(Guid guid);
 

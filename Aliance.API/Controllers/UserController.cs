@@ -1,4 +1,5 @@
 ﻿using Aliance.Application.DTOs;
+using Aliance.Application.DTOs.Auth;
 using Aliance.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -8,7 +9,6 @@ namespace Aliance.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class UserController : ControllerBase
 {
     private readonly IUserService _service;
@@ -19,6 +19,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("paged")]
+    [Authorize]
     public async Task<IActionResult> GetUsersByChurch([FromQuery] int pageNumber = 1, int pageSize = 5)
     {
         var result = await _service.GetUsersByChurchAsync(pageNumber, pageSize);
@@ -27,6 +28,7 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Route("GetById")]
+    [Authorize]
     public async Task<IActionResult> GetUserById(string userId)
     {
         var result = await _service.GetUserByIdAsync(userId);
@@ -35,6 +37,7 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Route("Ativos")]
+    [Authorize]
     public async Task<IActionResult> GetAllActiveUsers()
     {
         var result = await _service.GetAllActiveUsers();
@@ -44,6 +47,7 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Route("Pastores")]
+    [Authorize]
     public async Task<IActionResult> GetAllActivePastors()
     {
         var result = await _service.GetAllActivePastors();
@@ -53,6 +57,7 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Route("GetByEmail")]
+    [Authorize]
     public async Task<IActionResult> GetUserByEmail(string email)
     {
         var result = await _service.GetUserByEmailAsync(email);
@@ -60,6 +65,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> CreateUser([FromBody] UserDTO user)
     {
         var result = await _service.CreateUserAsync(user);
@@ -67,6 +73,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize]
     public async Task<IActionResult> UpdateUser([FromBody] UserDTO user)
     {
         var result = await _service.UpdateUserAsync(user);
@@ -74,6 +81,7 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize]
     public async Task<IActionResult> DeleteUser(string userId)
     {
         var result = await _service.DeleteUserAsync(userId);
@@ -82,6 +90,7 @@ public class UserController : ControllerBase
 
     [HttpPost]
     [Route("ChangePassword")]
+    [Authorize]
     public async Task<IActionResult> ChangePassword(string userId, string currentPassword, string newPassword)
     {
         var result = await _service.ChangePasswordAsync(userId, currentPassword, newPassword);
@@ -89,7 +98,16 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
+    [Route("DefineFirstPassword")]
+    public async Task<IActionResult> DefineFirstPassword(DefinePasswordDTO dto)
+    {
+        var result = await _service.DefinePassword(dto);
+        return Ok(result);
+    }
+
+    [HttpPost]
     [Route("AssignRole")]
+    [Authorize]
     public async Task<IActionResult> AssignRole(string userId, string role)
     {
         var result = await _service.AssignRoleAsync(userId, role);
@@ -98,6 +116,7 @@ public class UserController : ControllerBase
 
     [HttpPost]
     [Route("RemoveRole")]
+    [Authorize]
     public async Task<IActionResult> RemoveRole(string userId, string role)
     {
         var result = await _service.RemoveRoleAsync(userId, role);
@@ -106,6 +125,7 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Route("GetRoles")]
+    [Authorize]
     public async Task<IActionResult> GetUserRoles(string userId)
     {
         var result = await _service.GetUserRolesAsync(userId);
@@ -113,6 +133,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPatch("deactivate/{id}")]
+    [Authorize]
     public async Task<IActionResult> DeactivateUser(string id)
     {
         var result = await _service.DeactivateUser(id);
@@ -120,6 +141,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPatch("activate/{id}")]
+    [Authorize]
     public async Task<IActionResult> ActivateUser(string id)
     {
         var result = await _service.ActivateUser(id);

@@ -5,6 +5,7 @@ using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using AutoMapper;
 
 namespace Aliance.Application.Services;
@@ -67,14 +68,21 @@ public class PastoralVisitService : IPastoralVisitService
         return result;
     }
 
-    public async Task<DomainNotificationsResult<IEnumerable<PastoralVisitViewModel>>> GetAllVisits()
+    public async Task<DomainNotificationsResult<PagedResult<PastoralVisitViewModel>>> GetAllVisits(int pageNumber, int pageSize)
     {
-        var result = new DomainNotificationsResult<IEnumerable<PastoralVisitViewModel>>();
+        var result = new DomainNotificationsResult<PagedResult<PastoralVisitViewModel>>();
 
         var churchId = _context.GetChurchId();
-        var visits = await _repo.GetAllVisits(churchId);
+        var visits = await _repo.GetAllVisits(churchId, pageNumber, pageSize);
 
-        result.Result = _mapper.Map<IEnumerable<PastoralVisitViewModel>>(visits);
+        var visitsVMs = _mapper.Map<IEnumerable<PastoralVisitViewModel>>(visits.Items);
+
+        result.Result = new PagedResult<PastoralVisitViewModel>(
+                visitsVMs,
+                visits.TotalCount,
+                visits.CurrentPage,
+                visits.PageSize
+            );
         return result;
     }
 

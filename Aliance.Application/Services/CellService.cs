@@ -4,6 +4,7 @@ using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -76,15 +77,21 @@ public class CellService : ICellService
         return result;
     }
 
-    public async Task<IEnumerable<CellViewModel>> GetAllCells()
+    public async Task<PagedResult<CellViewModel>> GetAllCells(int pageNumber, int pageSize)
     {
         var churchId = _context.GetChurchId();
 
-        var cells = await _cellRepository.GetAllCells(churchId);
+        var cells = await _cellRepository.GetAllCells(churchId, pageNumber, pageSize);
 
-        var cellsVM = _mapper.Map<IEnumerable<CellViewModel>>(cells);
+        var cellsVM = _mapper.Map<IEnumerable<CellViewModel>>(cells.Items);
 
-        return cellsVM;
+        return new PagedResult<CellViewModel>(
+                cellsVM,
+                cells.TotalCount,
+                cells.CurrentPage,
+                cells.PageSize
+            );
+
     }
 
     public async Task<DomainNotificationsResult<CellViewModel>> GetCellById(Guid guid)
