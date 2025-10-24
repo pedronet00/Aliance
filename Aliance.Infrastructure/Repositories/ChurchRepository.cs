@@ -68,6 +68,15 @@ namespace Aliance.Infrastructure.Repositories
             return churches;
         }
 
+        public async Task<string> GetChurchesFirstUserMail(string churchAsaasId)
+        {
+            var church = _context.Church.FirstOrDefaultAsync(c => c.AsaasCustomerId == churchAsaasId);
+
+            var response = church.Result.Email;
+
+            return response;
+        }
+
         public async Task<Church> InsertChurch(Church church)
         {
             if (church is null)

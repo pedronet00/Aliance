@@ -11,6 +11,8 @@ namespace Aliance.Domain.Interfaces
     {
         Task<IEnumerable<Church>> GetChurches();
 
+        Task<string> GetChurchesFirstUserMail(string churchAsaasId);
+
         Task<Church> InsertChurch(Church church);
 
         void UpdateChurch(Church church);

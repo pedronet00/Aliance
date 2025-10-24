@@ -7,6 +7,8 @@ public interface IChurchService
 {
     Task<IEnumerable<ChurchViewModel>> GetAllChurches();
 
+    Task<string> GetChurchesFirstUser(string churchAsaasId);
+
     Task<ChurchViewModel> GetChurchById(int id);
 
     Task<ChurchViewModel> InsertChurch(ChurchDTO church);

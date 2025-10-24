@@ -6,6 +6,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Aliance.Application.Interfaces;
+using Aliance.Infrastructure.Mailing;
 
 namespace Aliance.API.Controllers
 {
@@ -16,8 +17,9 @@ namespace Aliance.API.Controllers
         private readonly ILogger<AsaasWebhookController> _logger;
         private readonly IChurchService _churchService;
         private readonly string _logFilePath;
+        private readonly IMailSending _mailSending;
 
-        public AsaasWebhookController(ILogger<AsaasWebhookController> logger, IChurchService churchService)
+        public AsaasWebhookController(ILogger<AsaasWebhookController> logger, IChurchService churchService, IMailSending mailSending)
         {
             _logger = logger;
             _churchService = churchService;
@@ -27,6 +29,7 @@ namespace Aliance.API.Controllers
                 Directory.CreateDirectory(logDirectory);
 
             _logFilePath = Path.Combine(logDirectory, "AsaasWebhook.log");
+            _mailSending = mailSending;
         }
 
         [HttpPost]
@@ -38,9 +41,6 @@ namespace Aliance.API.Controllers
                 var body = await reader.ReadToEndAsync();
 
                 await LogAsync($"Webhook recebido: {body}");
-
-                if (string.IsNullOrWhiteSpace(body))
-                    return BadRequest("Corpo da requisição vazio.");
 
                 using var jsonDoc = JsonDocument.Parse(body);
                 var root = jsonDoc.RootElement;
@@ -56,23 +56,10 @@ namespace Aliance.API.Controllers
                 else if (root.TryGetProperty("subscription", out var subscriptionElement))
                     payload = subscriptionElement;
 
-                if (payload is null)
-                {
-                    await LogAsync("Webhook sem campos 'payment' ou 'subscription'.");
-                    return BadRequest("Payload inválido.");
-                }
 
                 // Extrai o customerId
                 string? customerId = payload.Value.GetProperty("customer").GetString();
-                if (string.IsNullOrWhiteSpace(customerId))
-                {
-                    await LogAsync("Campo 'customer' ausente no payload.");
-                    return BadRequest("Campo 'customer' ausente.");
-                }
 
-                Console.WriteLine("----------------------------------------");
-                Console.WriteLine("ASAAS CUSTOMER ID: " + customerId);
-                Console.WriteLine("----------------------------------------");
                 // Busca a igreja vinculada a este cliente Asaas
                 var church = await _churchService.GetChurchByAsaasCustomerId(customerId);
                 if (church == null)
@@ -94,7 +81,12 @@ namespace Aliance.API.Controllers
 
                             await LogAsync($"Pagamento recebido: customer={customerId}, valor={value}, pagoEm={paymentDate:yyyy-MM-dd}, próxima cobrança={nextDueDate:yyyy-MM-dd}");
 
+                            var firstCustomerMail = await _churchService.GetChurchesFirstUser(customerId);
                             await _churchService.AtualizarPagamentoRecebidoAsync(customerId, paymentDate, nextDueDate, value);
+                            Console.WriteLine("---------------------------");
+                            Console.WriteLine($"ENVIANDO EMAIL PARA: {firstCustomerMail}");
+                            Console.WriteLine("---------------------------");
+                            await _mailSending.SendEmailAsync(firstCustomerMail, "teste envio de email", "plain text", "html");
                             break;
                         }
 

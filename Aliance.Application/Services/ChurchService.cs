@@ -4,6 +4,8 @@ using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
 
 namespace Aliance.Application.Services;
@@ -13,13 +15,15 @@ public class ChurchService : IChurchService
 
     private readonly IUnitOfWork _unitOfWork;
     private readonly IChurchRepository _churchRepository;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IMapper _mapper;
 
-    public ChurchService(IUnitOfWork unitOfWork, IChurchRepository churchRepository, IMapper mapper)
+    public ChurchService(IUnitOfWork unitOfWork, IChurchRepository churchRepository, IMapper mapper, UserManager<ApplicationUser> userManager)
     {
         _unitOfWork = unitOfWork;
         _churchRepository = churchRepository;
         _mapper = mapper;
+        _userManager = userManager;
     }
 
     public async Task<bool> DeleteChurch(int id)
@@ -119,5 +123,15 @@ public class ChurchService : IChurchService
         await _unitOfWork.Commit();
 
         return true;
+    }
+
+    public async Task<string> GetChurchesFirstUser(string churchAsaasId)
+    {
+        var email = await _userManager.Users
+            .Where(u => u.Church.AsaasCustomerId == churchAsaasId)
+            .Select(u => u.Email)
+            .FirstOrDefaultAsync();
+
+        return email!;
     }
 }
