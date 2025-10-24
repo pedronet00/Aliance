@@ -1,10 +1,11 @@
 ﻿using Aliance.Domain.Entities;
+using Aliance.Domain.Pagination;
 
 namespace Aliance.Domain.Interfaces;
 
 public interface IBudgetRepository
 {
-    Task<IEnumerable<Budget>> GetAllBudgetsAsync(int churchId);
+    Task<PagedResult<Budget>> GetAllBudgetsAsync(int churchId, int pageNumber, int pageSize);
 
     Task<Budget?> GetBudgetByGuidAsync(int churchId, Guid guid);
 

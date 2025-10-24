@@ -1,5 +1,6 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Aliance.Domain.Interfaces;
 
 public interface IExpenseRepository
 {
-    Task<IEnumerable<Expense>> GetAllExpenses(int churchId);
+    Task<PagedResult<Expense>> GetAllExpenses(int churchId, int pageNumber, int pageSize);
 
     Task<Expense> GetExpenseByGuid(int churchId, Guid guid);
 

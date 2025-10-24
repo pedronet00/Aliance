@@ -6,7 +6,9 @@ using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,11 +51,20 @@ public class ExpenseService : IExpenseService
         return result;
     }
 
-    public async Task<IEnumerable<ExpenseViewModel>> GetAllExpenses()
+    public async Task<PagedResult<ExpenseViewModel>> GetAllExpenses(int pageNumber, int pageSize)
     {
         var churchId = _userContext.GetChurchId();
-        var Expenses = await _repo.GetAllExpenses(churchId);
-        return _mapper.Map<IEnumerable<ExpenseViewModel>>(Expenses);
+
+        var expenses = await _repo.GetAllExpenses(churchId, pageNumber, pageSize);
+
+        var expensesVMs = _mapper.Map<IEnumerable<ExpenseViewModel>>(expenses.Items);
+
+        return new PagedResult<ExpenseViewModel>(
+                expensesVMs,
+                expenses.TotalCount,
+                expenses.CurrentPage,
+                expenses.PageSize
+        );
     }
 
     public async Task<DomainNotificationsResult<ExpenseViewModel>> GetExpenseByGuid(Guid guid)

@@ -2,12 +2,13 @@
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 
 namespace Aliance.Application.Interfaces;
 
 public interface ITitheService
 {
-    Task<DomainNotificationsResult<IEnumerable<TitheViewModel>>> GetTithes();
+    Task<DomainNotificationsResult<PagedResult<TitheViewModel>>> GetTithes(int pageNumber, int pageSize);
 
     Task<DomainNotificationsResult<TitheViewModel>> GetTitheByGuid(Guid guid);
 

@@ -1,14 +1,10 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aliance.Infrastructure.Repositories;
 
@@ -28,14 +24,20 @@ public class ExpenseRepository : IExpenseRepository
         return expense;
     }
 
-    public async Task<IEnumerable<Expense>> GetAllExpenses(int churchId)
+    public async Task<PagedResult<Expense>> GetAllExpenses(int churchId, int pageNumber, int pageSize)
     {
-        var Expenses = await _context.Expense
+        var query = _context.Expense
             .Where(i => i.ChurchId == churchId)
-            .AsNoTracking()
+            .AsNoTracking();
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return Expenses;
+        return new PagedResult<Expense>(items, totalCount, pageNumber, pageSize);
     }
 
     public async Task<Expense> GetExpenseByGuid(int churchId, Guid guid)

@@ -5,6 +5,7 @@ using Aliance.Application.Services;
 using Aliance.Application.Services.Auth;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
+using Aliance.Infrastructure.Mailing;
 using Aliance.Infrastructure.Repositories;
 using Aliance.Infrastructure.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
@@ -65,6 +66,7 @@ public static class DependencyInjection
         services.AddScoped<IRegisterService, RegisterService>();
         services.AddScoped<IServiceService, ServiceService>();
         services.AddScoped<IServiceRoleService, ServiceRoleService>();
+        services.AddScoped<IMailSending, MailSending>();
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();

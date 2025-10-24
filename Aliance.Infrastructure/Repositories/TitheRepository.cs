@@ -1,5 +1,6 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Aliance.Infrastructure.Repositories;
 
@@ -45,14 +47,21 @@ public class TitheRepository : ITitheRepository
         return tithe;
     }
 
-    public async Task<IEnumerable<Tithe>> GetTithes(int churchId)
+    public async Task<PagedResult<Tithe>> GetTithes(int churchId, int pageNumber, int pageSize)
     {
-        var tithes = await _context.Tithe
+        var tithes = _context.Tithe
             .Include(t => t.User)
-            .Where(t => t.ChurchId == churchId)
+            .OrderByDescending(t => t.Date)
+            .Where(t => t.ChurchId == churchId);
+
+        var totalCount = await tithes.CountAsync();
+
+        var items = await tithes
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return tithes;
+        return new PagedResult<Tithe>(items, totalCount, pageNumber, pageSize);
     }
 
     public async Task<IEnumerable<Tithe>> GetTithesByUser(int churchId, string userId)

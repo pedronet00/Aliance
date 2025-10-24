@@ -4,6 +4,7 @@ using Aliance.Application.ViewModel;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -98,13 +99,20 @@ public class BudgetService : IBudgetService
         return result;
     }
 
-    public async Task<IEnumerable<BudgetViewModel>> GetAllBudgetsAsync()
+    public async Task<PagedResult<BudgetViewModel>> GetAllBudgetsAsync(int pageNumber, int pageSize)
     {
         var churchId = _userContext.GetChurchId();
 
-        var budgets = await _repo.GetAllBudgetsAsync(churchId);
+        var budgets = await _repo.GetAllBudgetsAsync(churchId, pageNumber, pageSize);
 
-        return _mapper.Map<IEnumerable<BudgetViewModel>>(budgets);
+        var budgetsVMs =  _mapper.Map<IEnumerable<BudgetViewModel>>(budgets.Items);
+
+        return new PagedResult<BudgetViewModel>(
+            budgetsVMs,
+            budgets.TotalCount,
+            budgets.CurrentPage,
+            budgets.PageSize
+            );
     }
 
     public async Task<DomainNotificationsResult<BudgetViewModel>> GetBudgetByIdAsync(Guid guid)

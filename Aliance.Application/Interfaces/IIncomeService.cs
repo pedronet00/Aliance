@@ -4,6 +4,7 @@ using Aliance.Application.ViewModels;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Aliance.Application.Interfaces;
 
 public interface IIncomeService
 {
-    Task<IEnumerable<IncomeViewModel>> GetAllIncomes();
+    Task<PagedResult<IncomeViewModel>> GetAllIncomes(int pageNumber, int pageSize);
 
     Task<DomainNotificationsResult<IncomeViewModel>> GetIncomeByGuid(Guid guid);
 

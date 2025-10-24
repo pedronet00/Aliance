@@ -4,6 +4,7 @@ using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -296,7 +297,6 @@ public class UserService : IUserService
         return result;
     }
 
-
     public async Task<DomainNotificationsResult<IEnumerable<UserViewModel>>> GetAllActiveUsers()
     {
         var result = new DomainNotificationsResult<IEnumerable<UserViewModel>>();
@@ -374,12 +374,20 @@ public class UserService : IUserService
         return result;
     }
 
-    public async Task<DomainNotificationsResult<List<UserViewModel>>> GetUsersByChurchAsync()
+    public async Task<DomainNotificationsResult<PagedResult<UserViewModel>>> GetUsersByChurchAsync(int pageNumber, int pageSize)
     {
-        var result = new DomainNotificationsResult<List<UserViewModel>>();
+        var result = new DomainNotificationsResult<PagedResult<UserViewModel>>();
         var churchId = _context.GetChurchId();
 
-        var users = _userManager.Users.Where(u => u.ChurchId == churchId).ToList();
+        var query = _userManager.Users.Where(u => u.ChurchId == churchId);
+        var totalCount = await query.CountAsync();
+
+        var users = await query
+        .OrderBy(u => u.UserName) // opcional: ordena para garantir consistência
+        .Skip((pageNumber - 1) * pageSize)
+        .Take(pageSize)
+        .ToListAsync();
+
         var userViewModels = new List<UserViewModel>();
 
         foreach (var user in users)
@@ -391,7 +399,14 @@ public class UserService : IUserService
             userViewModels.Add(userVm);
         }
 
-        result.Result = userViewModels;
+        var pagedResult = new PagedResult<UserViewModel>(
+        userViewModels,
+        totalCount,
+        pageNumber,
+        pageSize
+    );
+
+        result.Result = pagedResult;
         return result;
     }
 

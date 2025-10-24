@@ -4,6 +4,7 @@ using Aliance.Application.ViewModel;
 using Aliance.Application.ViewModels;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -24,10 +25,10 @@ public class IncomeController : ControllerBase
         _incomeService = incomeService;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<IncomeViewModel>>> GetAll()
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<IncomeViewModel>>> GetAll([FromQuery] int pageNumber = 1, int pageSize = 5)
     {
-        var incomes = await _incomeService.GetAllIncomes();
+        var incomes = await _incomeService.GetAllIncomes(pageNumber, pageSize);
         return Ok(incomes);
     }
 

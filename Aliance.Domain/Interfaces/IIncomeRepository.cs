@@ -1,11 +1,12 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
+using Aliance.Domain.Pagination;
 
 namespace Aliance.Domain.Interfaces;
 
 public interface IIncomeRepository
 {
-    Task<IEnumerable<Income>> GetAllIncomes(int churchId);
+    Task<PagedResult<Income>> GetAllIncomes(int churchId, int pageNumber, int pageSize);
 
     Task<Income> GetIncomeByGuid(int churchId, Guid guid);
 

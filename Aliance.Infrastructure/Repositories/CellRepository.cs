@@ -40,6 +40,7 @@ namespace Aliance.Infrastructure.Repositories
         public async Task<IEnumerable<Cell>> GetAllCells(int churchId)
         {
             var cells = await _context.Cell
+                .Where(c => c.ChurchId == churchId)
                 .Include(c => c.Location)
                 .Include(c => c.Leader)
                 .Include(c => c.Church)

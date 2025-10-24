@@ -24,10 +24,10 @@ public class ExpenseController : ControllerBase
         _expenseService = expenseService;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<ExpenseViewModel>>> GetAll()
+    [HttpGet("paged")]
+    public async Task<ActionResult<IEnumerable<ExpenseViewModel>>> GetAll([FromQuery] int pageNumber = 1, int pageSize = 5)
     {
-        var Expenses = await _expenseService.GetAllExpenses();
+        var Expenses = await _expenseService.GetAllExpenses(pageNumber, pageSize);
         return Ok(Expenses);
     }
 

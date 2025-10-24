@@ -18,11 +18,11 @@ public class BudgetController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
+    [HttpGet("paged")]
     
-    public async Task<IActionResult> GetAllBudgetsAsync()
+    public async Task<IActionResult> GetAllBudgetsAsync([FromQuery] int pageNumber = 1, int pageSize = 5)
     {
-        var budgets = await _service.GetAllBudgetsAsync();
+        var budgets = await _service.GetAllBudgetsAsync(pageNumber, pageSize);
         return Ok(budgets);
     }
 

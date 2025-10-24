@@ -5,6 +5,7 @@ using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using AutoMapper;
 
 namespace Aliance.Application.Services;
@@ -110,13 +111,20 @@ public class TitheService : ITitheService
         return result;
     }
 
-    public async Task<DomainNotificationsResult<IEnumerable<TitheViewModel>>> GetTithes()
+    public async Task<DomainNotificationsResult<PagedResult<TitheViewModel>>> GetTithes(int pageNumber, int pageSize)
     {
-        var result = new DomainNotificationsResult<IEnumerable<TitheViewModel>>();
+        var result = new DomainNotificationsResult<PagedResult<TitheViewModel>>();
         var churchId = _userContext.GetChurchId();
 
-        var tithes = await _repo.GetTithes(churchId);
-        result.Result = _mapper.Map<IEnumerable<TitheViewModel>>(tithes);
+        var tithes = await _repo.GetTithes(churchId, pageNumber, pageSize);
+        var tithesVMs = _mapper.Map<IEnumerable<TitheViewModel>>(tithes.Items);
+
+        result.Result = new PagedResult<TitheViewModel>(
+            tithesVMs,
+            tithes.TotalCount,
+            tithes.CurrentPage,
+            tithes.PageSize
+            );
 
         return result;
     }

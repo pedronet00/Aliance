@@ -2,6 +2,7 @@
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ public interface IUserService
 
     Task<DomainNotificationsResult<bool>> DeleteUserAsync(string userId);
 
-    Task<DomainNotificationsResult<List<UserViewModel>>> GetUsersByChurchAsync();
+    Task<DomainNotificationsResult<PagedResult<UserViewModel>>> GetUsersByChurchAsync(int pageNumber, int pageSize);
 
     Task<DomainNotificationsResult<UserViewModel>> GetUserByEmailAsync(string email);
 

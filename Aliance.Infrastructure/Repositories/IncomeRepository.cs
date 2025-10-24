@@ -1,9 +1,11 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Aliance.Infrastructure.Repositories;
 
@@ -23,14 +25,20 @@ public class IncomeRepository : IIncomeRepository
         return income;
     }
 
-    public async Task<IEnumerable<Income>> GetAllIncomes(int churchId)
+    public async Task<PagedResult<Income>> GetAllIncomes(int churchId, int pageNumber, int pageSize)
     {
-        var incomes = await _context.Income
+        var incomes = _context.Income
             .Where(i => i.ChurchId == churchId)
-            .AsNoTracking()
+            .AsNoTracking();
+
+        var totalCount = await incomes.CountAsync();
+
+        var items = await incomes
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return incomes;
+        return new PagedResult<Income>(items, totalCount, pageNumber, pageSize);
     }
 
     public async Task<Income> GetIncomeByGuid(int churchId, Guid guid)

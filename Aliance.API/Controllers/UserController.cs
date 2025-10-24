@@ -18,10 +18,10 @@ public class UserController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetUsersByChurch()
+    [HttpGet("paged")]
+    public async Task<IActionResult> GetUsersByChurch([FromQuery] int pageNumber = 1, int pageSize = 5)
     {
-        var result = await _service.GetUsersByChurchAsync();
+        var result = await _service.GetUsersByChurchAsync(pageNumber, pageSize);
         return Ok(result);
     }
 

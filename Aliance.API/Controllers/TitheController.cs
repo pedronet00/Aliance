@@ -17,10 +17,10 @@ public class TitheController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
+    [HttpGet("paged")]
+    public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, int pageSize = 5)
     {
-        var result = await _service.GetTithes();
+        var result = await _service.GetTithes(pageNumber, pageSize);
         if (result.HasNotifications)
             return BadRequest(result.Notifications);
 

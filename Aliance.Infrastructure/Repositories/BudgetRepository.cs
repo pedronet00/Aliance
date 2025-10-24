@@ -1,6 +1,7 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -69,11 +70,19 @@ public class BudgetRepository : IBudgetRepository
         return true;
     }
 
-    public async Task<IEnumerable<Budget>> GetAllBudgetsAsync(int churchId)
+    public async Task<PagedResult<Budget>> GetAllBudgetsAsync(int churchId, int pageNumber, int pageSize)
     {
-        return await _context.Budget.Where(c => c.CostCenter.ChurchId == churchId)
-            .Include(b => b.CostCenter)
+        var query = _context.Budget.Where(c => c.CostCenter.ChurchId == churchId)
+            .Include(b => b.CostCenter);
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
+
+        return new PagedResult<Budget>(items, totalCount, pageNumber, pageSize);
     }
 
     public async Task<Budget?> GetBudgetByGuidAsync(int churchId, Guid guid)

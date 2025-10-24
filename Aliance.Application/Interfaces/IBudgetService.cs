@@ -1,6 +1,7 @@
 ﻿using Aliance.Application.DTOs;
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Aliance.Application.Interfaces;
 
 public interface IBudgetService
 {
-    Task<IEnumerable<BudgetViewModel>> GetAllBudgetsAsync();
+    Task<PagedResult<BudgetViewModel>> GetAllBudgetsAsync(int pageNumber, int pageSize);
 
     Task<DomainNotificationsResult<BudgetViewModel>> GetBudgetByIdAsync(Guid guid);
 

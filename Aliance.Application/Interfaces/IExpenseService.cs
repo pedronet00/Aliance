@@ -3,6 +3,7 @@ using Aliance.Application.ViewModel;
 using Aliance.Application.ViewModels;
 using Aliance.Domain.Enums;
 using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Aliance.Application.Interfaces;
 
 public interface IExpenseService
 {
-    Task<IEnumerable<ExpenseViewModel>> GetAllExpenses();
+    Task<PagedResult<ExpenseViewModel>> GetAllExpenses(int pageNumber, int pageSize);
 
     Task<DomainNotificationsResult<ExpenseViewModel>> GetExpenseByGuid(Guid guid);
 
