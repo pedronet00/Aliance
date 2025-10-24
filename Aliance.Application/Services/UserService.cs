@@ -1,4 +1,5 @@
 ﻿using Aliance.Application.DTOs;
+using Aliance.Application.DTOs.Auth;
 using Aliance.Application.Interfaces;
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
@@ -11,11 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aliance.Application.Services;
 
@@ -392,10 +388,10 @@ public class UserService : IUserService
 
         foreach (var user in users)
         {
-            var roles = await _userManager.GetRolesAsync(user); 
+            var roles = await _userManager.GetRolesAsync(user);
             var userVm = _mapper.Map<UserViewModel>(user);
-            userVm.Role = roles.FirstOrDefault(); 
-            userVm.Phone = user.PhoneNumber; 
+            userVm.Role = roles.FirstOrDefault();
+            userVm.Phone = user.PhoneNumber;
             userViewModels.Add(userVm);
         }
 
@@ -506,4 +502,49 @@ public class UserService : IUserService
 
         return result;
     }
+
+    public async Task<string> GeneratePasswordResetUrl(string churchAsaasId)
+    {
+        var user = await _userManager.Users
+            .Where(u => u.Church.AsaasCustomerId == churchAsaasId)
+            .FirstOrDefaultAsync();
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user!);
+
+        var urlEncodedEmail = Uri.EscapeDataString(user.Email);
+        var urlEncodedToken = Uri.EscapeDataString(token);
+
+        var callbackUrl = $"http://localhost:5173/definir-senha?email={urlEncodedEmail}&token={urlEncodedToken}";
+
+        return callbackUrl;
+    }
+
+    public async Task<DomainNotificationsResult<bool>> DefinePassword(DefinePasswordDTO dto)
+    {
+        var result = new DomainNotificationsResult<bool>();
+        var user = await _userManager.FindByEmailAsync(dto.Email);
+
+        if (user == null)
+        {
+            result.Notifications.Add("Usuário não encontrado.");
+            return result;
+        }
+
+        var resetPassword = await _userManager.ResetPasswordAsync(user, dto.Token, dto.NewPassword);
+
+        if (!resetPassword.Succeeded)
+            throw new Exception("Erro ao redefinir senha do usuário.");
+
+        // Opcional: confirmar email após definir senha
+        if (!user.EmailConfirmed)
+        {
+            user.EmailConfirmed = true;
+            await _userManager.UpdateAsync(user);
+        }
+
+        result.Result = true;
+
+        return result;
+    }
+
 }

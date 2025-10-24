@@ -1,4 +1,5 @@
 ﻿using Aliance.Application.DTOs;
+using Aliance.Application.DTOs.Auth;
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Notifications;
@@ -42,5 +43,9 @@ public interface IUserService
     Task<DomainNotificationsResult<bool>> DeactivateUser(string userId);
 
     Task<DomainNotificationsResult<bool>> ActivateUser(string userId);
+
+    Task<string> GeneratePasswordResetUrl(string churchAsaasId);
+
+    Task<DomainNotificationsResult<bool>> DefinePassword(DefinePasswordDTO dto);
 
 }

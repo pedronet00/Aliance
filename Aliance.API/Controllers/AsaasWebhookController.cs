@@ -18,8 +18,9 @@ namespace Aliance.API.Controllers
         private readonly IChurchService _churchService;
         private readonly string _logFilePath;
         private readonly IMailSending _mailSending;
+        private readonly IUserService _userService;
 
-        public AsaasWebhookController(ILogger<AsaasWebhookController> logger, IChurchService churchService, IMailSending mailSending)
+        public AsaasWebhookController(ILogger<AsaasWebhookController> logger, IChurchService churchService, IMailSending mailSending, IUserService userService)
         {
             _logger = logger;
             _churchService = churchService;
@@ -30,6 +31,7 @@ namespace Aliance.API.Controllers
 
             _logFilePath = Path.Combine(logDirectory, "AsaasWebhook.log");
             _mailSending = mailSending;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -62,11 +64,11 @@ namespace Aliance.API.Controllers
 
                 // Busca a igreja vinculada a este cliente Asaas
                 var church = await _churchService.GetChurchByAsaasCustomerId(customerId);
-                if (church == null)
-                {
-                    await LogAsync($"Igreja não encontrada para customerId={customerId}");
-                    return NotFound($"Igreja não encontrada para customerId={customerId}");
-                }
+                //if (church == null)
+                //{
+                //    await LogAsync($"Igreja não encontrada para customerId={customerId}");
+                //    return NotFound($"Igreja não encontrada para customerId={customerId}");
+                //}
 
                 switch (eventType)
                 {
@@ -79,14 +81,13 @@ namespace Aliance.API.Controllers
                             DateTime paymentDate = ParseDate(paymentDateStr) ?? DateTime.UtcNow;
                             DateTime? nextDueDate = ParseDate(nextDueDateStr);
 
-                            await LogAsync($"Pagamento recebido: customer={customerId}, valor={value}, pagoEm={paymentDate:yyyy-MM-dd}, próxima cobrança={nextDueDate:yyyy-MM-dd}");
-
                             var firstCustomerMail = await _churchService.GetChurchesFirstUser(customerId);
+
                             await _churchService.AtualizarPagamentoRecebidoAsync(customerId, paymentDate, nextDueDate, value);
-                            Console.WriteLine("---------------------------");
-                            Console.WriteLine($"ENVIANDO EMAIL PARA: {firstCustomerMail}");
-                            Console.WriteLine("---------------------------");
-                            await _mailSending.SendEmailAsync(firstCustomerMail, "teste envio de email", "plain text", "html");
+
+                            var passwordResetUrl = await _userService.GeneratePasswordResetUrl(customerId);
+                            
+                            await _mailSending.SendEmailAsync(firstCustomerMail, "REDEFINA SUA SENHA", "plain text", $"Clique no link para definir sua senha: <a href='{passwordResetUrl}'>Definir senha</a>");
                             break;
                         }
 
@@ -104,6 +105,14 @@ namespace Aliance.API.Controllers
                         {
                             var subscriptionId = payload.Value.GetProperty("id").GetString();
                             await LogAsync($"Assinatura cancelada: customer={customerId}, subscription={subscriptionId}");
+                            
+                            break;
+                        }
+
+                    case "CHECKOUT_CREATED":
+                        {
+                            var subscriptionId = payload.Value.GetProperty("id").GetString();
+                            await LogAsync($"Checkout criado: customer={customerId}, subscription={subscriptionId}");
                             
                             break;
                         }

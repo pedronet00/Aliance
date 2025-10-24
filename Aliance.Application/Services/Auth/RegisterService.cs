@@ -109,6 +109,8 @@ public class RegisterService : IRegisterService
                 return result;
             }
 
+            var roleResult = await _userManager.AddToRoleAsync(user, "Admin");
+
             // 3️ | Criar cliente no Asaas
             string asaasCustomerId;
             try
@@ -120,6 +122,7 @@ public class RegisterService : IRegisterService
                 // Remove usuário se falhar no Asaas
                 await _userManager.DeleteAsync(user);
                 await _churchRepository.DeleteChurch(church.Id);
+                await _userManager.RemoveFromRoleAsync(user, "Admin");
                 result.Notifications.Add($"Falha ao criar cliente no Asaas: {ex.Message}");
                 return result;
             }
