@@ -7,11 +7,14 @@ using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
 using Aliance.Domain.Pagination;
 using AutoMapper;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using OfficeOpenXml;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using System.Text.RegularExpressions;
 
 namespace Aliance.Application.Services;
 
@@ -535,7 +538,6 @@ public class UserService : IUserService
         if (!resetPassword.Succeeded)
             throw new Exception("Erro ao redefinir senha do usuário.");
 
-        // Opcional: confirmar email após definir senha
         if (!user.EmailConfirmed)
         {
             user.EmailConfirmed = true;
@@ -546,5 +548,83 @@ public class UserService : IUserService
 
         return result;
     }
+
+    public async Task<DomainNotificationsResult<string>> ImportUsers(UserImportDTO dto)
+    {
+        var result = new DomainNotificationsResult<string>();
+        var inserted = 0;
+        var churchId = _context.GetChurchId();
+        var errors = new List<string>();
+
+        try
+        {
+            using var stream = new MemoryStream();
+            await dto.File.CopyToAsync(stream);
+
+            using var workbook = new XLWorkbook(stream);
+            var worksheet = workbook.Worksheet(1);
+            var rows = worksheet.RowsUsed().Skip(1);
+
+            foreach (var row in rows)
+            {
+                var name = row.Cell(1).GetString().Trim();
+                var email = row.Cell(2).GetString().Trim();
+                var phone = row.Cell(3).GetString().Trim();
+
+                if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(phone))
+                {
+                    errors.Add($"Linha {row.RowNumber()}: dados incompletos.");
+                    continue;
+                }
+
+                var existingUser = await _userManager.FindByEmailAsync(email);
+                if (existingUser != null)
+                {
+                    errors.Add($"Linha {row.RowNumber()}: usuário com o email {email} já está cadastrado.");
+                    continue;
+                }
+
+                var user = new ApplicationUser
+                {
+                    UserName = name,
+                    Email = email,
+                    PhoneNumber = phone,
+                    EmailConfirmed = true,
+                    ChurchId = churchId,
+                    Status = true
+                };
+
+                var create = await _userManager.CreateAsync(user);
+                if (create.Succeeded)
+                {
+                    try
+                    {
+                        await _userManager.AddToRoleAsync(user, "Comum");
+                        inserted++;
+                    }
+                    catch (Exception ex)
+                    {
+                        errors.Add($"Linha {row.RowNumber()}: erro ao atribuir role — {ex.Message}");
+                    }
+                }
+                else
+                {
+                    errors.Add($"Linha {row.RowNumber()}: {string.Join(", ", create.Errors.Select(e => e.Description))}");
+                }
+            }
+
+            if (errors.Any())
+                result.Notifications.Add($"Erros durante importação: {string.Join("; ", errors)}");
+
+            result.Result = $"{inserted} usuários inseridos com sucesso.";
+        }
+        catch (Exception ex)
+        {
+            result.Notifications.Add($"Falha ao processar importação: {ex.Message}");
+        }
+
+        return result;
+    }
+
 
 }

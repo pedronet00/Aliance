@@ -48,4 +48,6 @@ public interface IUserService
 
     Task<DomainNotificationsResult<bool>> DefinePassword(DefinePasswordDTO dto);
 
+    Task<DomainNotificationsResult<string>> ImportUsers(UserImportDTO dto);
+
 }

@@ -1,6 +1,7 @@
 ﻿using Aliance.Application.DTOs;
 using Aliance.Application.DTOs.Auth;
 using Aliance.Application.Interfaces;
+using Aliance.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +35,17 @@ public class UserController : ControllerBase
         var result = await _service.GetUserByIdAsync(userId);
         return Ok(result);
     }
+
+    [HttpPost("importar-usuarios")]
+    public async Task<IActionResult> ImportUsers([FromForm] UserImportDTO dto)
+    {
+        var result = await _service.ImportUsers(dto);
+        if (result.HasNotifications)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
+
 
     [HttpGet]
     [Route("Ativos")]
