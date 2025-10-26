@@ -12,8 +12,9 @@ public class WorshipTeamRehearsalConfiguration : IEntityTypeConfiguration<Worshi
 
         builder.HasKey(r => r.Id);
 
-        builder.HasIndex(r => r.Guid)
-            .IsUnique();
+
+        builder.Property(lm => lm.Guid)
+            .HasDefaultValueSql("(UUID())");
 
         builder.Property(r => r.Guid)
             .IsRequired();

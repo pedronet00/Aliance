@@ -30,8 +30,16 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Patrimony, PatrimonyDTO>().ReverseMap();
         CreateMap<Patrimony, PatrimonyViewModel>().ReverseMap();
 
+        CreateMap<WorshipTeam, WorshipTeamDTO>().ReverseMap();
+        CreateMap<WorshipTeam, WorshipTeamViewModel>().ReverseMap();
+
         CreateMap<Income, IncomeDTO>().ReverseMap();
         CreateMap<Income, IncomeViewModel>().ReverseMap();
+
+        CreateMap<WorshipTeamMember, WorshipTeamMemberDTO>().ReverseMap();
+        CreateMap<WorshipTeamMember, WorshipTeamMemberViewModel>().ReverseMap();
+        CreateMap<WorshipTeamMember, WorshipTeamMemberViewModel>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
 
         CreateMap<ServiceRole, ServiceRoleDTO>().ReverseMap();
         CreateMap<ServiceRole, ServiceRoleViewModel>().ReverseMap();

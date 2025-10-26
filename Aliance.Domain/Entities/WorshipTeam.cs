@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Aliance.Domain.Entities;
+﻿namespace Aliance.Domain.Entities;
 
 public class WorshipTeam
 {
@@ -15,6 +9,10 @@ public class WorshipTeam
 
     public bool Status { get; set; }
 
+    public int ChurchId { get; set; }
+
+    public Church Church { get; set; }
+
     // Collections
     public ICollection<WorshipTeamMember> WorshipTeamMembers { get; set; } = new List<WorshipTeamMember>();
     public ICollection<WorshipTeamRehearsal> WorshipTeamRehearsals { get; set; } = new List<WorshipTeamRehearsal>();
@@ -22,12 +20,10 @@ public class WorshipTeam
 
     public WorshipTeam() {}
 
-    public WorshipTeam(string name, bool status)
+    public WorshipTeam(string name)
     {
         Guid = Guid.NewGuid();
         Name = name;
-        Status = status;
+        Status = true;
     }
-
-
 }

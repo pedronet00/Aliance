@@ -12,6 +12,10 @@ public class WorshipTeamConfiguration : IEntityTypeConfiguration<WorshipTeam>
 
         builder.HasKey(wt => wt.Id);
 
+
+        builder.Property(lm => lm.Guid)
+            .HasDefaultValueSql("(UUID())");
+
         builder.Property(wt => wt.Guid)
             .IsRequired();
 
