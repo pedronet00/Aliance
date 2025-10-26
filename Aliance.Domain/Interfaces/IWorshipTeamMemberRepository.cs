@@ -12,4 +12,6 @@ public interface IWorshipTeamMemberRepository
     Task<WorshipTeamMember> DeleteWorshipTeamMember(int teamId, string memberId);
 
     Task<WorshipTeamMember> ToggleMemberStatus(int churchId, int teamId, string memberId, bool status);
+
+    Task<bool> MemberAlreadyInGroup(int teamId, string memberId);
 }

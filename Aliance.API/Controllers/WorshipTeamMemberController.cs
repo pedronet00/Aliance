@@ -32,7 +32,7 @@ namespace Aliance.API.Controllers
         {
             var result = await _service.InsertWorshipTeamMember(teamGuid, memberId);
             if (result.HasNotifications)
-                return BadRequest(result.Notifications);
+                return Ok(result);
 
             return Ok(result.Result);
         }

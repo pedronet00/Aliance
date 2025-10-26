@@ -68,4 +68,10 @@ public class WorshipTeamMemberRepository : IWorshipTeamMemberRepository
         }
         return member;
     }
+
+    public async Task<bool> MemberAlreadyInGroup(int teamId, string memberId)
+    {
+        return await _context.WorshipTeamMember
+            .AnyAsync(wtm => wtm.UserId == memberId && wtm.WorshipTeamId == teamId);
+    }
 }

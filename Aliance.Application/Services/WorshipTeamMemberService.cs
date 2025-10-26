@@ -88,6 +88,14 @@ public class WorshipTeamMemberService : IWorshipTeamMemberService
             return result;
         }
 
+        var validateMemberAlreadyInGroup = await _repo.MemberAlreadyInGroup(team.Id, memberId);
+
+        if (validateMemberAlreadyInGroup)
+        {
+            result.Notifications.Add("Membro já está no grupo.");
+            return result;
+        }
+
         var member = await _repo.InsertWorshipTeamMember(team.Id, memberId);
 
         await _unitOfWork.Commit();

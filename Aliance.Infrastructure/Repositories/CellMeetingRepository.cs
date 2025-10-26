@@ -3,11 +3,6 @@ using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aliance.Infrastructure.Repositories;
 
