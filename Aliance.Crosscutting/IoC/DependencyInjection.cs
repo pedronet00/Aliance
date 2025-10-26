@@ -71,6 +71,7 @@ public static class DependencyInjection
         services.AddScoped<IMailSending, MailSending>();
         services.AddScoped<IWorshipTeamService, WorshipTeamService>();
         services.AddScoped<IWorshipTeamMemberService, WorshipTeamMemberService>();
+        services.AddScoped<ICalendarActivitiesService, CalendarActivitiesService>();
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
