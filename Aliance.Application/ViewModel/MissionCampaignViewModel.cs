@@ -6,6 +6,8 @@ namespace Aliance.Application.ViewModel
     {
         public int Id { get; set; }
 
+        public Guid Guid { get; set; }
+
         public string Name { get; set; }
 
         public Territorials Type { get; set; }

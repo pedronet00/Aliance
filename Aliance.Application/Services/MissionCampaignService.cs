@@ -3,6 +3,8 @@ using Aliance.Application.Interfaces;
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Notifications;
+using Aliance.Domain.Pagination;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -18,84 +20,106 @@ public class MissionCampaignService : IMissionCampaignService
     private readonly IMissionCampaignRepository _repo;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IUserContextService _userContext;
 
-    public MissionCampaignService(IMissionCampaignRepository repo, IUnitOfWork unitOfWork, IMapper mapper)
+    public MissionCampaignService(IMissionCampaignRepository repo, IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContext)
     {
         _repo = repo;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _userContext = userContext;
     }
 
-    public async Task<MissionCampaignViewModel> AddAsync(MissionCampaignDTO missionCampaign)
+    public async Task<DomainNotificationsResult<MissionCampaignViewModel>> AddAsync(MissionCampaignDTO missionCampaign)
     {
-        if (missionCampaign is null)
-            throw new ArgumentNullException(nameof(missionCampaign));
+        var result = new DomainNotificationsResult<MissionCampaignViewModel>();
 
-        if(missionCampaign.TargetAmount <= 0)
-            throw new ArgumentException("Target amount must be greater than zero.", nameof(missionCampaign.TargetAmount));
+        var campaignEntity = _mapper.Map<MissionCampaign>(missionCampaign);
 
-        if(missionCampaign.EndDate <= missionCampaign.StartDate)
-            throw new ArgumentException("End date must be greater than start date.", nameof(missionCampaign.EndDate));
-        
-        var entity = _mapper.Map<MissionCampaignDTO, MissionCampaign>(missionCampaign);
+        var insert = await _repo.AddAsync(campaignEntity);
 
-        var addedCampaign = await _repo.AddAsync(entity);
-
-        var missionCampaignViewModel = _mapper.Map<MissionCampaign, MissionCampaignViewModel>(addedCampaign);
+        if(insert is null)
+        {
+            result.Notifications.Add("Houve um erro ao adicionar a campanha.");
+            return result;
+        }
 
         await _unitOfWork.Commit();
 
-        return missionCampaignViewModel;
+        result.Result = _mapper.Map<MissionCampaignViewModel>(campaignEntity);
+
+        return result;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<DomainNotificationsResult<bool>> DeleteAsync(Guid guid)
     {
-        return await _repo.DeleteAsync(id);
-    }
+        var result = new DomainNotificationsResult<bool>();
 
-    public async Task<IEnumerable<MissionCampaignViewModel>> GetAllAsync()
-    {
-        var campaigns = await _repo.GetAllAsync();
-
-        var campaignViewModels = _mapper.Map<IEnumerable<MissionCampaign>, IEnumerable<MissionCampaignViewModel>>(campaigns);
-
-        return campaignViewModels;
-    }
-
-    public async Task<MissionCampaignViewModel> GetByIdAsync(int id)
-    {
-        var campaign = await _repo.GetByIdAsync(id);
-
-        if (campaign is null)
-            throw new KeyNotFoundException($"Mission campaign with ID {id} not found.");
-
-        var campaignViewModel = _mapper.Map<MissionCampaign, MissionCampaignViewModel>(campaign);
-
-        return campaignViewModel;
-    }
-
-    public async Task<MissionCampaignViewModel> UpdateAsync(MissionCampaignDTO missionCampaign)
-    {
-        if(missionCampaign is null)
-            throw new ArgumentNullException(nameof(missionCampaign));
-
-        if(missionCampaign.TargetAmount <= 0)
-            throw new ArgumentException("Target amount must be greater than zero.", nameof(missionCampaign.TargetAmount));
-
-        if(missionCampaign.EndDate <= missionCampaign.StartDate)
-            throw new ArgumentException("End date must be greater than start date.", nameof(missionCampaign.EndDate));
-
-        var entity = _mapper.Map<MissionCampaignDTO, MissionCampaign>(missionCampaign);
-
-        var updatedCampaign = await _repo.UpdateAsync(entity);
-
-        if (updatedCampaign is null)
-            throw new KeyNotFoundException($"Mission campaign with ID {missionCampaign.Id} not found.");
+        await _repo.DeleteAsync(guid);
 
         await _unitOfWork.Commit();
 
-        var missionCampaignViewModel = _mapper.Map<MissionCampaign, MissionCampaignViewModel>(updatedCampaign);
+        result.Result = true;
 
-        return missionCampaignViewModel;
+        return result;
+    }
+
+    public async Task<DomainNotificationsResult<PagedResult<MissionCampaignViewModel>>> GetAllAsync(int pageNumber, int pageSize)
+    {
+        var result = new DomainNotificationsResult<PagedResult<MissionCampaignViewModel>>();
+        var churchId = _userContext.GetChurchId();
+
+        var campaigns = await _repo.GetAllAsync(churchId, pageNumber, pageSize);
+
+        var campaignsVMs = _mapper.Map<IEnumerable<MissionCampaignViewModel>>(campaigns.Items);
+
+        result.Result = new PagedResult<MissionCampaignViewModel>(
+                campaignsVMs,
+                campaigns.TotalCount,
+                campaigns.CurrentPage,
+                campaigns.PageSize
+            );
+
+        return result;
+    }
+
+    public async Task<DomainNotificationsResult<MissionCampaignViewModel>> GetByGuidAsync(Guid guid)
+    {
+        var result = new DomainNotificationsResult<MissionCampaignViewModel>();
+        var churchId = _userContext.GetChurchId();
+
+        var campaign = await _repo.GetByGuidAsync(churchId, guid);
+
+        result.Result = _mapper.Map<MissionCampaignViewModel>(campaign);
+
+        return result;
+    }
+
+    public async Task<DomainNotificationsResult<MissionCampaignViewModel>> UpdateAsync(MissionCampaignDTO missionCampaign)
+    {
+        var result = new DomainNotificationsResult<MissionCampaignViewModel>();
+        var churchId = _userContext.GetChurchId();
+
+        var existingCampaign = await _repo.GetByGuidAsync(churchId, missionCampaign.Guid);
+
+        if (existingCampaign == null)
+        {
+            result.Notifications.Add("Campanha não encontrada.");
+            return result;
+        }
+
+        _mapper.Map(missionCampaign, existingCampaign);
+
+        await _repo.UpdateAsync(existingCampaign);
+        var commit = await _unitOfWork.Commit();
+
+        if (!commit)
+        {
+            result.Notifications.Add("Houve um erro ao tentar atualizar a campanha.");
+            return result;
+        }
+
+        result.Result = _mapper.Map<MissionCampaignViewModel>(existingCampaign);
+        return result;
     }
 }

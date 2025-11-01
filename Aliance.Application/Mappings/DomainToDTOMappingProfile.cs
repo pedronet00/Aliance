@@ -33,6 +33,19 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<WorshipTeam, WorshipTeamDTO>().ReverseMap();
         CreateMap<WorshipTeam, WorshipTeamViewModel>().ReverseMap();
 
+        CreateMap<MissionCampaign, MissionCampaignDTO>().ReverseMap();
+        CreateMap<MissionCampaign, MissionCampaignViewModel>().ReverseMap();
+
+        CreateMap<WorshipTeamRehearsal, WorshipTeamRehearsalDTO>().ReverseMap();
+        CreateMap<WorshipTeamRehearsal, WorshipTeamRehearsalViewModel>().ReverseMap();
+        CreateMap<WorshipTeamRehearsalDTO, WorshipTeamRehearsal>()
+            .ConstructUsing(src => new WorshipTeamRehearsal()) // força construtor vazio
+            .ForMember(dest => dest.WorshipTeamId, opt => opt.Ignore()) // vai ser setado manualmente
+            .ForMember(dest => dest.Guid, opt => opt.Ignore()) // entidade gera o GUID
+            .ForMember(dest => dest.WorshipTeam, opt => opt.Ignore()) // evitar referência circular
+            .ForMember(dest => dest.Id, opt => opt.Ignore()); // evitar sobrescrever PK
+
+
         CreateMap<Income, IncomeDTO>().ReverseMap();
         CreateMap<Income, IncomeViewModel>().ReverseMap();
 

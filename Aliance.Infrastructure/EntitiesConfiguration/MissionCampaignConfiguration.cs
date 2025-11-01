@@ -17,6 +17,10 @@ namespace Aliance.Infrastructure.EntitiesConfiguration
 
             builder.HasKey(mc => mc.Id);
 
+            builder.Property(cm => cm.Guid)
+            .HasDefaultValueSql("(UUID())")
+            .IsRequired();
+
             builder.Property(mc => mc.Name)
                 .IsRequired()
                 .HasMaxLength(100);

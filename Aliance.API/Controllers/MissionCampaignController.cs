@@ -1,5 +1,7 @@
 ﻿using Aliance.Application.DTOs;
 using Aliance.Application.Interfaces;
+using Aliance.Application.ViewModel;
+using Aliance.Domain.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,21 +20,24 @@ public class MissionCampaignController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
+    [HttpGet("paged")]
     
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 5)
     {
-        var campaigns = await _service.GetAllAsync();
-        return Ok(campaigns);
+        var result = await _service.GetAllAsync(pageNumber, pageSize);
+
+        return Ok(result.Result);
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{guid:guid}")]
     
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById(Guid guid)
         {
-        var campaign = await _service.GetByIdAsync(id);
+        var campaign = await _service.GetByGuidAsync(guid);
+
         if (campaign is null)
             return NotFound();
+
         return Ok(campaign);
     }
 
@@ -43,28 +48,24 @@ public class MissionCampaignController : ControllerBase
         if (missionCampaign is null)
             return BadRequest("Mission campaign data is required.");
         var addedCampaign = await _service.AddAsync(missionCampaign);
-        return CreatedAtAction(nameof(GetById), new { id = addedCampaign.Id }, addedCampaign);
+        return Ok(missionCampaign);
     }
 
 
-    [HttpPut("{id:int}")]
+    [HttpPut]
     
-    public async Task<IActionResult> Update(int id, [FromBody] MissionCampaignDTO missionCampaign)
+    public async Task<IActionResult> Update([FromBody] MissionCampaignDTO missionCampaign)
     {
-        if (missionCampaign is null || missionCampaign.Id != id)
-            return BadRequest("Mission campaign data is invalid.");
-        
         var updatedCampaign = await _service.UpdateAsync(missionCampaign);
         return Ok(updatedCampaign);
     }
 
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{guid:guid}")]
     
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(Guid guid)
     {
-        var result = await _service.DeleteAsync(id);
-        if (!result)
-            return NotFound();
+        var result = await _service.DeleteAsync(guid);
+
         return NoContent();
     }
 }

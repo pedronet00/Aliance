@@ -8,6 +8,8 @@ namespace Aliance.Application.DTOs
     {
         public int Id { get; set; }
 
+        public Guid Guid { get; set; }
+
         [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
         [StringLength(100, MinimumLength = 3, ErrorMessage = DataAnnotationMessages.STRLEN)]
         public string? Name { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Aliance.Domain.Entities;
 using Aliance.Domain.Interfaces;
+using Aliance.Domain.Pagination;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -27,35 +28,38 @@ public class MissionCampaignRepository : IMissionCampaignRepository
         return missionCampaign;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(Guid guid)
     {
-        var campaign = await _context.MissionCampaign.FirstOrDefaultAsync(x => x.Id == id);
+        var campaign = await _context.MissionCampaign.FirstOrDefaultAsync(x => x.Guid == guid);
 
-        if(campaign is null)
-            return false;
-
-        _context.MissionCampaign.Remove(campaign);
+        _context.MissionCampaign.Remove(campaign!);
 
         return true;
     }
 
-    public async Task<IEnumerable<MissionCampaign>> GetAllAsync()
+    public async Task<PagedResult<MissionCampaign>> GetAllAsync(int churchId, int pageNumber, int pageSize)
     {
-        return await _context.MissionCampaign.AsNoTracking().ToListAsync();
+        var query = _context.MissionCampaign
+            .Where(mc => mc.ChurchId == churchId);
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<MissionCampaign>(items, totalCount, pageNumber, pageSize);
     }
 
-    public async Task<MissionCampaign?> GetByIdAsync(int id)
+    public async Task<MissionCampaign?> GetByGuidAsync(int churchId, Guid guid)
     {
-        return await _context.MissionCampaign.FirstOrDefaultAsync(c => c.Id == id);
+        return await _context.MissionCampaign.FirstOrDefaultAsync(c => c.Guid == guid && c.ChurchId == churchId);
     }
 
     public async Task<MissionCampaign> UpdateAsync(MissionCampaign missionCampaign)
     {
-
         var existingCampaign = await _context.MissionCampaign.AsNoTracking().FirstOrDefaultAsync(c => c.Id == missionCampaign.Id);
-
-        if (existingCampaign is null)
-            throw new ArgumentNullException(nameof(missionCampaign));
 
         _context.MissionCampaign.Update(missionCampaign);
 
