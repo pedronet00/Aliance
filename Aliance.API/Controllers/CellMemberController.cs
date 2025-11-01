@@ -52,7 +52,7 @@ public class CellMemberController : ControllerBase
     {
         var result = await _service.DeleteCellMember(cellGuid, memberId);
         if (result.HasNotifications)
-            return BadRequest(result.Notifications);
+            return Ok(result);
 
         return NoContent();
     }

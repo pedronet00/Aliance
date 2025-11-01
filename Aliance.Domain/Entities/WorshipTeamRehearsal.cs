@@ -11,8 +11,8 @@ public class WorshipTeamRehearsal
     public WorshipTeam WorshipTeam { get; set; }
 
     public MeetingStatus Status { get; set; }
-    private WorshipTeamRehearsal() { }
-    public WorshipTeamRehearsal(DateTime rehearsalDate, int worshipTeamId, MeetingStatus status)
+    public WorshipTeamRehearsal() { }
+    protected WorshipTeamRehearsal(DateTime rehearsalDate, int worshipTeamId, MeetingStatus status)
     {
         Guid = Guid.NewGuid();
         RehearsalDate = rehearsalDate;

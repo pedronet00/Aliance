@@ -12,17 +12,20 @@ public class CellMemberService : ICellMemberService
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _uow;
     private readonly IUserContextService _userContext;
+    private readonly ICellRepository _cellRepo;
 
     public CellMemberService(
         ICellMemberRepository repo,
         IUnitOfWork uow,
         IUserContextService userContext,
-        IMapper mapper)
+        IMapper mapper,
+        ICellRepository cellRepo)
     {
         _repo = repo;
         _uow = uow;
         _userContext = userContext;
         _mapper = mapper;
+        _cellRepo = cellRepo;
     }
 
     public async Task<DomainNotificationsResult<IEnumerable<CellMemberViewModel>>> GetCellMembers(Guid cellGuid)
@@ -50,6 +53,15 @@ public class CellMemberService : ICellMemberService
     public async Task<DomainNotificationsResult<bool>> DeleteCellMember(Guid cellGuid, string memberId)
     {
         var result = new DomainNotificationsResult<bool>();
+        var churchId = _userContext.GetChurchId();
+
+        var cell = await _cellRepo.GetCellByGuid(churchId, cellGuid);
+
+        if(cell.LeaderId == memberId)
+        {
+            result.Notifications.Add("Não é possível remover o líder da célula.");
+            return result;
+        }
 
         var member = await _repo.DeleteCellMember(cellGuid, memberId);
         if (member != null)
