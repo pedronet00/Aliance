@@ -26,9 +26,14 @@ public class AccountReceivableConfiguration : IEntityTypeConfiguration<AccountRe
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(ar => ar.Amount)
-            .IsRequired()
-            .HasColumnType("decimal(18,2)");
+        builder.OwnsOne(ap => ap.Amount, money =>
+        {
+            money.Ignore(m => m.Notifications);
+            money.Property(m => m.Value)
+                 .HasColumnName("Amount")
+                 .HasColumnType("decimal(18,2)")
+                 .IsRequired();
+        });
 
         builder.Property(ar => ar.DueDate)
             .IsRequired()

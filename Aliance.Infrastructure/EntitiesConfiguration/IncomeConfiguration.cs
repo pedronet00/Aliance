@@ -26,9 +26,14 @@ public class IncomeConfiguration : IEntityTypeConfiguration<Income>
             .OnDelete(DeleteBehavior.SetNull) 
             .IsRequired(false);
 
-        builder.Property(i => i.Amount)
-            .IsRequired()
-            .HasColumnType("decimal(18,2)");
+        builder.OwnsOne(ap => ap.Amount, money =>
+        {
+            money.Ignore(m => m.Notifications);
+            money.Property(m => m.Value)
+                 .HasColumnName("Amount")
+                 .HasColumnType("decimal(18,2)")
+                 .IsRequired();
+        });
 
         builder.Property(i => i.Description)
             .IsRequired()

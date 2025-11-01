@@ -67,7 +67,7 @@ public class IncomeRepository : IIncomeRepository
             .Select(g => new
             {
                 Month = g.Key,
-                Total = g.Sum(x => x.Amount)
+                Total = g.Sum(x => x.Amount.Value)
             })
             .ToListAsync();
 
@@ -91,7 +91,7 @@ public class IncomeRepository : IIncomeRepository
     {
         return await _context.Income
             .Where(i => i.ChurchId == churchId && i.Date >= start && i.Date <= end)
-            .SumAsync(i => i.Amount);
+            .SumAsync(i => i.Amount.Value);
     }
 
     public async Task<Income> InsertIncome(Income income)

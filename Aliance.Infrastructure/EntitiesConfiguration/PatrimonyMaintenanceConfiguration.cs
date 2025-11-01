@@ -27,11 +27,15 @@ public class PatrimonyMaintenanceConfiguration : IEntityTypeConfiguration<Patrim
             .IsRequired()
             .HasColumnType("datetime");
 
-        builder.Property(i => i.MaintenanceCost)
-            .IsRequired()
-            .HasColumnType("decimal(18,2)");
-
-        builder.Property(pm => pm.Description)
+        builder.OwnsOne(ap => ap.MaintenanceCost, money =>
+        {
+            money.Ignore(m => m.Notifications);
+            money.Property(m => m.Value)
+                 .HasColumnName("MaintenanceCost")
+                 .HasColumnType("decimal(18,2)")
+                 .IsRequired();
+        });
+            builder.Property(pm => pm.Description)
             .IsRequired()
             .HasMaxLength(500);
 

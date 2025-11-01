@@ -1,4 +1,5 @@
 ﻿using Aliance.Domain.Enums;
+using Aliance.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ public class AccountPayable
 
     public string Description { get; set; }
 
-    public decimal Amount { get; set; }
+    public Money Amount { get; set; }
 
     public DateTime DueDate { get; set; }
 
@@ -33,7 +34,7 @@ public class AccountPayable
     private AccountPayable() { }
 
     // Construtor para criação manual
-    public AccountPayable(string description, decimal amount, DateTime dueDate, int costCenterId)
+    public AccountPayable(string description, Money amount, DateTime dueDate, int costCenterId)
     {
         Guid = Guid.NewGuid();
         Description = description;

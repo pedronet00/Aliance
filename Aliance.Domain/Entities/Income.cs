@@ -1,4 +1,5 @@
 ﻿using Aliance.Domain.Enums;
+using Aliance.Domain.ValueObjects;
 
 namespace Aliance.Domain.Entities;
 
@@ -7,7 +8,7 @@ public class Income
     public int Id { get; set; }
     public Guid Guid { get; private set; } = Guid.NewGuid();
     public string Description { get; set; }
-    public decimal Amount { get; set; }
+    public Money Amount { get; set; }
     public DateTime Date { get; set; }
     public FinancialIncomingCategory Category { get; set; }
     public int? AccountReceivableId { get; set; }
@@ -18,7 +19,7 @@ public class Income
     public Church Church { get; set; }
 
     private Income() { }
-    public Income(string description, decimal amount, int? accountReceivableId = null, FinancialIncomingCategory category = default, int churchId = 0)
+    public Income(string description, Money amount, int? accountReceivableId = null, FinancialIncomingCategory category = default, int churchId = 0)
     {
         Description = description;
         Amount = amount;

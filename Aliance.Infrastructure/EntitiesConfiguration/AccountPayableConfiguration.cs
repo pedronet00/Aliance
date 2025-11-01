@@ -19,18 +19,23 @@ public class AccountPayableConfiguration : IEntityTypeConfiguration<AccountPayab
 
         builder.Property(p => p.Guid)
         .IsRequired()
-        .HasDefaultValueSql("(UUID())") // gera automaticamente no MySQL
+        .HasDefaultValueSql("(UUID())")
         .ValueGeneratedOnAdd();
 
         builder.Property(ap => ap.Description)
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(ap => ap.Amount)
-            .IsRequired()
-            .HasColumnType("decimal(18,2)");
+        builder.OwnsOne(ap => ap.Amount, money =>
+        {
+            money.Ignore(m => m.Notifications);
+            money.Property(m => m.Value)
+                 .HasColumnName("Amount")
+                 .HasColumnType("decimal(18,2)")
+                 .IsRequired();
+        });
 
-        builder.Property(ap => ap.DueDate)
+            builder.Property(ap => ap.DueDate)
             .IsRequired()
             .HasColumnType("datetime");
 

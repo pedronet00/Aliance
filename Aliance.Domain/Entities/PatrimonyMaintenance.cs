@@ -1,4 +1,5 @@
 ﻿using Aliance.Domain.Enums;
+using Aliance.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ public class PatrimonyMaintenance
     public DateTime MaintenanceDate { get; set; }
     public string Description { get; set; }
 
-    public decimal MaintenanceCost { get; set; }
+    public Money MaintenanceCost { get; set; }
     public PatrimonyMaintenanceStatus Status { get; set; }
     public int PatrimonyId { get; set; }
     public Patrimony Patrimony { get; set; }
@@ -23,10 +24,11 @@ public class PatrimonyMaintenance
 
     public ICollection<PatrimonyMaintenanceDocument> Documents { get; private set; } = new List<PatrimonyMaintenanceDocument>();
     private PatrimonyMaintenance() { }
-    public PatrimonyMaintenance(DateTime maintenanceDate, string description, int patrimonyId)
+    public PatrimonyMaintenance(DateTime maintenanceDate, Money maintenanceCost, string description, int patrimonyId)
     {
         Guid = Guid.NewGuid();
         MaintenanceDate = maintenanceDate;
+        MaintenanceCost = maintenanceCost;
         Description = description;
         PatrimonyId = patrimonyId;
         Status = PatrimonyMaintenanceStatus.Agendado;

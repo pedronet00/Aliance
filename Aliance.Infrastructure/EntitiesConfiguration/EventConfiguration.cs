@@ -31,9 +31,14 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
         builder.Property(e => e.Date)
             .IsRequired();
 
-        builder.Property(e => e.Cost)
-            .IsRequired()
-            .HasColumnType("decimal(18,2)");
+        builder.OwnsOne(ap => ap.Cost, money =>
+        {
+            money.Ignore(m => m.Notifications);
+            money.Property(m => m.Value)
+                 .HasColumnName("Cost")
+                 .HasColumnType("decimal(18,2)")
+                 .IsRequired();
+        });
 
         builder.HasOne(e => e.Location)
             .WithMany()

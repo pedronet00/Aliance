@@ -18,12 +18,16 @@ public class TitheConfiguration : IEntityTypeConfiguration<Tithe>
 
         builder.HasKey(t => t.Id);
 
-        
-        builder.Property(t => t.Amount)
-            .IsRequired()
-            .HasColumnType("decimal(18,2)");
 
-        builder.Property(t => t.Date)
+        builder.OwnsOne(ap => ap.Amount, money =>
+        {
+            money.Ignore(m => m.Notifications);
+            money.Property(m => m.Value)
+                 .HasColumnName("Amount")
+                 .HasColumnType("decimal(18,2)")
+                 .IsRequired();
+        });
+            builder.Property(t => t.Date)
             .IsRequired();
 
     }

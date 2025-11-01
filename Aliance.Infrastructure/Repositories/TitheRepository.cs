@@ -77,7 +77,7 @@ public class TitheRepository : ITitheRepository
     {
         var totalTithes = await _context.Tithe
             .Where(t => t.ChurchId == churchId)
-            .SumAsync(t => t.Amount);
+            .SumAsync(t => t.Amount.Value);
 
         return totalTithes;
     }
@@ -86,7 +86,7 @@ public class TitheRepository : ITitheRepository
     {
         var totalTithes = await _context.Tithe
             .Where(t => t.ChurchId == churchId && t.UserId == userId)
-            .SumAsync(t => t.Amount);
+            .SumAsync(t => t.Amount.Value);
 
         return totalTithes;
     }

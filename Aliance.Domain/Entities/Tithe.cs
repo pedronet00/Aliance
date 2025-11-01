@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aliance.Domain.ValueObjects;
+using System;
 
 namespace Aliance.Domain.Entities;
 
@@ -8,7 +9,7 @@ public class Tithe
 
     public Guid Guid { get; private set; }
 
-    public decimal Amount { get; set; }
+    public Money Amount { get; set; }
 
     public DateTime Date { get; set; }
 
@@ -22,7 +23,7 @@ public class Tithe
 
     private Tithe() { }
 
-    public Tithe(decimal amount, DateTime date, string userId, int churchId)
+    public Tithe(Money amount, DateTime date, string userId, int churchId)
     {
         Guid = Guid.NewGuid(); 
         Amount = amount;

@@ -48,6 +48,8 @@ public class DomainToDTOMappingProfile : Profile
 
         CreateMap<Income, IncomeDTO>().ReverseMap();
         CreateMap<Income, IncomeViewModel>().ReverseMap();
+        CreateMap<Income, IncomeViewModel>()
+            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Value));
 
         CreateMap<WorshipTeamMember, WorshipTeamMemberDTO>().ReverseMap();
         CreateMap<WorshipTeamMember, WorshipTeamMemberViewModel>().ReverseMap();
@@ -61,6 +63,9 @@ public class DomainToDTOMappingProfile : Profile
 
         CreateMap<Expense, ExpenseDTO>().ReverseMap();
         CreateMap<Expense, ExpenseViewModel>().ReverseMap();
+        CreateMap<Expense, ExpenseViewModel>()
+            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Value));
+
         CreateMap<CellMember, CellMemberViewModel>()
             .ForMember(dest => dest.CellGuId, opt => opt.MapFrom(src => src.Cell.Guid))
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
@@ -68,6 +73,7 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Tithe, TitheDTO>().ReverseMap();
         CreateMap<Tithe, TitheViewModel>().ReverseMap();
         CreateMap<Tithe, TitheViewModel>()
+            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Value))
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
 
 
@@ -114,6 +120,7 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Event, EventDTO>().ReverseMap();
         CreateMap<Event, EventViewModel>().ReverseMap();
         CreateMap<Event, EventViewModel>()
+            .ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Cost.Value))
             .ForMember(dest => dest.LocationName, opt => opt.MapFrom(src => src.Location.Name))
             .ReverseMap();
 
@@ -126,28 +133,32 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<AccountPayable, AccountPayableDTO>().ReverseMap();
         CreateMap<AccountPayable, AccountPayableViewModel>().ReverseMap();
         CreateMap<AccountPayable, AccountPayableViewModel>()
+            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Value))
             .ForMember(dest => dest.CostCenterName, opt => opt.MapFrom(src => src.CostCenter.Name))
             .ReverseMap();
 
         CreateMap<AccountReceivable, AccountReceivableDTO>().ReverseMap();
         CreateMap<AccountReceivable, AccountReceivableViewModel>().ReverseMap();
         CreateMap<AccountReceivable, AccountReceivableViewModel>()
+            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Value))
             .ForMember(dest => dest.CostCenterName, opt => opt.MapFrom(src => src.CostCenter.Name))
             .ReverseMap();
 
         CreateMap<PatrimonyMaintenance, PatrimonyMaintenanceDTO>().ReverseMap();
 
         CreateMap<PatrimonyMaintenance, PatrimonyMaintenanceViewModel>()
+            .ForMember(dest => dest.MaintenanceCost, opt => opt.MapFrom(src => src.MaintenanceCost.Value))
             .ForMember(dest => dest.PatrimonyName, opt => opt.MapFrom(src => src.Patrimony.Name))
             .ReverseMap();
 
         CreateMap<PatrimonyMaintenanceDTO, PatrimonyMaintenance>()
-            .ForMember(dest => dest.Guid, opt => opt.Ignore())
-            .ConstructUsing(dto => new PatrimonyMaintenance(dto.MaintenanceDate, dto.Description, dto.PatrimonyId));
+            .ForMember(dest => dest.Guid, opt => opt.Ignore());
+            //.ConstructUsing(dto => new PatrimonyMaintenance(dto.MaintenanceDate, dto.MaintenanceCost.Value, dto.Description, dto.PatrimonyId));
 
         CreateMap<Budget, BudgetDTO>().ReverseMap();
         CreateMap<Budget, BudgetViewModel>().ReverseMap();
         CreateMap<Budget, BudgetViewModel>()
+            .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.TotalAmount.Value))
             .ForMember(dest => dest.CostCenterName, opt => opt.MapFrom(src => src.CostCenter.Name))
             .ReverseMap();
     }

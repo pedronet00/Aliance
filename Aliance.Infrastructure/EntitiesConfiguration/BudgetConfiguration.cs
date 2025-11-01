@@ -25,9 +25,14 @@ public class BudgetConfiguration : IEntityTypeConfiguration<Budget>
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(b => b.TotalAmount)
-            .IsRequired()
-            .HasColumnType("decimal(18,2)");
+        builder.OwnsOne(ap => ap.TotalAmount, money =>
+        {
+            money.Ignore(m => m.Notifications);
+            money.Property(m => m.Value)
+                 .HasColumnName("TotalAmount")
+                 .HasColumnType("decimal(18,2)")
+                 .IsRequired();
+        });
 
         builder.Property(b => b.StartDate)
             .IsRequired()

@@ -33,6 +33,12 @@ public class EventService : IEventService
 
         var eventEntity = _mapper.Map<Domain.Entities.Event>(newEvent);
 
+        if(eventEntity.Cost.Notifications.Count > 0)
+        {
+            result.Notifications.AddRange(eventEntity.Cost.Notifications.Select(n => n.Message));
+            return result;
+        }
+
         await _repo.AddEvent(eventEntity);
 
         var commit = await _uow.Commit();
@@ -172,7 +178,7 @@ public class EventService : IEventService
                 var accountPayable = new AccountPayableDTO
                 {
                     Description = $"Conta a pagar gerada automaticamente pelo sistema para o evento: {ev.Name}",
-                    Amount = ev.Cost,
+                    Amount = ev.Cost.Value,
                     DueDate = DateTime.Now,
                     CostCenterId = ev.CostCenterId,
                     AccountStatus = AccountStatus.Pendente

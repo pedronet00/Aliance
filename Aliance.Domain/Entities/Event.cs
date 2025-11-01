@@ -1,4 +1,5 @@
 ﻿using Aliance.Domain.Enums;
+using Aliance.Domain.ValueObjects;
 using System;
 
 namespace Aliance.Domain.Entities;
@@ -15,7 +16,7 @@ public class Event
 
     public DateTime Date { get; set; }
 
-    public decimal Cost { get; set; }
+    public Money Cost { get; set; }
 
     public int LocationId { get; set; }
     public Location? Location { get; set; }
@@ -30,7 +31,7 @@ public class Event
 
     private Event() { }
 
-    public Event(string? name, string? description, DateTime date, decimal cost, int locationId, int churchId)
+    public Event(string? name, string? description, DateTime date, Money cost, int locationId, int churchId)
     {
         Guid = Guid.NewGuid(); 
         Name = name;

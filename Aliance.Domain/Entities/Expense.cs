@@ -1,4 +1,5 @@
 ﻿using Aliance.Domain.Enums;
+using Aliance.Domain.ValueObjects;
 
 namespace Aliance.Domain.Entities;
 
@@ -7,7 +8,7 @@ public class Expense
     public int Id { get; set; }
     public Guid Guid { get; private set; } = Guid.NewGuid();
     public string Description { get; set; }
-    public decimal Amount { get; set; }
+    public Money Amount { get; set; }
     public DateTime Date { get; set; }
 
     public FinancialExpenseCategory Category { get; set; }
@@ -19,7 +20,7 @@ public class Expense
     public Church Church { get; set; }
 
     private Expense() { }
-    public Expense(string description, decimal amount, int? accountPayableId = null)
+    public Expense(string description, Money amount, int? accountPayableId = null)
     {
         Description = description;
         Amount = amount;

@@ -39,7 +39,7 @@ public class EventController : ControllerBase
     {
         var result = await _service.AddEvent(newEvent);
         if (result.Notifications.Any())
-            return BadRequest(result.Notifications);
+            return BadRequest(result);
         return Ok(result.Result);
     }
 
