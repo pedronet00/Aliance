@@ -5,15 +5,34 @@ using Aliance.Domain.Entities;
 using Aliance.Infrastructure.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        await context.HttpContext.Response.WriteAsync("Limite de requisições excedido. Tente novamente mais tarde.");
+    };
+
+    options.AddFixedWindowLimiter("DefaultPolicy", limiter =>
+    {
+        limiter.PermitLimit = 1;
+        limiter.Window = TimeSpan.FromMinutes(1);
+    });
+
+});
+
 
 builder.Services.AddInfrastructure();
 
@@ -112,6 +131,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors();
+
+//app.MapPost("/login", LoginHandler).RequireRateLimiting("LoginPolicy");
+app.MapControllers().RequireRateLimiting("DefaultPolicy");
 
 app.UseAuthorization();
 

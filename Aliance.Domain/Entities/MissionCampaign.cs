@@ -29,6 +29,12 @@ public class MissionCampaign
 
     public Church Church { get; set; }
 
+    #region Collections
+
+    public ICollection<MissionCampaignDonation> Donations { get; set; } = new List<MissionCampaignDonation>();
+
+    #endregion
+    
     private MissionCampaign() { }
 
     public MissionCampaign(int id, Guid guid, string name, Territorials type, DateTime startDate, DateTime endDate, decimal targetAmount, decimal collectedAmount, int churchId)

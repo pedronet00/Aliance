@@ -56,6 +56,7 @@ public class EventRepository : IEventRepository
         var query = _context.Event
             .Where(e => e.ChurchId == churchId)
             .OrderByDescending(e => e.Date)
+            .AsNoTracking()
             .Include(e => e.Location);
 
         var totalCount = await query.CountAsync();

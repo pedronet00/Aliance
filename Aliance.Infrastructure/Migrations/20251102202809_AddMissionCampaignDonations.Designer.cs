@@ -4,6 +4,7 @@ using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aliance.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251102202809_AddMissionCampaignDonations")]
+    partial class AddMissionCampaignDonations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -182,50 +185,6 @@ namespace Aliance.Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("Aliance.Domain.Entities.AutomaticAccounts", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AccountStatus")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<int>("AccountType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ChurchId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CostCenterId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<int>("DueDay")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("Guid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)")
-                        .HasDefaultValueSql("(UUID())");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChurchId");
-
-                    b.HasIndex("CostCenterId");
-
-                    b.ToTable("AutomaticAccounts", (string)null);
                 });
 
             modelBuilder.Entity("Aliance.Domain.Entities.Baptism", b =>
@@ -1682,45 +1641,6 @@ namespace Aliance.Infrastructure.Migrations
                     b.Navigation("Church");
                 });
 
-            modelBuilder.Entity("Aliance.Domain.Entities.AutomaticAccounts", b =>
-                {
-                    b.HasOne("Aliance.Domain.Entities.Church", "Church")
-                        .WithMany()
-                        .HasForeignKey("ChurchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Aliance.Domain.Entities.CostCenter", "CostCenter")
-                        .WithMany("AutomaticAccounts")
-                        .HasForeignKey("CostCenterId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.OwnsOne("Aliance.Domain.ValueObjects.Money", "Amount", b1 =>
-                        {
-                            b1.Property<int>("AutomaticAccountsId")
-                                .HasColumnType("int");
-
-                            b1.Property<decimal>("Value")
-                                .HasColumnType("decimal(18,2)")
-                                .HasColumnName("Amount");
-
-                            b1.HasKey("AutomaticAccountsId");
-
-                            b1.ToTable("AutomaticAccounts");
-
-                            b1.WithOwner()
-                                .HasForeignKey("AutomaticAccountsId");
-                        });
-
-                    b.Navigation("Amount")
-                        .IsRequired();
-
-                    b.Navigation("Church");
-
-                    b.Navigation("CostCenter");
-                });
-
             modelBuilder.Entity("Aliance.Domain.Entities.Baptism", b =>
                 {
                     b.HasOne("Aliance.Domain.Entities.Church", "Church")
@@ -2482,8 +2402,6 @@ namespace Aliance.Infrastructure.Migrations
                     b.Navigation("AccountPayable");
 
                     b.Navigation("AccountReceivable");
-
-                    b.Navigation("AutomaticAccounts");
 
                     b.Navigation("Budget");
 
