@@ -38,7 +38,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ServiceRole> ServiceRole { get; set; }
     public DbSet<ServicePresence> ServicePresence { get; set; }
     public DbSet<SundaySchoolClass> SundaySchool { get; set; }
-    public DbSet<SundaySchoolClassroom> SundaySchoolClassRoom { get; set; }
+    public DbSet<SundaySchoolClassroom> SundaySchoolClassroom { get; set; }
     public DbSet<SundaySchoolClass> SundaySchoolClass { get; set; }
     public DbSet<Tithe> Tithe { get; set; }
     public DbSet<WorshipTeam> WorshipTeam { get; set; }

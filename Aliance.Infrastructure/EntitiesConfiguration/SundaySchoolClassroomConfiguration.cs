@@ -12,7 +12,9 @@ public class SundaySchoolClassroomConfiguration : IEntityTypeConfiguration<Sunda
 
         builder.HasKey(c => c.Id);
 
-        builder.Property(c => c.Guid)
+        // GUID default
+        builder.Property(cm => cm.Guid)
+            .HasDefaultValueSql("(UUID())")
             .IsRequired();
 
         builder.Property(c => c.Name)

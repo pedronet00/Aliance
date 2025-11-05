@@ -24,7 +24,7 @@ public class SundaySchoolClassroom
 
     private SundaySchoolClassroom() { }
 
-    public SundaySchoolClassroom(int id, Guid guid, string name, bool status, int churchId)
+    public SundaySchoolClassroom(int id, Guid guid, string name, int churchId, bool status = true)
     {
         Id = id;
         Guid = guid;

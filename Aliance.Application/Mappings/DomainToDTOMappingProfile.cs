@@ -100,6 +100,9 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Location, LocationViewModel>().ReverseMap();
         CreateMap<Location, LocationDTO>().ReverseMap();
 
+        CreateMap<SundaySchoolClassroom, SundaySchoolClassroomViewModel>().ReverseMap();
+        CreateMap<SundaySchoolClassroom, SundaySchoolClassroomDTO>().ReverseMap();
+
         CreateMap<CellMeeting, CellMeetingDTO>().ReverseMap();
         CreateMap<CellMeetingDTO, CellMeeting>()
             .ConstructUsing(src => new CellMeeting())

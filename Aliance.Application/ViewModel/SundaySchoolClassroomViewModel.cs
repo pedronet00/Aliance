@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Aliance.Application.ViewModel;
 
-public class LocationViewModel
+public class SundaySchoolClassroomViewModel
 {
     public int Id { get; set; }
 
