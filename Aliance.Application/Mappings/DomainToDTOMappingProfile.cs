@@ -36,6 +36,16 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<MissionCampaign, MissionCampaignDTO>().ReverseMap();
         CreateMap<MissionCampaign, MissionCampaignViewModel>().ReverseMap();
 
+        CreateMap<AutomaticAccounts, AutomaticAccountsDTO>().ReverseMap();
+        CreateMap<AutomaticAccountsDTO, AutomaticAccounts>()
+        .ForMember(dest => dest.Id, opt => opt.Ignore())
+        .ForMember(dest => dest.ChurchId, opt => opt.Ignore()); // Se ChurchId é FK parte da chave
+
+        CreateMap<AutomaticAccounts, AutomaticAccountsViewModel>().ReverseMap();
+        CreateMap<AutomaticAccounts, AutomaticAccountsViewModel>()
+            .ForMember(dest => dest.CostCenterName, opt => opt.MapFrom(src => src.CostCenter.Name))
+            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Value));
+
         CreateMap<WorshipTeamRehearsal, WorshipTeamRehearsalDTO>().ReverseMap();
         CreateMap<WorshipTeamRehearsal, WorshipTeamRehearsalViewModel>().ReverseMap();
         CreateMap<WorshipTeamRehearsalDTO, WorshipTeamRehearsal>()
@@ -50,6 +60,16 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Income, IncomeViewModel>().ReverseMap();
         CreateMap<Income, IncomeViewModel>()
             .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Value));
+
+        CreateMap<MissionCampaignDonation, MissionCampaignDonationDTO>().ReverseMap();
+        CreateMap<MissionCampaignDonationDTO, MissionCampaignDonation>()
+            .ForMember(d => d.Campaign, opt => opt.Ignore())
+            .ForMember(d => d.User, opt => opt.Ignore());
+
+        CreateMap<MissionCampaignDonation, MissionCampaignDonationViewModel>().ReverseMap();
+        CreateMap<MissionCampaignDonation, MissionCampaignDonationViewModel>()
+            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Value))
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
 
         CreateMap<WorshipTeamMember, WorshipTeamMemberDTO>().ReverseMap();
         CreateMap<WorshipTeamMember, WorshipTeamMemberViewModel>().ReverseMap();

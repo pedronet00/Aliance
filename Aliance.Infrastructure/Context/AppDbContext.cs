@@ -8,6 +8,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
+    public DbSet<AutomaticAccounts> AutomaticAccounts { get; set; }
     public DbSet<AccountPayable> AccountPayable{ get; set; }
     public DbSet<AccountReceivable> AccountReceivable { get; set; }
     public DbSet<Baptism> Baptism{ get; set; }
@@ -26,6 +27,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Location> Location { get; set; }
     public DbSet<Mission> Mission { get; set; }
     public DbSet<MissionCampaign> MissionCampaign { get; set; }
+    public DbSet<MissionCampaignDonation> MissionCampaignDonation { get; set; }
     public DbSet<MissionMember> MissionMember { get; set; }
     public DbSet<PastoralVisit> PastoralVisit { get; set; }
     public DbSet<Patrimony> Patrimony { get; set; }
