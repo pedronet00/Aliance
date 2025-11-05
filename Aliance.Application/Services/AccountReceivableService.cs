@@ -100,6 +100,10 @@ public class AccountReceivableService : IAccountReceivableService
 
             case AccountStatus.Paga:
                 await _repo.ToggleStatus(churchId, guid, status);
+
+                if (account.PaymentDate is null)
+                    account.PaymentDate = DateTime.Now;
+
                 var income = new Income(
                     $"Recebimento da conta: {account.Description}",
                     account.Amount,
@@ -122,6 +126,7 @@ public class AccountReceivableService : IAccountReceivableService
                 break;
         }
 
+        await _repo.UpdateAsync(churchId, account);
         await _unitOfWork.Commit();
 
         return _mapper.Map<AccountReceivableViewModel>(account);
