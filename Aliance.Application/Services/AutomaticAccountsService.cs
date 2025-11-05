@@ -121,51 +121,6 @@ public class AutomaticAccountsService : IAutomaticAccountsService
         return result;
     }
 
-    public async Task<DomainNotificationsResult<string>> Routine()
-    {
-        var result = new DomainNotificationsResult<string>();
-        //var churchId = _userContext.GetChurchId();
-
-        var totalAccountsInserted = 0;
-        var totalAccountsPayableInserted = 0;
-        var totalAccountsReceivableInserted = 0;
-
-        var accounts = await _repo.GetAll();
-
-        foreach(var account in accounts)
-        {
-            if(account.DueDay - 10 == DateTime.Today.Day)
-            {
-                var dueDate = DateTime.Today.AddDays(10);
-
-                switch (account.AccountType)
-                {
-                    case Domain.Enums.AccountType.Payable:
-                        var newAccountPayable = new AccountPayable($"Conta automática: {account.Description}", account.Amount, dueDate, account.CostCenterId);
-
-                        await _accountPayableRepository.AddAsync(newAccountPayable);
-                        totalAccountsInserted++;
-                        totalAccountsPayableInserted++;
-                        break;
-
-                    case Domain.Enums.AccountType.Receivable:
-                        var newAccountReceivable = new AccountReceivable($"Conta automática: {account.Description}", account.Amount, dueDate, account.CostCenterId);
-
-                        await _accountReceivableRepository.AddAsync(newAccountReceivable);
-                        totalAccountsInserted++;
-                        totalAccountsReceivableInserted++;
-                        break;
-                }
-            }
-        }
-
-        await _uow.Commit();
-
-        result.Result = $"Foram geradas {totalAccountsInserted} contas com sucesso nessa rotina, sendo {totalAccountsPayableInserted} contas a pagar e {totalAccountsReceivableInserted} contas a receber.";
-
-        return result;
-    }
-
     public async Task<DomainNotificationsResult<AutomaticAccountsViewModel>> Update(AutomaticAccountsDTO automaticAccount)
     {
         var result = new DomainNotificationsResult<AutomaticAccountsViewModel>();

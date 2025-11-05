@@ -25,5 +25,4 @@ public interface IAutomaticAccountsService
 
     Task<DomainNotificationsResult<AutomaticAccountsViewModel>> GetByGuid(Guid guid);
 
-    Task<DomainNotificationsResult<string>> Routine();
 }

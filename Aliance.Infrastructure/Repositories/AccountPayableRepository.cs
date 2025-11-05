@@ -77,6 +77,17 @@ public class AccountPayableRepository : IAccountPayableRepository
         return accountPayable;
     }
 
+    public async Task<IEnumerable<AccountPayable>> GetExpiringAccounts()
+    {
+        var today = DateTime.Today;
+        var tomorrow = today.AddDays(1);
+
+        return await _context.AccountPayable
+            .Where(ap => ap.DueDate <= tomorrow && ap.AccountStatus == AccountStatus.Pendente)
+            .ToListAsync();
+    }
+
+
     public async Task<AccountPayable> ToggleStatus(int churchId, Guid guid, AccountStatus status)
     {
         var accountPayable = await _context.AccountPayable

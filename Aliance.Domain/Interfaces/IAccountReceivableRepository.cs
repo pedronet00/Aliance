@@ -22,4 +22,6 @@ public interface IAccountReceivableRepository
     Task<bool> DeleteAsync(int churchId, Guid guid);
 
     Task<AccountReceivable> ToggleStatus(int churchId, Guid guid, AccountStatus status);
+
+    Task<IEnumerable<AccountReceivable>> GetExpiringAccounts();
 }

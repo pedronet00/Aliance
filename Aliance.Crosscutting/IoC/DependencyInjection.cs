@@ -80,6 +80,7 @@ public static class DependencyInjection
         services.AddScoped<IMissionCampaignService, MissionCampaignService>();
         services.AddScoped<IMissionCampaignDonationService, MissionCampaignDonationService>();
         services.AddScoped<IAutomaticAccountsService, AutomaticAccountsService>();
+        services.AddScoped<IRoutineService, RoutineService>();
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();

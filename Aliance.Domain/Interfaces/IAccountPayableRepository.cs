@@ -21,5 +21,7 @@ public interface IAccountPayableRepository
 
     Task<bool> DeleteAsync(int churchId,Guid guid);
 
+    Task<IEnumerable<AccountPayable>> GetExpiringAccounts();
+
     Task<AccountPayable> ToggleStatus(int churchId, Guid guid, AccountStatus status);
 }

@@ -75,6 +75,16 @@ public class AccountReceivableRepository : IAccountReceivableRepository
         return accountReceivable;
     }
 
+    public async Task<IEnumerable<AccountReceivable>> GetExpiringAccounts()
+    {
+        var today = DateTime.Today;
+        var tomorrow = today.AddDays(1);
+
+        return await _context.AccountReceivable
+            .Where(ap => ap.DueDate <= tomorrow && ap.AccountStatus == AccountStatus.Pendente)
+            .ToListAsync();
+    }
+
     public async Task<AccountReceivable> ToggleStatus(int churchId, Guid guid, AccountStatus status)
     {
         var accountReceivable = await _context.AccountReceivable

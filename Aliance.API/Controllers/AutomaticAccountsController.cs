@@ -74,15 +74,4 @@ public class AutomaticAccountsController : ControllerBase
             ? NotFound(result.Notifications)
             : Ok(result.Result);
     }
-
-    // Rotina automática manual (opcional exposta via API)
-    [HttpPost("routine")]
-    public async Task<IActionResult> RunRoutine()
-    {
-        var result = await _service.Routine();
-
-        return result.HasNotifications
-            ? BadRequest(result.Notifications)
-            : Ok(result.Result);
-    }
 }
