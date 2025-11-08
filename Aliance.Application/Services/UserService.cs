@@ -25,19 +25,21 @@ public class UserService : IUserService
     private readonly IUserContextService _context;
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
+    private readonly IMailService _mailService;
 
-    public UserService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, IUserContextService context, IMapper mapper, IConfiguration config)
+    public UserService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, IUserContextService context, IMapper mapper, IConfiguration config, IMailService mailService)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
         _context = context;
         _mapper = mapper;
         _config = config;
+        _mailService = mailService;
     }
 
-    public async Task<DomainNotificationsResult<bool>> ActivateUser(string userId)
+    public async Task<DomainNotificationsResult<UserViewModel>> ToggleStatus(string userId)
     {
-        var result = new DomainNotificationsResult<bool>();
+        var result = new DomainNotificationsResult<UserViewModel>();
         var churchId = _context.GetChurchId();
 
         var user = await _userManager.FindByIdAsync(userId);
@@ -48,7 +50,7 @@ public class UserService : IUserService
             return result;
         }
 
-        user.Status = true;
+        user.Status = !user.Status;
 
         var updateResult = await _userManager.UpdateAsync(user);
 
@@ -62,7 +64,7 @@ public class UserService : IUserService
         }
         await _unitOfWork.Commit();
 
-        result.Result = true;
+        result.Result = _mapper.Map<UserViewModel>(user);
 
         return result;
     }
@@ -145,7 +147,6 @@ public class UserService : IUserService
     public async Task<DomainNotificationsResult<UserViewModel>> CreateUserAsync(UserDTO user)
     {
         var result = new DomainNotificationsResult<UserViewModel>();
-        var apiKey = _config["SendGrid:ApiKey"];
 
         // Verifica se email já existe
         var existingUser = await _userManager.FindByEmailAsync(user.Email!);
@@ -161,7 +162,7 @@ public class UserService : IUserService
             Id = Guid.NewGuid().ToString(), // garante que nunca será null
             UserName = user.UserName,
             Email = user.Email,
-            PhoneNumber = user.Phone,
+            PhoneNumber = user.PhoneNumber,
             ChurchId = user.ChurchId,
             Status = user.Status
         };
@@ -192,55 +193,36 @@ public class UserService : IUserService
 
         await _unitOfWork.Commit();
 
-        string template = File.ReadAllText("Mailing/Templates/RedefinePassword.cshtml");
-        template = template.Replace("{{Id}}", newUser.Id);
+        // Monta link para redefinir a primeira senha
+        var resetLink = $"https://localhost:5173/redefinir-senha/{newUser.Id}";
 
-        var client = new SendGridClient(apiKey);
-        var from = new EmailAddress("suporte@aliance.app.br", "Aliance | ERP para igrejas");
-        var subject = "Defina sua senha";
-        var to = new EmailAddress(newUser.Email);
-        var plainTextContent = "Clique aqui para definir sua senha: <link>";
-        var htmlContent = template;
-        var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-        var response = await client.SendEmailAsync(msg);
+        // Monta o conteúdo do email
+        var subject = "Sua conta foi criada | Aliance";
+        var plainTextContent = $"Olá {newUser.UserName},\n\nSua conta foi criada com sucesso.\nDefina sua senha usando o link: {resetLink}\n\nAtenciosamente,\nAliance";
+        var htmlContent = $@"
+        <p>Olá <strong>{newUser.UserName}</strong>,</p>
+        <p>Sua conta foi criada com sucesso.</p>
+        <p>Defina sua senha clicando <a href='{resetLink}'>aqui</a>.</p>
+        <p>Atenciosamente,<br/>Aliance</p>";
 
+        // Envia o email
+        try
+        {
+            await _mailService.SendEmailAsync(newUser.Email!, subject, plainTextContent, htmlContent);
+        }
+        catch (Exception ex)
+        {
+            // opcional: log do erro de envio, mas não bloqueia a criação do usuário
+            result.Notifications.Add("Usuário criado, mas falha ao enviar email: " + ex.Message);
+        }
+
+        // Mapeia para ViewModel
         var userViewModel = _mapper.Map<UserViewModel>(newUser);
         result.Result = userViewModel;
 
         return result;
     }
 
-    public async Task<DomainNotificationsResult<bool>> DeactivateUser(string userId)
-    {
-        var result = new DomainNotificationsResult<bool>();
-        var churchId = _context.GetChurchId();
-
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null || user.ChurchId != churchId)
-        {
-            result.Notifications.Add("Usuário não encontrado.");
-            return result;
-        }
-
-        user.Status = false;
-
-        var updateResult = await _userManager.UpdateAsync(user);
-
-        if (updateResult != null)
-        {
-            foreach (var error in updateResult.Errors)
-            {
-                result.Notifications.Add(error.Description);
-            }
-            return result;
-        }
-        await _unitOfWork.Commit();
-
-        result.Result = true;
-
-        return result;
-    }
 
     public async Task<DomainNotificationsResult<bool>> DeleteUserAsync(string userId)
     {
@@ -341,6 +323,8 @@ public class UserService : IUserService
 
         var user = await _userManager.FindByIdAsync(userId);
 
+        var userRoles = await _userManager.GetRolesAsync(user);
+
         if (user == null || user.ChurchId != churchId)
         {
             result.Notifications.Add("Usuário não encontrado.");
@@ -348,6 +332,8 @@ public class UserService : IUserService
         }
 
         var userViewModel = _mapper.Map<UserViewModel>(user);
+
+        userViewModel.Role = userRoles.FirstOrDefault();
 
         result.Result = userViewModel;
 
@@ -394,7 +380,7 @@ public class UserService : IUserService
             var roles = await _userManager.GetRolesAsync(user);
             var userVm = _mapper.Map<UserViewModel>(user);
             userVm.Role = roles.FirstOrDefault();
-            userVm.Phone = user.PhoneNumber;
+            userVm.PhoneNumber = user.PhoneNumber;
             userViewModels.Add(userVm);
         }
 
@@ -466,7 +452,7 @@ public class UserService : IUserService
 
         existingUser.UserName = user.UserName;
         existingUser.Email = user.Email;
-        existingUser.PhoneNumber = user.Phone;
+        existingUser.PhoneNumber = user.PhoneNumber;
         existingUser.Status = user.Status;
         existingUser.ChurchId = user.ChurchId;
 

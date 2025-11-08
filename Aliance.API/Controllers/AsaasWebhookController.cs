@@ -17,10 +17,10 @@ namespace Aliance.API.Controllers
         private readonly ILogger<AsaasWebhookController> _logger;
         private readonly IChurchService _churchService;
         private readonly string _logFilePath;
-        private readonly IMailSending _mailSending;
+        private readonly IMailService _mailSending;
         private readonly IUserService _userService;
 
-        public AsaasWebhookController(ILogger<AsaasWebhookController> logger, IChurchService churchService, IMailSending mailSending, IUserService userService)
+        public AsaasWebhookController(ILogger<AsaasWebhookController> logger, IChurchService churchService, IMailService mailSending, IUserService userService)
         {
             _logger = logger;
             _churchService = churchService;

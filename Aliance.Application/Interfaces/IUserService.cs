@@ -40,9 +40,7 @@ public interface IUserService
 
     Task<DomainNotificationsResult<List<string>>> GetUserRolesAsync(string userId);
 
-    Task<DomainNotificationsResult<bool>> DeactivateUser(string userId);
-
-    Task<DomainNotificationsResult<bool>> ActivateUser(string userId);
+    Task<DomainNotificationsResult<UserViewModel>> ToggleStatus(string userId);
 
     Task<string> GeneratePasswordResetUrl(string churchAsaasId);
 

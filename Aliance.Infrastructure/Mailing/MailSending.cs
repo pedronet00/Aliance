@@ -1,10 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Aliance.Application.Interfaces;
+using Microsoft.Extensions.Configuration;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
 namespace Aliance.Infrastructure.Mailing;
 
-public class MailSending : IMailSending
+public class MailSending : IMailService
 {
     private readonly IConfiguration _config;
 
@@ -16,8 +17,6 @@ public class MailSending : IMailSending
     public async Task<bool> SendEmailAsync(string toEmail, string subject, string plainTextContent, string htmlContent)
     {
         var apiKey = _config["SendGrid:ApiKey"];
-
-        string template = File.ReadAllText("Mailing/Templates/RedefinePassword.cshtml");
 
         var client = new SendGridClient(apiKey);
         var from = new EmailAddress("suporte@aliance.app.br", "Aliance | ERP para igrejas");

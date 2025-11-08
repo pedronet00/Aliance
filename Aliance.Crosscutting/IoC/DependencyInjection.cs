@@ -73,7 +73,7 @@ public static class DependencyInjection
         services.AddScoped<IRegisterService, RegisterService>();
         services.AddScoped<IServiceService, ServiceService>();
         services.AddScoped<IServiceRoleService, ServiceRoleService>();
-        services.AddScoped<IMailSending, MailSending>();
+        services.AddScoped<IMailService, MailSending>();
         services.AddScoped<IWorshipTeamService, WorshipTeamService>();
         services.AddScoped<IWorshipTeamMemberService, WorshipTeamMemberService>();
         services.AddScoped<ICalendarActivitiesService, CalendarActivitiesService>();
