@@ -15,5 +15,7 @@ public interface ILocationRepository
 
     Task<Location> GetLocationByGuid(int churchId, Guid guid);
 
+    Task<Location> UpdateLocation(Location location);
+
     Task<Location> InsertLocation(Location location);
 }

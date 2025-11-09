@@ -11,5 +11,6 @@ public interface ICellMemberService
 
     Task<DomainNotificationsResult<bool>> DeleteCellMember(Guid cellGuid, string memberId);
 
-    Task<DomainNotificationsResult<CellMemberViewModel>> ToggleMemberStatus(Guid cellGuid, string memberId, bool status);
+    Task<DomainNotificationsResult<CellMemberViewModel>> ToggleMemberStatus(Guid cellGuid, string memberId);
+
 }

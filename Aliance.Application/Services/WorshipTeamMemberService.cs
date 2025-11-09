@@ -105,7 +105,7 @@ public class WorshipTeamMemberService : IWorshipTeamMemberService
         return result;
     }
 
-    public async Task<DomainNotificationsResult<WorshipTeamMemberViewModel>> ToggleMemberStatus(Guid teamGuid, string memberId, bool status)
+    public async Task<DomainNotificationsResult<WorshipTeamMemberViewModel>> ToggleMemberStatus(Guid teamGuid, string memberId)
     {
         var result = new DomainNotificationsResult<WorshipTeamMemberViewModel>();
         var churchId = _userContext.GetChurchId();
@@ -117,13 +117,15 @@ public class WorshipTeamMemberService : IWorshipTeamMemberService
             return result;
         }
 
-        var member = await _repo.ToggleMemberStatus(churchId, team.Id, memberId, status);
+        var member = await _repo.GetMemberByGuid(team.Id, memberId);
 
         if (member is null)
         {
             result.Notifications.Add("Membro não encontrado no grupo de louvor.");
             return result;
         }
+
+        member.Status = !member.Status;
 
         await _unitOfWork.Commit();
 

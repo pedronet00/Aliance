@@ -13,14 +13,13 @@ public class UserDTO
     [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
     public string? Email { get; set; }
 
-    [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
     public string? Password { get; set; }
 
     [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
     public string? Role { get; set; }
 
     [Required(ErrorMessage = DataAnnotationMessages.REQUIRED)]
-    public string? Phone { get; set; }
+    public string? PhoneNumber { get; set; }
 
     public bool Status { get; set; }
 

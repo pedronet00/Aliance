@@ -104,12 +104,36 @@ public class WorshipTeamRehearsalService : IWorshipTeamRehearsalService
         return result;
     }
 
+    public async Task<DomainNotificationsResult<WorshipTeamRehearsalViewModel>> ToggleStatus(Guid guid, MeetingStatus status)
+    {
+        var result = new DomainNotificationsResult<WorshipTeamRehearsalViewModel>();
+        var churchId = _userContext.GetChurchId();
+
+        var rehearsal = await _repo.GetRehearsalByGuid(churchId, guid);
+
+        if(rehearsal == null)
+        {
+            result.Notifications.Add("Ensaio não encontrado.");
+        }
+
+        var rehearsalEntity = _mapper.Map<WorshipTeamRehearsal>(rehearsal);
+
+        rehearsalEntity.Status = status;
+
+        await _repo.UpdateRehearsal(churchId, rehearsalEntity);
+
+        await _uow.Commit();
+
+        result.Result = _mapper.Map<WorshipTeamRehearsalViewModel>(rehearsalEntity);
+
+        return result;
+    }
+
     public async Task<DomainNotificationsResult<WorshipTeamRehearsalViewModel>> UpdateWorshipTeamRehearsal(WorshipTeamRehearsalDTO rehearsal)
     {
         var result = new DomainNotificationsResult<WorshipTeamRehearsalViewModel>();
         var churchId = _userContext.GetChurchId();
 
-        // 🔹 Busca o ensaio existente pelo GUID
         var existing = await _repo.GetRehearsalByGuid(churchId, rehearsal.Guid);
         if (existing == null)
         {
@@ -117,7 +141,6 @@ public class WorshipTeamRehearsalService : IWorshipTeamRehearsalService
             return result;
         }
 
-        // 🔹 Resolve o WorshipTeamId pelo GUID recebido
         var team = await _teamRepo.GetWorshipTeamByGuid(churchId, rehearsal.WorshipTeamId);
         if (team == null)
         {
@@ -125,7 +148,6 @@ public class WorshipTeamRehearsalService : IWorshipTeamRehearsalService
             return result;
         }
 
-        // 🔹 Atualiza apenas os campos permitidos
         existing.RehearsalDate = rehearsal.RehearsalDate;
 
         await _repo.UpdateRehearsal(churchId, existing);

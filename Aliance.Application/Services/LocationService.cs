@@ -25,6 +25,18 @@ public class LocationService : ILocationService
         _userContext = userContext;
     }
 
+    public async Task<DomainNotificationsResult<LocationViewModel>> GetByGuid(Guid guid)
+    {
+        var result = new DomainNotificationsResult<LocationViewModel>();
+        var churchId = _userContext.GetChurchId();
+
+        var location = await _repo.GetLocationByGuid(churchId, guid);
+
+        result.Result = _mapper.Map<LocationViewModel>(location);
+
+        return result;
+    }
+
     public async Task<DomainNotificationsResult<PagedResult<LocationViewModel>>> GetLocations(int pageNumber, int pageSize)
     {
         var result = new DomainNotificationsResult<PagedResult<LocationViewModel>>();
@@ -52,6 +64,44 @@ public class LocationService : ILocationService
         var location = _mapper.Map<Location>(locationDTO);
 
         await _repo.InsertLocation(location);
+
+        await _unitOfWork.Commit();
+
+        result.Result = _mapper.Map<LocationViewModel>(location);
+
+        return result;
+    }
+
+    public async Task<DomainNotificationsResult<LocationViewModel>> ToggleStatus(Guid guid)
+    {
+        var result = new DomainNotificationsResult<LocationViewModel>();
+        var churchId = _userContext.GetChurchId();
+
+        var location = await _repo.GetLocationByGuid(churchId, guid);
+
+        location.Status = !location.Status;
+
+        await _unitOfWork.Commit();
+
+        result.Result = _mapper.Map<LocationViewModel>(location);
+
+        return result;
+    }
+
+    public async Task<DomainNotificationsResult<LocationViewModel>> UpdateLocation(LocationDTO locationDTO)
+    {
+        var result = new DomainNotificationsResult<LocationViewModel>();
+        var churchId = _userContext.GetChurchId();
+
+        if (locationDTO is null)
+            result.Notifications.Add("Dados inválidos.");
+
+        if (result.Notifications.Any())
+            return result;
+
+        var location = _mapper.Map<Location>(locationDTO);
+
+        await _repo.UpdateLocation(location);
 
         await _unitOfWork.Commit();
 

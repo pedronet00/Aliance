@@ -94,7 +94,7 @@ public class AuthController : ControllerBase
             SecurityStamp = Guid.NewGuid().ToString(),
             ChurchId = registerDTO.ChurchId,
             Status = registerDTO.Status,
-            PhoneNumber = registerDTO.Phone,
+            PhoneNumber = registerDTO.PhoneNumber,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
         };

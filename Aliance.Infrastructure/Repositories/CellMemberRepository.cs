@@ -55,4 +55,13 @@ public class CellMemberRepository : ICellMemberRepository
 
         return member;
     }
+
+    public async Task<CellMember> GetMemberById(int churchId, Guid cellGuid, string memberId)
+    {
+        var member = await _context.CellMember
+            .Where(cm => cm.UserId == memberId && cm.CellGuid == cellGuid && cm.User.ChurchId == churchId)
+            .FirstOrDefaultAsync();
+
+        return member;
+    }
 }

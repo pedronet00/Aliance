@@ -52,4 +52,11 @@ public class LocationRepository : ILocationRepository
 
         return location;
     }
+
+    public async Task<Location> UpdateLocation(Location location)
+    {
+        _context.Location.Update(location);
+
+        return location;
+    }
 }

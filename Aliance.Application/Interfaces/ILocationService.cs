@@ -15,4 +15,10 @@ public interface ILocationService
     Task<DomainNotificationsResult<PagedResult<LocationViewModel>>> GetLocations(int pageNumber, int pageSize);
 
     Task<DomainNotificationsResult<LocationViewModel>> Insert(LocationDTO locationDTO);
+
+    Task<DomainNotificationsResult<LocationViewModel>> GetByGuid(Guid guid);
+
+    Task<DomainNotificationsResult<LocationViewModel>> ToggleStatus(Guid guid);
+
+    Task<DomainNotificationsResult<LocationViewModel>> UpdateLocation(LocationDTO locationDTO);
 }

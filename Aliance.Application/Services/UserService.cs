@@ -8,6 +8,7 @@ using Aliance.Domain.Notifications;
 using Aliance.Domain.Pagination;
 using AutoMapper;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -194,7 +195,7 @@ public class UserService : IUserService
         await _unitOfWork.Commit();
 
         // Monta link para redefinir a primeira senha
-        var resetLink = $"https://localhost:5173/redefinir-senha/{newUser.Id}";
+        var resetLink = GeneratePasswordResetUrl(null, newUser.Id);
 
         // Monta o conteúdo do email
         var subject = "Sua conta foi criada | Aliance";
@@ -223,6 +224,49 @@ public class UserService : IUserService
         return result;
     }
 
+    public async Task<DomainNotificationsResult<bool>> SendPasswordDefinitionMail(string userId)
+    {
+        var result = new DomainNotificationsResult<bool>();
+
+        var user = await _userManager.Users
+                .Where(u => u.Id == userId)
+                .FirstOrDefaultAsync();
+    
+        if(user == null)
+        {
+            throw new Exception("Usuário não encontrado.");
+        }
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user!);
+
+        var urlEncodedEmail = Uri.EscapeDataString(user.Email);
+        var urlEncodedToken = Uri.EscapeDataString(token);
+
+        var callbackUrl = $"http://localhost:5173/definir-senha?email={urlEncodedEmail}&token={urlEncodedToken}";
+
+        var subject = "Redefina sua senha | Aliance";
+        var plainTextContent = $"Olá {user.UserName},\n Redefina sua senha usando o link: {callbackUrl}\n\nAtenciosamente,\nAliance";
+        var htmlContent = $@"
+        <p>Olá <strong>{user.UserName}</strong>,</p>
+        <p>Redefina sua senha clicando <a href='{callbackUrl}'>aqui</a>.</p>
+        <p>Atenciosamente,<br/>Aliance</p>";
+
+        // Envia o email
+        try
+        {
+            await _mailService.SendEmailAsync(user.Email!, subject, plainTextContent, htmlContent);
+        }
+        catch (Exception ex)
+        {
+            result.Notifications.Add("Falha ao enviar email: " + ex.Message);
+            result.Result = false;
+            return result;
+        }
+
+        result.Result = true;
+
+        return result;
+    }
 
     public async Task<DomainNotificationsResult<bool>> DeleteUserAsync(string userId)
     {
@@ -492,11 +536,28 @@ public class UserService : IUserService
         return result;
     }
 
-    public async Task<string> GeneratePasswordResetUrl(string churchAsaasId)
+    public async Task<string> GeneratePasswordResetUrl(string? churchAsaasId, string? userId)
     {
-        var user = await _userManager.Users
-            .Where(u => u.Church.AsaasCustomerId == churchAsaasId)
-            .FirstOrDefaultAsync();
+
+        ApplicationUser? user = null;
+
+        if(churchAsaasId is not null)
+        {
+            user = await _userManager.Users
+                .Where(u => u.Church.AsaasCustomerId == churchAsaasId)
+                .FirstOrDefaultAsync();
+        }
+        else
+        {
+            user = await _userManager.Users
+                .Where(u => u.Id == userId)
+                .FirstOrDefaultAsync();
+        }
+        
+        if(user == null)
+        {
+            throw new Exception("Usuário não encontrado.");
+        }
 
         var token = await _userManager.GeneratePasswordResetTokenAsync(user!);
 

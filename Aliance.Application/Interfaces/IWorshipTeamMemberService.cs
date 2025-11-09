@@ -19,5 +19,5 @@ public interface IWorshipTeamMemberService
 
     Task<DomainNotificationsResult<WorshipTeamMemberViewModel>> DeleteWorshipTeamMember(Guid teamGuid, string memberId);
 
-    Task<DomainNotificationsResult<WorshipTeamMemberViewModel>> ToggleMemberStatus(Guid teamGuid, string memberId, bool status);
+    Task<DomainNotificationsResult<WorshipTeamMemberViewModel>> ToggleMemberStatus(Guid teamGuid, string memberId);
 }

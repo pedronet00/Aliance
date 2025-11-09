@@ -47,10 +47,10 @@ namespace Aliance.API.Controllers
             return NoContent();
         }
 
-        [HttpPut("{teamGuid:guid}/member/{memberId}/status/{status:bool}")]
-        public async Task<IActionResult> ToggleMemberStatus(Guid teamGuid, string memberId, bool status)
+        [HttpPatch("{teamGuid:guid}/member/{memberId}/status")]
+        public async Task<IActionResult> ToggleMemberStatus(Guid teamGuid, string memberId)
         {
-            var result = await _service.ToggleMemberStatus(teamGuid, memberId, status);
+            var result = await _service.ToggleMemberStatus(teamGuid, memberId);
             if (result.HasNotifications)
                 return BadRequest(result.Notifications);
 

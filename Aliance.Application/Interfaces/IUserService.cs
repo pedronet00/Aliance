@@ -42,10 +42,12 @@ public interface IUserService
 
     Task<DomainNotificationsResult<UserViewModel>> ToggleStatus(string userId);
 
-    Task<string> GeneratePasswordResetUrl(string churchAsaasId);
+    Task<string> GeneratePasswordResetUrl(string? churchAsaasId, string? userId);
 
     Task<DomainNotificationsResult<bool>> DefinePassword(DefinePasswordDTO dto);
 
     Task<DomainNotificationsResult<string>> ImportUsers(UserImportDTO dto);
+
+    Task<DomainNotificationsResult<bool>> SendPasswordDefinitionMail(string userId);
 
 }

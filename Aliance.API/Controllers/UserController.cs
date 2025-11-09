@@ -28,11 +28,11 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [Route("GetById")]
+    [Route("GetById/{id}")]
     [Authorize]
-    public async Task<IActionResult> GetUserById(string userId)
+    public async Task<IActionResult> GetUserById(string id)
     {
-        var result = await _service.GetUserByIdAsync(userId);
+        var result = await _service.GetUserByIdAsync(id);
         return Ok(result);
     }
 
@@ -92,7 +92,7 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
-    [HttpDelete]
+    [HttpDelete("{userId}")]
     [Authorize]
     public async Task<IActionResult> DeleteUser(string userId)
     {
@@ -110,10 +110,18 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    [Route("DefineFirstPassword")]
+    [Route("DefinePassword")]
     public async Task<IActionResult> DefineFirstPassword(DefinePasswordDTO dto)
     {
         var result = await _service.DefinePassword(dto);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [Route("PasswordDefinitionMail/{userId}")]
+    public async Task<IActionResult> PasswordDefinitionMail(string userId)
+    {
+        var result = await _service.SendPasswordDefinitionMail(userId);
         return Ok(result);
     }
 
@@ -144,19 +152,11 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPatch("deactivate/{id}")]
+    [HttpPatch("status/{id}")]
     [Authorize]
     public async Task<IActionResult> DeactivateUser(string id)
     {
-        var result = await _service.DeactivateUser(id);
-        return Ok(result);
-    }
-
-    [HttpPatch("activate/{id}")]
-    [Authorize]
-    public async Task<IActionResult> ActivateUser(string id)
-    {
-        var result = await _service.ActivateUser(id);
+        var result = await _service.ToggleStatus(id);
         return Ok(result);
     }
 

@@ -1,5 +1,6 @@
 ﻿using Aliance.Application.DTOs;
 using Aliance.Application.ViewModel;
+using Aliance.Domain.Enums;
 using Aliance.Domain.Notifications;
 
 namespace Aliance.Application.Interfaces;
@@ -15,6 +16,8 @@ public interface IWorshipTeamRehearsalService
     Task<DomainNotificationsResult<WorshipTeamRehearsalViewModel>> UpdateWorshipTeamRehearsal(WorshipTeamRehearsalDTO rehearsal);
 
     Task<DomainNotificationsResult<WorshipTeamRehearsalViewModel>> DeleteWorshipTeamRehearsal(Guid guid);
+
+    Task<DomainNotificationsResult<WorshipTeamRehearsalViewModel>> ToggleStatus(Guid guid, MeetingStatus status);
 
     Task<DomainNotificationsResult<WorshipTeamRehearsalViewModel>> GetNextWorshipTeamRehearsal(Guid teamGuid);
 }

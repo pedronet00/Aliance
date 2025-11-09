@@ -1,6 +1,7 @@
 ﻿using Aliance.Application.DTOs;
 using Aliance.Application.Interfaces;
 using Aliance.Application.ViewModel;
+using Aliance.Domain.Enums;
 using Aliance.Domain.Notifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -86,6 +87,17 @@ namespace Aliance.API.Controllers
                 return NotFound(result.Notifications);
 
             return Ok(result.Result);
+        }
+
+        [HttpPatch("{guid:guid}/status/{status}")]
+        public async Task<IActionResult> ToggleStatus(Guid guid, MeetingStatus status)
+        {
+            var result = await _service.ToggleStatus(guid, status);
+
+            if (result.HasNotifications)
+                return NotFound(result);
+
+            return Ok(result);
         }
     }
 }

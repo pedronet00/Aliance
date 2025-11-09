@@ -69,6 +69,12 @@ public class WorshipTeamMemberRepository : IWorshipTeamMemberRepository
         return member;
     }
 
+    public async Task<WorshipTeamMember> GetMemberByGuid(int teamId, string memberId)
+    {
+        return await _context.WorshipTeamMember
+            .FirstOrDefaultAsync(wtm => wtm.UserId == memberId && wtm.WorshipTeamId == teamId);
+    }
+
     public async Task<bool> MemberAlreadyInGroup(int teamId, string memberId)
     {
         return await _context.WorshipTeamMember

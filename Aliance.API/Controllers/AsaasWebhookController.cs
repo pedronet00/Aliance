@@ -85,7 +85,7 @@ namespace Aliance.API.Controllers
 
                             await _churchService.AtualizarPagamentoRecebidoAsync(customerId, paymentDate, nextDueDate, value);
 
-                            var passwordResetUrl = await _userService.GeneratePasswordResetUrl(customerId);
+                            var passwordResetUrl = await _userService.GeneratePasswordResetUrl(customerId, null);
                             
                             await _mailSending.SendEmailAsync(firstCustomerMail, "REDEFINA SUA SENHA", "plain text", $"Clique no link para definir sua senha: <a href='{passwordResetUrl}'>Definir senha</a>");
                             break;

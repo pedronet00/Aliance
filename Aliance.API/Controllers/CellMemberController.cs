@@ -60,10 +60,10 @@ public class CellMemberController : ControllerBase
     /// <summary>
     /// Alterna o status (ativo/inativo) de um membro.
     /// </summary>
-    [HttpPut("{cellGuid:guid}/member/{memberId}/status/{status:bool}")]
-    public async Task<IActionResult> ToggleMemberStatus(Guid cellGuid, string memberId, bool status)
+    [HttpPatch("{cellGuid:guid}/member/{memberId}/status")]
+    public async Task<IActionResult> ToggleMemberStatus(Guid cellGuid, string memberId)
     {
-        var result = await _service.ToggleMemberStatus(cellGuid, memberId, status);
+        var result = await _service.ToggleMemberStatus(cellGuid, memberId);
         if (result.HasNotifications)
             return BadRequest(result.Notifications);
 

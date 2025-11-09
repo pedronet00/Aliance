@@ -2,6 +2,7 @@
 using Aliance.Application.Interfaces;
 using Aliance.Application.ViewModel;
 using Aliance.Domain.Entities;
+using Aliance.Domain.Enums;
 using Aliance.Domain.Interfaces;
 using Aliance.Domain.Notifications;
 using AutoMapper;
@@ -130,7 +131,32 @@ public class CellMeetingService : ICellMeetingService
         return result;
     }
 
+    public async Task<DomainNotificationsResult<CellMeetingViewModel>> ToggleStatus(Guid guid, MeetingStatus status)
+    {
+        var result = new DomainNotificationsResult<CellMeetingViewModel>();
+        var churchId = _userContext.GetChurchId();
 
+        var meeting = await _repo.GetCellMeetingByGuid(churchId, guid);
+
+        if (meeting == null) 
+        {
+            result.Notifications.Add("Encontro não existe.");
+            return result;
+        }
+
+        var meetingEntity = _mapper.Map<CellMeeting>(meeting);
+
+        meetingEntity.Status = status;
+
+        await _repo.UpdateCellMeeting(churchId, meetingEntity);
+
+        await _uow.Commit();
+
+        result.Result = _mapper.Map<CellMeetingViewModel>(meetingEntity);
+
+        return result;
+
+    }
 
     public async Task<DomainNotificationsResult<CellMeetingViewModel>> UpdateCellMeeting(CellMeetingDTO cellMeeting)
     {

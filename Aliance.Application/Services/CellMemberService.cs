@@ -78,12 +78,12 @@ public class CellMemberService : ICellMemberService
         return result;
     }
 
-    public async Task<DomainNotificationsResult<CellMemberViewModel>> ToggleMemberStatus(Guid cellGuid, string memberId, bool status)
+    public async Task<DomainNotificationsResult<CellMemberViewModel>> ToggleMemberStatus(Guid cellGuid, string memberId)
     {
         var result = new DomainNotificationsResult<CellMemberViewModel>();
         var churchId = _userContext.GetChurchId();
 
-        var member = await _repo.ToggleMemberStatus(churchId, cellGuid, memberId, status);
+        var member = await _repo.GetMemberById(churchId, cellGuid, memberId);
 
         if (member == null)
         {
@@ -91,8 +91,11 @@ public class CellMemberService : ICellMemberService
             return result;
         }
 
+        member.Status = !member.Status;
         await _uow.Commit();
+
         result.Result = _mapper.Map<CellMemberViewModel>(member);
+        
         return result;
     }
 }
