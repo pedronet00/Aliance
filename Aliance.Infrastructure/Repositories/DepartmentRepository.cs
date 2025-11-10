@@ -70,6 +70,14 @@ public class DepartmentRepository : IDepartmentRepository
         return department;
     }
 
+    public async Task<Department> GetDepartmentByGuid(int churchId, Guid guid)
+    {
+        var department =  await _context.Department
+            .FirstOrDefaultAsync(x => x.Guid == guid);
+
+        return department;
+    }
+
     public async Task<Department> InsertDepartment(Department department)
     {
         _context.Department.Add(department);

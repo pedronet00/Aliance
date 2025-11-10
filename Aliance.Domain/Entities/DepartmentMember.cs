@@ -11,11 +11,11 @@ public class DepartmentMember
     public DateTime JoinedDate { get; set; } = DateTime.UtcNow;
     public bool Status { get; set; } = true;
     private DepartmentMember() { }
-    public DepartmentMember(int departmentId, string userId, bool status)
+    public DepartmentMember(int departmentId, string userId)
     {
         DepartmentId = departmentId;
         UserId = userId;
-        Status = status;
+        Status = true;
         Guid = Guid.NewGuid();
     }
 }

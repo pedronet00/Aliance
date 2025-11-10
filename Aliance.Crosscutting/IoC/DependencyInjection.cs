@@ -46,6 +46,7 @@ public static class DependencyInjection
         services.AddScoped<IMissionCampaignDonationRepository, MissionCampaignDonationRepository>();
         services.AddScoped<IAutomaticAccountsRepository, AutomaticAccountsRepository>();
         services.AddScoped<ISundaySchoolClassroomRepository, SundaySchoolClassroomRepository>();
+        services.AddScoped<IDepartmentMemberRepository, DepartmentMemberRepository>();
 
         // Services
         services.AddScoped<IDepartmentService, DepartmentService>();
@@ -83,6 +84,7 @@ public static class DependencyInjection
         services.AddScoped<IAutomaticAccountsService, AutomaticAccountsService>();
         services.AddScoped<IRoutineService, RoutineService>();
         services.AddScoped<ISundaySchoolClassroomService, SundaySchoolClassroomService>();
+        services.AddScoped<IDepartmentMemberService, DepartmentMemberService>();
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();

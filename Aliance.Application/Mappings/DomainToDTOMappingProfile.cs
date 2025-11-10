@@ -90,6 +90,10 @@ public class DomainToDTOMappingProfile : Profile
             .ForMember(dest => dest.CellGuId, opt => opt.MapFrom(src => src.Cell.Guid))
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
 
+        CreateMap<DepartmentMember, DepartmentMemberViewModel>()
+            .ForMember(dest => dest.DepartmentGuId, opt => opt.MapFrom(src => src.Department.Guid))
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
+
         CreateMap<Tithe, TitheDTO>().ReverseMap();
         CreateMap<Tithe, TitheViewModel>().ReverseMap();
         CreateMap<Tithe, TitheViewModel>()

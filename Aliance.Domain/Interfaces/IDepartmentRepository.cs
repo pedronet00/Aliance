@@ -14,6 +14,8 @@ public interface IDepartmentRepository
 
     Task<Department> GetDepartmentById(int churchId, int id);
 
+    Task<Department> GetDepartmentByGuid(int churchId, Guid guid);
+
     Task<Department> InsertDepartment(Department department);
 
     Task<bool> UpdateDepartment(int churchId,Department department);
