@@ -1,0 +1,37 @@
+name: Deploy Aliance API
+
+on:
+  push:
+    branches: [ "main-clean" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Login Docker Hub
+      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+    - name: Build Image
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/aliance-api:latest .
+
+    - name: Push Image
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/aliance-api:latest
+
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VPS_SSH_HOST }}
+        username: ${{ secrets.VPS_SSH_USER }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        script: |
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/aliance-api:latest
+          docker stop aliance-api || true
+          docker rm aliance-api || true
+          docker run -d --name aliance-api \
+            -p 5000:5000 \
+            --restart always \
+            ${{ secrets.DOCKERHUB_USERNAME }}/aliance-api:latest

@@ -21,9 +21,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aliance.Tests", "Aliance.Te
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{380A7511-A354-6D7A-0CC0-8FA1F1BA7B6C}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
 		.gitignore = .gitignore
 		docker-compose.yml = docker-compose.yml
 		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{410BF312-0638-4E3A-929F-C5109BCEAB54}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{069E21CD-58D0-4425-A613-4322419E6424}"
+	ProjectSection(SolutionItems) = preProject
+		deploy.yml = deploy.yml
 	EndProjectSection
 EndProject
 Global
@@ -67,6 +75,8 @@ Global
 		{9B122DDF-D6E3-403D-8A02-FF3CC8ABB643} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{052975ED-B085-4A52-8AE9-D55903B380D2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{55584DFF-4A2F-4782-A6CD-11799C81E4C7} = {708F968A-A928-4C3C-9363-CE7F5B55C944}
+		{410BF312-0638-4E3A-929F-C5109BCEAB54} = {380A7511-A354-6D7A-0CC0-8FA1F1BA7B6C}
+		{069E21CD-58D0-4425-A613-4322419E6424} = {410BF312-0638-4E3A-929F-C5109BCEAB54}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {57617787-C1BD-42AD-BBD5-611D72C6C230}

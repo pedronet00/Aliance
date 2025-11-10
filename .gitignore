@@ -2,3 +2,7 @@
 bin/
 obj/
 /Aliance.API/publish
+
+appsettings.*.json
+!appsettings.Development.json
+!appsettings.json
