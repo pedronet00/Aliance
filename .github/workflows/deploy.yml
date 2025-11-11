@@ -34,4 +34,9 @@ jobs:
           docker run -d --name aliance-api \
             -p 8080:8080 \
             --restart always \
+            -e "ASPNETCORE_ENVIRONMENT=Production" \
+            -e "JWT__SecretKey=${{ secrets.JWT_SECRET_KEY }}" \
+            -e "Asaas__ApiKey=${{ secrets.ASAAS_API_KEY }}" \
+            -e "SendGrid__ApiKey=${{ secrets.SENDGRID_API_KEY }}" \
+            -e "ConnectionStrings__DefaultConnection=${{ secrets.DB_CONNECTION_STRING }}" \
             ${{ secrets.DOCKERHUB_USERNAME }}/aliance-api:latest
