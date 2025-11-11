@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Aliance.Domain.Entities;
 
-public class ServicePresence
+public class ServicePresence : BaseEntity
 {
     public int Id { get; set; }
     public Guid Guid { get; set; }

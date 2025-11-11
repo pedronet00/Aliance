@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Aliance.Domain.Entities;
 
-public class Church
+public class Church : BaseEntity
 {
     public int Id { get; set; }
 

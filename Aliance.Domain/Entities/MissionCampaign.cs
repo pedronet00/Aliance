@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Aliance.Domain.Entities;
 
-public class MissionCampaign
+public class MissionCampaign : BaseEntity
 {
     public int Id { get; set; }
 

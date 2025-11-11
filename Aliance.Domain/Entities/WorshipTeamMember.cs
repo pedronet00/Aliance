@@ -1,6 +1,6 @@
 ﻿namespace Aliance.Domain.Entities;
 
-public class WorshipTeamMember
+public class WorshipTeamMember : BaseEntity
 {
     public int Id { get; set; }
 

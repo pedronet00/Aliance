@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Aliance.Domain.Entities;
 
-public class PatrimonyMaintenance
+public class PatrimonyMaintenance : BaseEntity
 {
     public int Id { get; set; }
     public Guid Guid { get; private set; } = Guid.NewGuid();

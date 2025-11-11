@@ -2,7 +2,7 @@
 
 namespace Aliance.Domain.Entities;
 
-public class Patrimony
+public class Patrimony : BaseEntity
 {
     public int Id { get; set; }
     public Guid Guid { get; private set; } = Guid.NewGuid();

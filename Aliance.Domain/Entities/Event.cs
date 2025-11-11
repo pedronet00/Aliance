@@ -4,7 +4,7 @@ using System;
 
 namespace Aliance.Domain.Entities;
 
-public class Event
+public class Event : BaseEntity
 {
     public int Id { get; set; }
 

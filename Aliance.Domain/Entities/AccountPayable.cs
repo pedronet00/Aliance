@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Aliance.Domain.Entities;
 
-public class AccountPayable
+public class AccountPayable : BaseEntity
 {
     public int Id { get; set; }
 

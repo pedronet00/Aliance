@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Aliance.Domain.Entities;
 
 [Table("patrimonymaintenancedocument")]
-public class PatrimonyMaintenanceDocument
+public class PatrimonyMaintenanceDocument : BaseEntity
 {
     public int Id { get; private set; }
     public Guid Guid { get; private set; }

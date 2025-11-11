@@ -2,7 +2,7 @@
 
 namespace Aliance.Domain.Entities;
 
-public class Baptism
+public class Baptism : BaseEntity
 {
     public int Id { get; set; }
 

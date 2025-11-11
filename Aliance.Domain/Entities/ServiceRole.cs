@@ -2,7 +2,7 @@
 
 namespace Aliance.Domain.Entities;
 
-public class ServiceRole
+public class ServiceRole : BaseEntity
 {
     public int Id { get; set; }
     public Guid Guid { get; set; }

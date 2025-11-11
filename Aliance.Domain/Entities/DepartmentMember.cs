@@ -1,9 +1,9 @@
 ﻿namespace Aliance.Domain.Entities;
 
-public class DepartmentMember
+public class DepartmentMember : BaseEntity
 {
     public int Id { get; set; }
-        public Guid Guid { get; set; } = Guid.NewGuid();
+    public Guid Guid { get; set; } = Guid.NewGuid();
     public int DepartmentId { get; set; }
     public Department Department { get; set; }
     public string UserId { get; set; }

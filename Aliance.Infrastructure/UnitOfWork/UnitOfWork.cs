@@ -1,6 +1,8 @@
-﻿using Aliance.Domain.Interfaces;
+﻿using Aliance.Domain.Entities;
+using Aliance.Domain.Interfaces;
 using Aliance.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
@@ -24,6 +26,20 @@ namespace Aliance.Infrastructure.UnitOfWork
         {
             try
             {
+                var entries = _context.ChangeTracker.Entries<BaseEntity>();
+
+                foreach (var entry in entries)
+                {
+                    if (entry.State == EntityState.Added)
+                    {
+                        entry.Entity.CreatedAt = DateTime.UtcNow;
+                    }
+
+                    if (entry.State == EntityState.Modified)
+                    {
+                        entry.Entity.UpdatedAt = DateTime.UtcNow;
+                    }
+                }
                 return await _context.SaveChangesAsync() > 0;
             }
             catch (DbUpdateException ex)

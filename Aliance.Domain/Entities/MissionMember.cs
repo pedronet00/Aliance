@@ -1,6 +1,6 @@
 ﻿namespace Aliance.Domain.Entities;
 
-public class MissionMember
+public class MissionMember : BaseEntity
 {
     public int Id { get; set; }
 

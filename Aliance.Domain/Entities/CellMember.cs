@@ -1,6 +1,6 @@
 ﻿namespace Aliance.Domain.Entities;
 
-public class CellMember
+public class CellMember : BaseEntity
 {
     public int Id { get; set; }
     public Guid Guid { get; set; } = Guid.NewGuid();

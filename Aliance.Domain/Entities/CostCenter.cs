@@ -1,6 +1,6 @@
 ﻿namespace Aliance.Domain.Entities
 {
-    public class CostCenter
+    public class CostCenter : BaseEntity
     {
         public int Id { get; set; }
 

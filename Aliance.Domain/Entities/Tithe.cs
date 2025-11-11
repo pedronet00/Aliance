@@ -3,7 +3,7 @@ using System;
 
 namespace Aliance.Domain.Entities;
 
-public class Tithe
+public class Tithe : BaseEntity
 {
     public int Id { get; set; }
 

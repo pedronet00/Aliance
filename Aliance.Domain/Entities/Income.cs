@@ -3,7 +3,7 @@ using Aliance.Domain.ValueObjects;
 
 namespace Aliance.Domain.Entities;
 
-public class Income
+public class Income : BaseEntity
 {
     public int Id { get; set; }
     public Guid Guid { get; private set; } = Guid.NewGuid();

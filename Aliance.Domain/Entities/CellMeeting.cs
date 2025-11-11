@@ -2,7 +2,7 @@
 
 namespace Aliance.Domain.Entities;
 
-public class CellMeeting
+public class CellMeeting : BaseEntity
 {
     public int Id { get; set; }                       
     public Guid Guid { get; set; } = Guid.NewGuid();

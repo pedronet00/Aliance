@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Aliance.Domain.Entities;
 
-public class AccountReceivable
+public class AccountReceivable : BaseEntity
 {
     public int Id { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿namespace Aliance.Domain.Entities;
 
-public class PatrimonyDocument
+public class PatrimonyDocument : BaseEntity
 {
     public int Id { get; private set; }
     public Guid Guid { get; private set; }

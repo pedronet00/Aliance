@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Aliance.Domain.Entities;
 
-public class SundaySchoolClass
+public class SundaySchoolClass : BaseEntity
 {
     
     public int Id { get; set; }

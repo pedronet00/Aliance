@@ -2,7 +2,7 @@
 
 namespace Aliance.Domain.Entities;
 
-public class PastoralVisit
+public class PastoralVisit : BaseEntity
 {
     public int Id { get; set; }
     public Guid Guid { get; private set; } = Guid.NewGuid();
