@@ -26,6 +26,15 @@ public class AccountReceivableController : ControllerBase
         return Ok(accountReceivables);
     }
 
+    [HttpGet("deploy")]
+
+    public async Task<IActionResult> Deploy([FromQuery] int pageNumber = 1, int pageSize = 5)
+    {
+        var accountReceivables = await _service.GetAllAsync(pageNumber, pageSize);
+
+        return Ok(accountReceivables);
+    }
+
     [HttpGet("{guid:guid}")]
 
     public async Task<IActionResult> GetByGuid(Guid guid)
