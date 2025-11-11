@@ -32,6 +32,6 @@ jobs:
           docker stop aliance-api || true
           docker rm aliance-api || true
           docker run -d --name aliance-api \
-            -p 5000:5000 \
+            -p 8080:8080 \
             --restart always \
             ${{ secrets.DOCKERHUB_USERNAME }}/aliance-api:latest

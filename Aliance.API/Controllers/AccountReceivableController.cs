@@ -26,7 +26,7 @@ public class AccountReceivableController : ControllerBase
         return Ok(accountReceivables);
     }
 
-    [HttpGet("deployyyyy")]
+    [HttpGet("deploy")]
 
     public async Task<IActionResult> Deploy([FromQuery] int pageNumber = 1, int pageSize = 5)
     {
