@@ -49,6 +49,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
         builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
         foreach (var entityType in builder.Model.GetEntityTypes())
@@ -57,14 +58,16 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
             {
                 builder.Entity(entityType.ClrType).Property<DateTime>("CreatedAt")
                     .HasColumnName("created_at")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .ValueGeneratedOnAdd();
+                    .HasColumnType("TIMESTAMP")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 builder.Entity(entityType.ClrType).Property<DateTime?>("UpdatedAt")
                     .HasColumnName("updated_at")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .HasColumnType("TIMESTAMP")
+                    .ValueGeneratedOnAddOrUpdate()
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
             }
         }
     }
+
 }

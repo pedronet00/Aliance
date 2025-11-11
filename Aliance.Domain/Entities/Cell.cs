@@ -9,10 +9,6 @@ namespace Aliance.Domain.Entities
 
         public Guid Guid { get; private set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-
         public string Name { get; set; }
 
         public int LocationId { get; set; }
