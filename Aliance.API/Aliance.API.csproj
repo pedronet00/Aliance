@@ -9,20 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Mailing\**" />
     <Compile Remove="uploads\patrimonios\**" />
+    <Content Remove="Mailing\**" />
     <Content Remove="uploads\patrimonios\**" />
+    <EmbeddedResource Remove="Mailing\**" />
     <EmbeddedResource Remove="uploads\patrimonios\**" />
+    <None Remove="Mailing\**" />
     <None Remove="uploads\patrimonios\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Mailing\Templates\RedefinePassword.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Mailing\Templates\RedefinePassword.cshtml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>

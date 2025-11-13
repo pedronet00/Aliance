@@ -16,22 +16,26 @@ namespace Aliance.API.Controllers
     {
         private readonly ILogger<AsaasWebhookController> _logger;
         private readonly IChurchService _churchService;
-        private readonly string _logFilePath;
         private readonly IMailService _mailSending;
         private readonly IUserService _userService;
+        private readonly string _logFilePath;
 
-        public AsaasWebhookController(ILogger<AsaasWebhookController> logger, IChurchService churchService, IMailService mailSending, IUserService userService)
+        public AsaasWebhookController(
+            ILogger<AsaasWebhookController> logger,
+            IChurchService churchService,
+            IMailService mailSending,
+            IUserService userService)
         {
             _logger = logger;
             _churchService = churchService;
+            _mailSending = mailSending;
+            _userService = userService;
 
             var logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
             if (!Directory.Exists(logDirectory))
                 Directory.CreateDirectory(logDirectory);
 
             _logFilePath = Path.Combine(logDirectory, "AsaasWebhook.log");
-            _mailSending = mailSending;
-            _userService = userService;
         }
 
         [HttpPost]
@@ -41,7 +45,6 @@ namespace Aliance.API.Controllers
             {
                 using var reader = new StreamReader(Request.Body);
                 var body = await reader.ReadToEndAsync();
-
                 await LogAsync($"Webhook recebido: {body}");
 
                 using var jsonDoc = JsonDocument.Parse(body);
@@ -51,80 +54,49 @@ namespace Aliance.API.Controllers
                     return BadRequest("Campo 'event' ausente.");
 
                 string eventType = eventProp.GetString() ?? string.Empty;
-
                 JsonElement? payload = null;
+
                 if (root.TryGetProperty("payment", out var paymentElement))
                     payload = paymentElement;
                 else if (root.TryGetProperty("subscription", out var subscriptionElement))
                     payload = subscriptionElement;
+                else
+                    await LogAsync($"⚠️ Nenhum payload de 'payment' ou 'subscription' encontrado no evento {eventType}.");
 
+                if (payload is null)
+                    return Ok();
 
                 // Extrai o customerId
-                string? customerId = payload.Value.GetProperty("customer").GetString();
+                string? customerId = payload.Value.TryGetProperty("customer", out var custEl) ? custEl.GetString() : null;
+                if (string.IsNullOrEmpty(customerId))
+                {
+                    await LogAsync("⚠️ Webhook recebido sem 'customerId'. Ignorado.");
+                    return Ok();
+                }
 
-                // Busca a igreja vinculada a este cliente Asaas
-                var church = await _churchService.GetChurchByAsaasCustomerId(customerId);
-                //if (church == null)
-                //{
-                //    await LogAsync($"Igreja não encontrada para customerId={customerId}");
-                //    return NotFound($"Igreja não encontrada para customerId={customerId}");
-                //}
-
+                // Lógica principal
                 switch (eventType)
                 {
                     case "PAYMENT_CONFIRMED":
-                        {
-                            var value = payload.Value.GetProperty("value").GetDecimal();
-                            var paymentDateStr = payload.Value.TryGetProperty("paymentDate", out var pd) ? pd.GetString() : null;
-                            var nextDueDateStr = payload.Value.TryGetProperty("nextDueDate", out var nd) ? nd.GetString() : null;
-
-                            DateTime paymentDate = ParseDate(paymentDateStr) ?? DateTime.UtcNow;
-                            DateTime? nextDueDate = ParseDate(nextDueDateStr);
-
-                            var firstCustomerMail = await _churchService.GetChurchesFirstUser(customerId);
-
-                            await _churchService.AtualizarPagamentoRecebidoAsync(customerId, paymentDate, nextDueDate, value);
-
-                            var passwordResetUrl = await _userService.GeneratePasswordResetUrl(customerId, null);
-                            
-                            await _mailSending.SendEmailAsync(firstCustomerMail, "REDEFINA SUA SENHA", "plain text", $"Clique no link para definir sua senha: <a href='{passwordResetUrl}'>Definir senha</a>");
-                            break;
-                        }
+                    case "PAYMENT_RECEIVED":
+                        await HandlePaymentConfirmedAsync(payload.Value, customerId);
+                        break;
 
                     case "PAYMENT_OVERDUE":
-                        {
-                            var dueDateStr = payload.Value.TryGetProperty("dueDate", out var dd) ? dd.GetString() : null;
-                            DateTime dueDate = ParseDate(dueDateStr) ?? DateTime.UtcNow;
-
-                            await LogAsync($"Pagamento atrasado: customer={customerId}, vencimento={dueDate:yyyy-MM-dd}");
-                            await _churchService.AtualizarPagamentoAtrasadoAsync(customerId, dueDate);
-                            break;
-                        }
-
-                    case "SUBSCRIPTION_CANCELED":
-                        {
-                            var subscriptionId = payload.Value.GetProperty("id").GetString();
-                            await LogAsync($"Assinatura cancelada: customer={customerId}, subscription={subscriptionId}");
-                            
-                            break;
-                        }
-
-                    case "CHECKOUT_CREATED":
-                        {
-                            var subscriptionId = payload.Value.GetProperty("id").GetString();
-                            await LogAsync($"Checkout criado: customer={customerId}, subscription={subscriptionId}");
-                            
-                            break;
-                        }
+                        await HandlePaymentOverdueAsync(payload.Value, customerId);
+                        break;
 
                     case "SUBSCRIPTION_CREATED":
-                        {
-                            var subscriptionId = payload.Value.GetProperty("id").GetString();
-                            var nextDueDateStr = payload.Value.TryGetProperty("nextDueDate", out var nd) ? nd.GetString() : null;
-                            await LogAsync($"Assinatura criada: customer={customerId}, subscription={subscriptionId}, próxima cobrança={nextDueDateStr}");
-                            
-                            break;
-                        }
+                        await LogAsync($"Assinatura criada para customer={customerId}");
+                        break;
+
+                    case "SUBSCRIPTION_CANCELED":
+                        await LogAsync($"Assinatura cancelada para customer={customerId}");
+                        break;
+
+                    case "CHECKOUT_CREATED":
+                        await LogAsync($"Checkout criado para customer={customerId}");
+                        break;
 
                     default:
                         await LogAsync($"Evento não tratado: {eventType}");
@@ -136,9 +108,44 @@ namespace Aliance.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao processar webhook do Asaas");
-                await LogAsync($"Erro: {ex.Message}");
+                await LogAsync($"❌ Erro: {ex.Message}");
                 return StatusCode(500, new { status = "error", message = ex.Message });
             }
+        }
+
+        private async Task HandlePaymentConfirmedAsync(JsonElement payment, string customerId)
+        {
+            var value = payment.TryGetProperty("value", out var v) ? v.GetDecimal() : 0;
+            var paymentDateStr = payment.TryGetProperty("paymentDate", out var pd) ? pd.GetString() : null;
+            var nextDueDateStr = payment.TryGetProperty("nextDueDate", out var nd) ? nd.GetString() : null;
+
+            DateTime paymentDate = ParseDate(paymentDateStr) ?? DateTime.UtcNow;
+            DateTime? nextDueDate = ParseDate(nextDueDateStr);
+
+            await LogAsync($"💰 Pagamento confirmado - customer={customerId}, valor={value}, data={paymentDate:yyyy-MM-dd}");
+
+            // Atualiza informações financeiras
+            await _churchService.AtualizarPagamentoRecebidoAsync(customerId, paymentDate, nextDueDate, value);
+
+            // Envia e-mail de boas-vindas / redefinição de senha
+            var firstCustomerMail = await _churchService.GetChurchesFirstUser(customerId);
+            var passwordResetUrl = await _userService.GeneratePasswordResetUrl(customerId, null);
+
+            await _mailSending.SendEmailAsync(
+                firstCustomerMail,
+                "Bem-vindo ao Aliance ERP",
+                "plain text",
+                $"Seu pagamento foi confirmado com sucesso. Defina sua senha e acesse sua conta: <a href='{passwordResetUrl}'>Definir senha</a>"
+            );
+        }
+
+        private async Task HandlePaymentOverdueAsync(JsonElement payment, string customerId)
+        {
+            var dueDateStr = payment.TryGetProperty("dueDate", out var dd) ? dd.GetString() : null;
+            DateTime dueDate = ParseDate(dueDateStr) ?? DateTime.UtcNow;
+
+            await LogAsync($"⚠️ Pagamento atrasado: customer={customerId}, vencimento={dueDate:yyyy-MM-dd}");
+            await _churchService.AtualizarPagamentoAtrasadoAsync(customerId, dueDate);
         }
 
         private async Task LogAsync(string message)
@@ -153,8 +160,8 @@ namespace Aliance.API.Controllers
             if (string.IsNullOrWhiteSpace(dateStr))
                 return null;
 
-            // Asaas geralmente envia datas no formato yyyy-MM-dd ou dd/MM/yyyy
-            if (DateTime.TryParseExact(dateStr, new[] { "yyyy-MM-dd", "dd/MM/yyyy", "yyyy-MM-dd HH:mm:ss" },
+            if (DateTime.TryParseExact(dateStr,
+                new[] { "yyyy-MM-dd", "dd/MM/yyyy", "yyyy-MM-dd HH:mm:ss" },
                 CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
                 return date;
 

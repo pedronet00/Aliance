@@ -69,17 +69,17 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<MissionCampaignDonation, MissionCampaignDonationViewModel>().ReverseMap();
         CreateMap<MissionCampaignDonation, MissionCampaignDonationViewModel>()
             .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Value))
-            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName));
 
         CreateMap<WorshipTeamMember, WorshipTeamMemberDTO>().ReverseMap();
         CreateMap<WorshipTeamMember, WorshipTeamMemberViewModel>().ReverseMap();
         CreateMap<WorshipTeamMember, WorshipTeamMemberViewModel>()
-            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName));
 
         CreateMap<ServiceRole, ServiceRoleDTO>().ReverseMap();
         CreateMap<ServiceRole, ServiceRoleViewModel>().ReverseMap();
         CreateMap<ServiceRole, ServiceRoleViewModel>()
-            .ForMember(dest => dest.MemberName, opt => opt.MapFrom(src => src.Member.UserName));
+            .ForMember(dest => dest.MemberName, opt => opt.MapFrom(src => src.Member.FullName));
 
         CreateMap<Expense, ExpenseDTO>().ReverseMap();
         CreateMap<Expense, ExpenseViewModel>().ReverseMap();
@@ -88,17 +88,17 @@ public class DomainToDTOMappingProfile : Profile
 
         CreateMap<CellMember, CellMemberViewModel>()
             .ForMember(dest => dest.CellGuId, opt => opt.MapFrom(src => src.Cell.Guid))
-            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName));
 
         CreateMap<DepartmentMember, DepartmentMemberViewModel>()
             .ForMember(dest => dest.DepartmentGuId, opt => opt.MapFrom(src => src.Department.Guid))
-            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName));
 
         CreateMap<Tithe, TitheDTO>().ReverseMap();
         CreateMap<Tithe, TitheViewModel>().ReverseMap();
         CreateMap<Tithe, TitheViewModel>()
             .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount.Value))
-            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName));
 
 
         CreateMap<Location, LocationViewModel>().ReverseMap();
@@ -117,14 +117,14 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<CellMeeting, CellMeetingViewModel>().ReverseMap();
         CreateMap<CellMeeting, CellMeetingViewModel>()
             .ForMember(dest => dest.LocationName, opt => opt.MapFrom(src => src.Location.Name))
-            .ForMember(dest => dest.LeaderName, opt => opt.MapFrom(src => src.Leader.UserName)).ReverseMap();
+            .ForMember(dest => dest.LeaderName, opt => opt.MapFrom(src => src.Leader.FullName)).ReverseMap();
 
 
         CreateMap<PastoralVisit, PastoralVisitDTO>().ReverseMap();
         CreateMap<PastoralVisit, PastoralVisitViewModel>().ReverseMap();
         CreateMap<PastoralVisit, PastoralVisitViewModel>()
-            .ForMember(dest => dest.VisitedMemberName, opt => opt.MapFrom(src => src.VisitedMember.UserName))
-            .ForMember(dest => dest.PastorName, opt => opt.MapFrom(src => src.Pastor.UserName)).ReverseMap();
+            .ForMember(dest => dest.VisitedMemberName, opt => opt.MapFrom(src => src.VisitedMember.FullName))
+            .ForMember(dest => dest.PastorName, opt => opt.MapFrom(src => src.Pastor.FullName)).ReverseMap();
 
         CreateMap<Cell, CellDTO>().ReverseMap();
         CreateMap<Cell, CellViewModel>().ReverseMap();
@@ -132,7 +132,7 @@ public class DomainToDTOMappingProfile : Profile
             .ForMember(dest => dest.LocationName, opt => opt.MapFrom(src => src.Location.Name))
             .ReverseMap();
         CreateMap<Cell, CellViewModel>()
-            .ForMember(dest => dest.LeaderName, opt => opt.MapFrom(src => src.Leader.UserName))
+            .ForMember(dest => dest.LeaderName, opt => opt.MapFrom(src => src.Leader.FullName))
             .ReverseMap();
 
         CreateMap<MissionCampaign, MissionCampaignDTO>().ReverseMap();

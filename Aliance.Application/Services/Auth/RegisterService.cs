@@ -92,8 +92,9 @@ public class RegisterService : IRegisterService
             // 2️ | Criar usuário
             var user = new ApplicationUser
             {
-                UserName = newClientDTO.UserName,
+                UserName = newClientDTO.UserEmail,
                 Email = newClientDTO.UserEmail,
+                FullName = newClientDTO.UserName,
                 PhoneNumber = newClientDTO.UserPhone,
                 ChurchId = church.Id,
                 Status = true,

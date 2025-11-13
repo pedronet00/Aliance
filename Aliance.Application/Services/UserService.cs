@@ -161,7 +161,8 @@ public class UserService : IUserService
         var newUser = new ApplicationUser
         {
             Id = Guid.NewGuid().ToString(), // garante que nunca será null
-            UserName = user.UserName,
+            UserName = user.Email,
+            FullName = user.UserName,
             Email = user.Email,
             PhoneNumber = user.PhoneNumber,
             ChurchId = user.ChurchId,
