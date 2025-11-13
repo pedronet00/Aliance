@@ -90,7 +90,7 @@ namespace Aliance.Application.Integration.Asaas
                 {
                     cycle = "MONTHLY",
                     endDate = DateTime.Now.AddDays(30).ToString("yyyy-MM-dd HH:mm:ss"),
-                    nextDueDate = DateTime.Now.AddDays(30).ToString("yyyy-MM-dd HH:mm:ss")
+                    nextDueDate = DateTime.Now.AddDays(15).ToString("yyyy-MM-dd HH:mm:ss")
                 }
             };
 
@@ -157,6 +157,34 @@ namespace Aliance.Application.Integration.Asaas
 
             // Se o cliente for deletado com sucesso, retornamos uma mensagem ou o id do cliente deletado
             return $"Cliente com ID {customerId} deletado com sucesso!";
+        }
+
+        public async Task<string> GetCustomerData(string subscriptionId)
+        {
+            var response = await _httpClient.GetAsync($"subscriptions/{subscriptionId}");
+
+            var body = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Erro ao consultar dados do cliente no Asaas: {(int)response.StatusCode} - {body}");
+            }
+
+            return body;
+        }
+
+        public async Task<string> GetCustomerPayments(string subscriptionId)
+        {
+            var response = await _httpClient.GetAsync($"subscriptions/{subscriptionId}/payments");
+
+            var body = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Erro ao consultar dados do cliente no Asaas: {(int)response.StatusCode} - {body}");
+            }
+
+            return body;
         }
 
     }

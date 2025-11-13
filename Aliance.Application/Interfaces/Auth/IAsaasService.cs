@@ -12,7 +12,8 @@ public interface IAsaasService
 {
     Task<string> CreateCustomerAsync(Church church, ApplicationUser user);
     Task<(string subscriptionId, decimal value)> CreateSubscriptionAsync(string customerId, string plan, string paymentMethod);
-
+    Task<string> GetCustomerPayments(string subscriptionId);
+    Task<string> GetCustomerData(string customerId);
     Task<string> DeleteCustomerAsync(string customerId);
     Task<string> CreateCheckoutAsync(string customerId, string plan, string paymentMethod);
 }

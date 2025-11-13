@@ -1,6 +1,7 @@
 ﻿using Aliance.Application.DTOs;
 using Aliance.Application.DTOs.Auth;
 using Aliance.Application.Interfaces;
+using Aliance.Application.Interfaces.Auth;
 using Aliance.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,10 +14,12 @@ namespace Aliance.API.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserService _service;
+    private readonly IAsaasService _asaasService;
 
-    public UserController(IUserService service)
+    public UserController(IUserService service, IAsaasService asaasService)
     {
         _service = service;
+        _asaasService = asaasService;
     }
 
     [HttpGet("paged")]
@@ -33,6 +36,24 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetUserById(string id)
     {
         var result = await _service.GetUserByIdAsync(id);
+        return Ok(result);
+    }
+
+    [HttpGet]
+    [Route("GetSubscriptionData/{subscriptionId}")]
+    [Authorize]
+    public async Task<IActionResult> GetSubscriptionData(string subscriptionId)
+    {
+        var result = await _asaasService.GetCustomerData(subscriptionId);
+        return Ok(result);
+    }
+
+    [HttpGet]
+    [Route("GetSubscriptionPayments/{subscriptionId}")]
+    [Authorize]
+    public async Task<IActionResult> GetSubscriptionPayments(string subscriptionId)
+    {
+        var result = await _asaasService.GetCustomerPayments(subscriptionId);
         return Ok(result);
     }
 
